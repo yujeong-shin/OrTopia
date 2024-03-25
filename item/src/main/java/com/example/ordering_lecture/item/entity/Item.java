@@ -1,11 +1,19 @@
 package com.example.ordering_lecture.item.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,11 +34,47 @@ public class Item {
     @Column
     private int minimumStock;
     @Column(nullable = false)
-    private boolean delYN;
+    @Builder.Default
+    private boolean delYN=false;
     @Column(nullable = false)
-    private boolean isBaned;
+    @Builder.Default
+    private boolean isBaned=false;
     @Column(nullable = false)
     private String sellerEmail;
     @CreationTimestamp
-    public LocalDateTime createdTime;
+    private LocalDateTime createdTime;
+
+    public void updateName(String name){
+        this.name = name;
+    }
+    public void updateStock(int stock){
+        this.stock = stock;
+    }
+    public void updatePrice(int price){
+        this.price = price;
+    }
+    public void updateCategory(Category category){
+        this.category = category;
+    }
+    public void updateDetail(String detail){
+        this.detail = detail;
+    }
+    public void updateImagePath(String imagePath){
+        this.imagePath = imagePath;
+    }
+    public void updateMinimumStock(int minimumStock){
+        this.minimumStock = minimumStock;
+    }
+    public void updateSellerEmail(String sellerEmail){
+        this.sellerEmail = sellerEmail;
+    }
+    public void banItem(){
+        this.isBaned = true;
+    }
+    public void releaseBanItem(){
+        this.isBaned = false;
+    }
+    public void deleteItem(){
+        this.delYN = true;
+    }
 }
