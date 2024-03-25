@@ -45,7 +45,7 @@ public class ItemService {
     }
 
     public List<ItemResponseDto> banItem(String sellerEmail){
-        List<Item> items = itemRepository.findAllBySellerEmail();
+        List<Item> items = itemRepository.findAllBySellerEmail(sellerEmail);
         for(Item item : items){
             item.banItem();
         }
@@ -55,10 +55,17 @@ public class ItemService {
     }
 
     public List<ItemResponseDto>  releaseBanItem(String sellerEmail){
-        List<Item> items = itemRepository.findAllBySellerEmail();
+        List<Item> items = itemRepository.findAllBySellerEmail(sellerEmail);
         for(Item item : items){
             item.releaseBanItem();
         }
+        return items.stream()
+                .map(ItemResponseDto::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ItemResponseDto> findItemByEmail(String sellerEmail) {
+        List<Item> items = itemRepository.findAllBySellerEmail(sellerEmail);
         return items.stream()
                 .map(ItemResponseDto::toDto)
                 .collect(Collectors.toList());

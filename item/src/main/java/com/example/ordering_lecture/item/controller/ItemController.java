@@ -19,9 +19,15 @@ public class ItemController {
         itemService.createItem(itemRequestDto);
         return null;
     }
+
     @GetMapping("/items")
     public Object showAllItems(){
         itemService.showAllItem();
+        return null;
+    }
+    @GetMapping("/find_item_email/{sellerEmail}")
+    public Object findItemByEmail(@PathVariable String sellerEmail){
+        itemService.findItemByEmail(sellerEmail);
         return null;
     }
     @PatchMapping("/update_item/{id}")
@@ -29,6 +35,7 @@ public class ItemController {
         itemService.updateItem(id,itemUpdateDto);
         return null;
     }
+
     @DeleteMapping("/delete/{id}")
     public Object deleteItem(@PathVariable Long id){
         itemService.deleteItem(id);
