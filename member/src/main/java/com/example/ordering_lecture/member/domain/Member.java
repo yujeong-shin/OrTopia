@@ -1,12 +1,10 @@
 package com.example.ordering_lecture.member.domain;
 
-import com.example.ordering_lecture.member.dto.MemberCreateReqDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -21,34 +19,77 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
-    private String name;
+
     @Column(nullable = false,unique = true)
     private String email;
+
+    @Column(nullable = false)
+    private String name;
+
     @Column(nullable = false)
     private String password;
+
     @Embedded
-    Address address;
-//    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
-//    private List<Ordering> orderings;
+    private List<Address> addresses;
+
+    @Column(nullable = false)
+    private byte age;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Gender gender;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @Column(nullable = false)
+    private String phoneNumber;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean delYN = false;
+
     @CreationTimestamp
     private LocalDateTime createdTime;
-    @UpdateTimestamp
-    private LocalDateTime updatedTime;
 
-    public static Member toMember(MemberCreateReqDto memberCreateReqDto){
-        Address address = new Address(memberCreateReqDto.getCity()
-                ,memberCreateReqDto.getStreet()
-                ,memberCreateReqDto.getZipcode());
-        return Member.builder()
-                .name(memberCreateReqDto.getName())
-                .email(memberCreateReqDto.getEmail())
-                .password(memberCreateReqDto.getPassword())
-                .address(address)
-                .role(Role.USER)
-                .build();
+    @Column
+    private String lastLoginTime;
+
+    @OneToOne(mappedBy = "member", cascade = CascadeType.PERSIST)
+    private Seller seller;
+
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.PERSIST)
+    private List<LikedSeller> likedSellers;
+
+    public void updateEmail(String email){
+        this.email = email;
+    }
+    public void updateName(String name){
+        this.name = name;
+    }
+    public void updatePassword(String password){
+        this.password = password;
+    }
+    public void updateAge(byte age){
+        this.age = age;
+    }
+    public void updateGender(Gender gender){
+        this.gender = gender;
+    }
+    public void updateRole(Role role){
+        this.role = role;
+    }
+    public void updatePhoneNumber(String phoneNumber){
+        this.phoneNumber = phoneNumber;
+    }
+    public void updateCreatedTime(LocalDateTime createdTime){
+        this.createdTime = createdTime;
+    }
+    public void updateLastLoginTime(String lastLoginTime){
+        this.lastLoginTime = lastLoginTime;
+    }
+    public void deleteMember(){
+        this.delYN = true;
     }
 }

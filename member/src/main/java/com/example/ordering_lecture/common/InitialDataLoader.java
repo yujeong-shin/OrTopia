@@ -1,5 +1,6 @@
 package com.example.ordering_lecture.common;
 
+import com.example.ordering_lecture.member.domain.Gender;
 import com.example.ordering_lecture.member.domain.Member;
 import com.example.ordering_lecture.member.domain.Role;
 import com.example.ordering_lecture.member.dto.MemberResponseDto;
@@ -28,7 +29,9 @@ public class InitialDataLoader implements CommandLineRunner {
                     .name("admin")
                     .email("admin@test.com")
                     .password(passwordEncoder.encode("1234"))
+                    .gender(Gender.MALE)
                     .role(Role.ADMIN)
+                    .phoneNumber("00")
                     .build();
             memberRepository.save(member);
         }
