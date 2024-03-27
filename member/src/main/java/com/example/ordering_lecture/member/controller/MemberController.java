@@ -29,7 +29,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @GetMapping("member/{id}")
+    @GetMapping("/member/{id}")
     public Object memberFind(@PathVariable Long id){
         return memberService.findById(id);
 //        return null;

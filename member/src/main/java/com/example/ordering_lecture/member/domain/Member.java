@@ -29,7 +29,7 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
-    @Embedded
+    @OneToMany(mappedBy = "member")
     private List<Address> addresses;
 
     @Column(nullable = false)
