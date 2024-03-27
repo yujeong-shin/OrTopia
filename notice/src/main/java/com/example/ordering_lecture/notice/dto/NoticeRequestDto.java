@@ -32,7 +32,4 @@ public class NoticeRequestDto {
                 .build();
         return notice;
     }
-    public void delete() {
-        this.delYN = true;
-    }
 }
