@@ -5,6 +5,8 @@ import com.example.ordering_lecture.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Builder
 public class MemberResponseDto {
@@ -14,20 +16,23 @@ public class MemberResponseDto {
     private String city;
     private String street;
     private String zipcode;
-    private int orderCount;
+    private String phoneNumber;
 
-//    public static MemberResponseDto toMemberResponseDto(Member member) {
-//        MemberResponseDtoBuilder builder = MemberResponseDto.builder();
-//        builder.id(member.getId());
-//        builder.name(member.getName());
-//        builder.email(member.getEmail());
-////        builder.orderCount(member.getOrderings().size());
-//        Address address = member.getAddress();
-//        if (address != null){
-//            builder.city(address.getCity());
-//            builder.street(address.getStreet());
-//            builder.zipcode(address.getZipcode());
-//        }
-//            return builder.build();
-//    }
+    public static MemberResponseDto toDto(Member member) {
+        MemberResponseDtoBuilder builder = MemberResponseDto.builder();
+        builder.id(member.getId());
+        builder.name(member.getName());
+        builder.email(member.getEmail());
+        List<Address> addresses = member.getAddresses();
+        for(Address address : addresses) {
+            if (address != null){
+                builder.city(address.getName());
+                builder.street(address.getStreet());
+                builder.zipcode(address.getZipcode());
+                builder.city(address.getDetails());
+            }
+        }
+        builder.phoneNumber(member.getPhoneNumber());
+        return builder.build();
+    }
 }

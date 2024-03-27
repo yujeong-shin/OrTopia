@@ -24,6 +24,7 @@ public class Seller {
     @Column(nullable = false)
     private String companyName;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BusinnessType businnessType;
 

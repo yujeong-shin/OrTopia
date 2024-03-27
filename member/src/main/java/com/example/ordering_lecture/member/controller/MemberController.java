@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class    MemberController {
+public class MemberController {
     @Autowired
     private final JwtTokenProvider jwtTokenProvider;
     @Autowired
@@ -29,32 +29,17 @@ public class    MemberController {
         this.memberService = memberService;
     }
 
-//    @PostMapping("member/create")
-//    public ResponseEntity<CommonResponse> memberCreate(@Valid @RequestBody MemberCreateReqDto memberCreateReqDt){
-//        Member member = memberService.create(memberCreateReqDt);
-//        return new ResponseEntity<>(new CommonResponse(HttpStatus.CREATED,"member created success",member.getId()),HttpStatus.CREATED);
-//    }
-//
-//    @PostMapping("/doLogin")
-//    public ResponseEntity<CommonResponse> memberLogin(@Valid @RequestBody MemberLoginReqDto memberLoginReqDto){
-//        Member member = memberService.doLogin(memberLoginReqDto);
-//        // 토큰  생성 로직
-//        String jwtToken = jwtTokenProvider.createToken(member.getEmail(),member.getRole().toString());
-//        Map<String,Object> member_info = new HashMap<>();
-//        member_info.put("member_id",member.getId());
-//        member_info.put("token",jwtToken);
-//        return new ResponseEntity<>(new CommonResponse(HttpStatus.OK,"member success logined",member_info),HttpStatus.OK);
-//    }
-//
-//    @GetMapping("member/{id}")
-//    public MemberResponseDto memberFind(@PathVariable Long id){
-//        return memberService.findById(id);
-//    }
-//
+    @GetMapping("member/{id}")
+    public Object memberFind(@PathVariable Long id){
+        return memberService.findById(id);
+//        return null;
+    }
+
 //    @GetMapping("/member/myInfo")
 //    public MemberResponseDto myInfo(@RequestHeader("myEmail") String myEmail){
 //        return memberService.findMyInfo(myEmail);
 //    }
+
 //
 //    @GetMapping("member/findByEmail")
 //    public MemberResponseDto memberFind(@RequestParam String email){
