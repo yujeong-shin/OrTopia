@@ -41,7 +41,8 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    @Builder.Default
+    private Role role = Role.BUYER;
 
     @Column(nullable = false)
     private String phoneNumber;
