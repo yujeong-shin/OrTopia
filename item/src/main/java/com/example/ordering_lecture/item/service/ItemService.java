@@ -40,8 +40,9 @@ public class ItemService {
     }
 
     public void deleteItem(Long id) {
-        Item item = itemRepository.findById(id).orElseThrow();
-        item.deleteItem();
+        itemRepository.deleteById(id);
+//        Item item = itemRepository.findById(id).orElseThrow();
+//        item.deleteItem();
     }
 
     public List<ItemResponseDto> banItem(String sellerEmail){
