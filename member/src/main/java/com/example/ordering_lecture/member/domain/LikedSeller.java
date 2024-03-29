@@ -2,26 +2,31 @@ package com.example.ordering_lecture.member.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+
 @Entity
-@Data
+@Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class Address {
+public class LikedSeller {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private String street;
-    private String zipcode;
-    private String details;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false) //DB에 seller_id
+    private Seller seller;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private Member member;
+    private Member buyer; //DB에 buyer_id
+
+    @CreationTimestamp
+    private LocalDateTime createdTime;
 }
