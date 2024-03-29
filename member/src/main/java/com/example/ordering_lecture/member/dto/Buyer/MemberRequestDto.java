@@ -1,4 +1,4 @@
-package com.example.ordering_lecture.member.dto;
+package com.example.ordering_lecture.member.dto.Buyer;
 
 import com.example.ordering_lecture.member.domain.Gender;
 import com.example.ordering_lecture.member.domain.Member;

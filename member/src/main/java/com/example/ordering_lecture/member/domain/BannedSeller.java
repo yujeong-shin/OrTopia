@@ -17,20 +17,24 @@ public class BannedSeller {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(nullable = false)
-    private Member member;
+    private Seller seller;
 
     @Column(nullable = false)
     private String details;
 
-    @Column
+    @Column(nullable = false)
     private String startTime;
 
-    @Column
+    @Column(nullable = false)
     private String endTime;
 
     @Column(nullable = false)
     @Builder.Default
     private boolean delYN = false;
+
+    public void banCancel() {
+        this.delYN = true;
+    }
 }

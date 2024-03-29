@@ -1,4 +1,4 @@
-package com.example.ordering_lecture.member.dto;
+package com.example.ordering_lecture.member.dto.Buyer;
 
 import lombok.Data;
 

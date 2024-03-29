@@ -1,5 +1,6 @@
 package com.example.ordering_lecture.member.domain;
 
+import com.example.ordering_lecture.member.dto.Buyer.MemberUpdateDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
     private List<Address> addresses;
 
     @Column(nullable = false)
@@ -63,33 +64,30 @@ public class Member {
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.PERSIST)
     private List<LikedSeller> likedSellers;
 
-    public void updateEmail(String email){
-        this.email = email;
+    public void updateMember(MemberUpdateDto memberUpdateDto){
+        if(memberUpdateDto.getEmail() != null){
+            this.email = memberUpdateDto.getEmail();
+        }
+        if(memberUpdateDto.getName() != null){
+            this.name = memberUpdateDto.getName();
+        }
+        if(memberUpdateDto.getPassword() != null){
+            this.password = memberUpdateDto.getPassword();
+        }
+        if(memberUpdateDto.getAge() != 0){
+            this.age = memberUpdateDto.getAge();
+        }
+        if(memberUpdateDto.getGender() != null){
+            this.gender = memberUpdateDto.getGender();
+        }
+        if(memberUpdateDto.getPhoneNumber() != null){
+            this.phoneNumber = memberUpdateDto.getPhoneNumber();
+        }
     }
-    public void updateName(String name){
-        this.name = name;
+    public void updateRoleToSeller(){
+        this.role = Role.SELLER;
     }
-    public void updatePassword(String password){
-        this.password = password;
-    }
-    public void updateAge(byte age){
-        this.age = age;
-    }
-    public void updateGender(Gender gender){
-        this.gender = gender;
-    }
-    public void updateRole(Role role){
-        this.role = role;
-    }
-    public void updatePhoneNumber(String phoneNumber){
-        this.phoneNumber = phoneNumber;
-    }
-    public void updateCreatedTime(LocalDateTime createdTime){
-        this.createdTime = createdTime;
-    }
-    public void updateLastLoginTime(String lastLoginTime){
-        this.lastLoginTime = lastLoginTime;
-    }
+
     public void deleteMember(){
         this.delYN = true;
     }

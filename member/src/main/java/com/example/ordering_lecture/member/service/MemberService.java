@@ -1,26 +1,32 @@
 package com.example.ordering_lecture.member.service;
 
+import com.example.ordering_lecture.member.domain.LikedSeller;
 import com.example.ordering_lecture.member.domain.Member;
-import com.example.ordering_lecture.member.dto.MemberRequestDto;
-import com.example.ordering_lecture.member.dto.MemberResponseDto;
-import com.example.ordering_lecture.member.dto.MemberUpdateDto;
+import com.example.ordering_lecture.member.domain.Seller;
+import com.example.ordering_lecture.member.dto.Buyer.*;
+import com.example.ordering_lecture.member.dto.Seller.SellerResponseDto;
+import com.example.ordering_lecture.member.repository.LikedSellerRepository;
 import com.example.ordering_lecture.member.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.ordering_lecture.member.repository.SellerRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MemberService {
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-    @Autowired
     private final MemberRepository memberRepository;
-    public MemberService(MemberRepository memberRepository,PasswordEncoder passwordEncoder){
+    private final SellerRepository sellerRepository;
+    private final LikedSellerRepository likedSellerRepository;
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, SellerRepository sellerRepository, LikedSellerRepository likedSellerRepository){
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
+        this.sellerRepository = sellerRepository;
+        this.likedSellerRepository = likedSellerRepository;
     }
-
     public MemberResponseDto createMember(MemberRequestDto memberRequestDto) {
         memberRequestDto.setPassword(passwordEncoder.encode(memberRequestDto.getPassword()));
         Member member = memberRequestDto.toEntity();
@@ -32,11 +38,23 @@ public class MemberService {
         Member member = memberRepository.findById(id).orElseThrow();
         return MemberResponseDto.toDto(member);
     }
+    public List<MemberResponseDto> findAllMembers() {
+        return memberRepository.findAll()
+                .stream()
+                .map(MemberResponseDto::toDto)
+                .collect(Collectors.toList());
+    }
+    public List<MemberResponseDto> findMembers(){
+        return memberRepository.findByDelYNFalse()
+                .stream()
+                .map(MemberResponseDto::toDto)
+                .collect(Collectors.toList());
+    }
     @Transactional
     public MemberResponseDto updateMember(Long id, MemberUpdateDto memberUpdateDto) {
         //TODO : 에러 코드 추후 수정
         Member member = memberRepository.findById(id).orElseThrow();
-        member = memberUpdateDto.toUpdate(member);
+        member.updateMember(memberUpdateDto);
         return MemberResponseDto.toDto(member);
     }
     @Transactional
@@ -44,5 +62,24 @@ public class MemberService {
         //TODO : 에러 코드 추후 수정
         Member member = memberRepository.findById(id).orElseThrow();
         member.deleteMember();
+
+        Seller seller = sellerRepository.findById(id).orElseThrow();
+        seller.deleteSeller();
+    }
+    @Transactional
+    public Object likeSeller(MemberLikeSellerRequestDto memberLikeSellerRequestDto) {
+        //TODO : 에러 코드 추후 수정
+        // memberID와 sellerID가 같다면 에러 처리
+        Member buyer = memberRepository.findById(memberLikeSellerRequestDto.getBuyerID()).orElseThrow();
+        Seller seller = sellerRepository.findById(memberLikeSellerRequestDto.getSellerID()).orElseThrow();
+        LikedSeller likedSeller = memberLikeSellerRequestDto.toEntity(buyer, seller);
+        return likedSellerRepository.save(likedSeller);
+    }
+
+    public Object likeSellers(Long id) {
+        return likedSellerRepository.findAllByBuyerId(id)
+                .stream()
+                .map(likedSeller -> SellerResponseDto.toDto(likedSeller.getSeller()))
+                .collect(Collectors.toList());
     }
 }
