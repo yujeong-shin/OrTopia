@@ -1,5 +1,6 @@
 package com.example.ordering_lecture.item.entity;
 
+import com.example.ordering_lecture.review.entity.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -41,6 +43,8 @@ public class Item {
     private boolean isBaned=false;
     @Column(nullable = false)
     private String sellerEmail;
+    @OneToMany(mappedBy = "item",fetch = FetchType.LAZY, orphanRemoval = true,cascade = CascadeType.ALL)
+    private List<Review> review;
     @CreationTimestamp
     private LocalDateTime createdTime;
 
