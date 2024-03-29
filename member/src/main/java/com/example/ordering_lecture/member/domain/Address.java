@@ -15,12 +15,10 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
     private String street;
     private String zipcode;
     private String details;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Member member;

@@ -1,0 +1,45 @@
+package com.example.ordering_lecture.address.service;
+
+import com.example.ordering_lecture.address.domain.Address;
+import com.example.ordering_lecture.address.dto.AddressRequestDto;
+import com.example.ordering_lecture.address.dto.AddressResponseDto;
+import com.example.ordering_lecture.address.dto.AddressUpdateDto;
+import com.example.ordering_lecture.address.repository.AddressRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class AddressService {
+    @Autowired
+    private final AddressRepository addressRepository;
+
+    public AddressService(AddressRepository addressRepository) {
+        this.addressRepository = addressRepository;
+    }
+    public Address createAddress(AddressRequestDto addressRequestDto){
+        Address address = addressRequestDto.toEntity();
+        return addressRepository.save(address);
+    }
+    public AddressResponseDto findById(Long id) {
+        Address address = addressRepository.findById(id).orElseThrow();
+        return AddressResponseDto.toDto(address);
+    }
+    public List<AddressResponseDto> showAllAddress(){
+        return addressRepository.findAll().stream()
+                .map(AddressResponseDto::toDto)
+                .collect(Collectors.toList());
+    }
+    @Transactional
+    public AddressResponseDto updateAddress(Long id, AddressUpdateDto addressUpdateDto) {
+        Address address = addressRepository.findById(id).orElseThrow();
+        address = addressUpdateDto.toUpdate(address);
+        return AddressResponseDto.toDto(address);
+    }
+    public void deleteAddress(Long id) {
+        addressRepository.deleteById(id);
+    }
+}
