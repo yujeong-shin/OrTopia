@@ -28,6 +28,10 @@ public class NoticeService {
                 .map(NoticeResponseDto::toDto)
                 .collect(Collectors.toList());
     }
+    public NoticeResponseDto findById(Long id) {
+        Notice notice = noticeRepository.findById(id).orElseThrow();
+        return NoticeResponseDto.toDto(notice);
+    }
     @Transactional
     public NoticeResponseDto updateNotice(Long id, NoticeUpdateDto noticeUpdateDto) {
         Notice notice = noticeRepository.findById(id).orElseThrow();

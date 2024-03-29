@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class NoticeUpdateDto {
     private String name;
     private MultipartFile imagePath;
-    private boolean delYN;
     private String startDate;
     private String endDate;
 

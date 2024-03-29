@@ -18,7 +18,6 @@ public class NoticeRequestDto {
     @NotNull
     private String name;
     private MultipartFile imagePath;
-    private boolean delYN;
     private String startDate;
     private String endDate;
 

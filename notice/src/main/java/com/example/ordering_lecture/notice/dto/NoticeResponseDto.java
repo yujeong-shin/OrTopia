@@ -13,7 +13,6 @@ public class NoticeResponseDto {
     private Long id;
     private String name;
     private String imagePath;
-    private boolean delYN;
     private String startDate;
     private String endDate;
 

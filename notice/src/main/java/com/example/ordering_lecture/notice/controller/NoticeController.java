@@ -18,7 +18,7 @@ public class NoticeController {
     }
 
     @PostMapping("/create")
-    public String createNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
+    public String createNotice(@ModelAttribute NoticeRequestDto noticeRequestDto) {
         noticeService.createNotice(noticeRequestDto);
         return "ok";
     }
@@ -26,10 +26,15 @@ public class NoticeController {
     public List<NoticeResponseDto> notices() {
         return noticeService.showAllNotice();
     }
+    @GetMapping("/notice/{id}")
+    public Object findById(@PathVariable Long id){
+        return noticeService.findById(id);
+    }
     @PatchMapping("/update/{id}")
     public NoticeResponseDto updateNotice(@PathVariable Long id, @RequestBody NoticeUpdateDto noticeUpdateDto) {
         return noticeService.updateNotice(id, noticeUpdateDto);
     }
+
     @PatchMapping("/delete/{id}")
     public String deleteNotice(@PathVariable Long id) {
         noticeService.deleteNotice(id);
