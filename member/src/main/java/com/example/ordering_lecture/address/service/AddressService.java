@@ -5,6 +5,8 @@ import com.example.ordering_lecture.address.dto.AddressRequestDto;
 import com.example.ordering_lecture.address.dto.AddressResponseDto;
 import com.example.ordering_lecture.address.dto.AddressUpdateDto;
 import com.example.ordering_lecture.address.repository.AddressRepository;
+import com.example.ordering_lecture.member.domain.Member;
+import com.example.ordering_lecture.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +18,15 @@ import java.util.stream.Collectors;
 public class AddressService {
     @Autowired
     private final AddressRepository addressRepository;
+    private final MemberRepository memberRepository;
 
-    public AddressService(AddressRepository addressRepository) {
+    public AddressService(AddressRepository addressRepository, MemberRepository memberRepository) {
         this.addressRepository = addressRepository;
+        this.memberRepository = memberRepository;
     }
-    public Address createAddress(AddressRequestDto addressRequestDto){
-        Address address = addressRequestDto.toEntity();
+    public Address createAddress(Long id, AddressRequestDto addressRequestDto){
+        Member member = memberRepository.findById(id).orElseThrow();
+        Address address = addressRequestDto.toEntity(member);
         return addressRepository.save(address);
     }
     public AddressResponseDto findById(Long id) {
@@ -42,4 +47,5 @@ public class AddressService {
     public void deleteAddress(Long id) {
         addressRepository.deleteById(id);
     }
+
 }

@@ -17,9 +17,9 @@ public class AddressController {
         this.addressService = addressService;
     }
 
-    @PostMapping("/create")
-    public String createAddress(@RequestBody AddressRequestDto addressRequestDto) {
-        addressService.createAddress(addressRequestDto);
+    @PostMapping("/create/{id}")
+    public String createAddress(@PathVariable Long id, @RequestBody AddressRequestDto addressRequestDto) {
+        addressService.createAddress(id, addressRequestDto);
         return "ok";
     }
 

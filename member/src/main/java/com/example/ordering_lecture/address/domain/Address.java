@@ -1,5 +1,6 @@
 package com.example.ordering_lecture.address.domain;
 
+import com.example.ordering_lecture.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,9 +24,9 @@ public class Address {
     private String zipcode;
     @Column(nullable = false)
     private String details;
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(nullable = false)
-//    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Member member;
 
     public void updateName(String name){
         this.name = name;
