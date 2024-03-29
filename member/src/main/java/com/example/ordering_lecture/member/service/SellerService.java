@@ -70,7 +70,7 @@ public class SellerService {
     public Object banSeller(Long id, BannedSellerRequestDto bannedSellerRequestDto) {
         //TODO : 에러 코드 추후 수정
         Seller seller = sellerRepository.findById(id).orElseThrow();
-        BannedSeller bannedSeller = bannedSellerRequestDto.toEntity(seller, bannedSellerRequestDto);
+        BannedSeller bannedSeller = bannedSellerRequestDto.toEntity(seller);
 
         bannedSellerRepository.save(bannedSeller);
         return BannedSellerResponseDto.toDto(bannedSeller);
@@ -84,7 +84,7 @@ public class SellerService {
     }
 
     public Object bannedSellers() {
-        return bannedSellerRepository.findByDelYNFalse()
+        return bannedSellerRepository.findAllByDelYNFalse()
                 .stream()
                 .map(BannedSellerResponseDto::toDto)
                 .collect(Collectors.toList());

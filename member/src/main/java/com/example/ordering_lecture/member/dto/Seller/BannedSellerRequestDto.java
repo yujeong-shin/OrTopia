@@ -13,12 +13,12 @@ public class BannedSellerRequestDto {
     private String details;
     private String startTime;
     private String endTime;
-    public BannedSeller toEntity(Seller seller, BannedSellerRequestDto bannedSellerRequestDto){
+    public BannedSeller toEntity(Seller seller){
         BannedSeller bannedSeller = BannedSeller.builder()
                 .seller(seller)
-                .details(bannedSellerRequestDto.getDetails())
-                .startTime(bannedSellerRequestDto.getStartTime())
-                .endTime(bannedSellerRequestDto.getEndTime())
+                .details(this.getDetails())
+                .startTime(this.getStartTime())
+                .endTime(this.getEndTime())
                 .build();
         return bannedSeller;
     }

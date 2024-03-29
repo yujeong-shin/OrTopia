@@ -73,7 +73,8 @@ public class MemberService {
         Member buyer = memberRepository.findById(memberLikeSellerRequestDto.getBuyerID()).orElseThrow();
         Seller seller = sellerRepository.findById(memberLikeSellerRequestDto.getSellerID()).orElseThrow();
         LikedSeller likedSeller = memberLikeSellerRequestDto.toEntity(buyer, seller);
-        return likedSellerRepository.save(likedSeller);
+        likedSellerRepository.save(likedSeller);
+        return MemberLikeSellerResponseDto.toDto(likedSeller);
     }
 
     public Object likeSellers(Long id) {
