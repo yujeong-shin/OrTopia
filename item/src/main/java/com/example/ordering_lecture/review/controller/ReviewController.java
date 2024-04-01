@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,7 @@ public class ReviewController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<OrTopiaResponse> createReview(@RequestBody ReviewRequestDto reviewRequestDto){
+    public ResponseEntity<OrTopiaResponse> createReview(@Valid @RequestBody ReviewRequestDto reviewRequestDto){
         ReviewResponseDto reviewResponseDto = reviewService.createReview(reviewRequestDto);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success",reviewResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);
@@ -49,7 +50,7 @@ public class ReviewController {
     }
     // 리뷰 id로 특정 리뷰 업데이트
     @PatchMapping("/update")
-    public ResponseEntity<OrTopiaResponse> updateReviews(@RequestBody ReviewUpdateDto reviewUpdateDto){
+    public ResponseEntity<OrTopiaResponse> updateReviews(@Valid @RequestBody ReviewUpdateDto reviewUpdateDto){
         ReviewResponseDto reviewResponseDto = reviewService.updateReview(reviewUpdateDto);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("update success",reviewResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
