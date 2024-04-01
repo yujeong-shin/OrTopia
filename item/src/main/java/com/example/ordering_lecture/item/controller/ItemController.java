@@ -9,10 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/item_server")
 public class ItemController {
     private final ItemService itemService;
 
@@ -21,7 +21,7 @@ public class ItemController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<OrTopiaResponse> createItem(@ModelAttribute ItemRequestDto itemRequestDto){
+    public ResponseEntity<OrTopiaResponse> createItem(@Valid @ModelAttribute ItemRequestDto itemRequestDto){
         ItemResponseDto itemResponseDto = itemService.createItem(itemRequestDto);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success",itemResponseDto);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.CREATED);
