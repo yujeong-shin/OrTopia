@@ -46,8 +46,8 @@ public class ItemService {
 //        item.deleteItem();
     }
 
-    public List<ItemResponseDto> banItem(String sellerEmail)throws OrTopiaException{
-        List<Item> items = itemRepository.findAllBySellerEmail(sellerEmail);
+    public List<ItemResponseDto> banItem(Long sellerId)throws OrTopiaException{
+        List<Item> items = itemRepository.findAllBySellerId(sellerId);
         if(items.isEmpty()){
             throw new OrTopiaException(ErrorCode.EMPTY_ITEMS);
         }
@@ -59,8 +59,8 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
-    public List<ItemResponseDto>  releaseBanItem(String sellerEmail)throws OrTopiaException{
-        List<Item> items = itemRepository.findAllBySellerEmail(sellerEmail);
+    public List<ItemResponseDto>  releaseBanItem(Long sellerId)throws OrTopiaException{
+        List<Item> items = itemRepository.findAllBySellerId(sellerId);
         if(items.isEmpty()){
             throw new OrTopiaException(ErrorCode.EMPTY_ITEMS);
         }
@@ -72,8 +72,8 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
-    public List<ItemResponseDto> findItemByEmail(String sellerEmail)throws OrTopiaException {
-        List<Item> items = itemRepository.findAllBySellerEmail(sellerEmail);
+    public List<ItemResponseDto> findItemByEmail(Long sellerId)throws OrTopiaException {
+        List<Item> items = itemRepository.findAllBySellerId(sellerId);
         if(items.isEmpty()){
             throw new OrTopiaException(ErrorCode.EMPTY_ITEMS);
         }

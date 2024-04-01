@@ -30,7 +30,7 @@ public class ItemRequestDto {
     private boolean delYN;
     private boolean isBaned;
     @NotNull(message =  "EMPTY_ITEM_SELLER")
-    private String sellerEmail;
+    private Long sellerId;
 
     public Item toEntity() throws OrTopiaException {
         //TODO : S3 저장 후 나오는 url를 넣어줌
@@ -45,7 +45,7 @@ public class ItemRequestDto {
                     .stock(this.getStock())
                     .detail(this.getDetail())
                     .minimumStock(this.getMinimumStock())
-                    .sellerEmail(this.getSellerEmail())
+                    .sellerId(this.getSellerId())
                     .imagePath(fileUrl)
                     .build();
         }catch (Exception e){
