@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeComponent from '@/components/HomeComponent.vue'
 import NoticeComponent from '@/components/NoticeComponent.vue'
+import ItemComponent from '@/components/ItemComponent.vue'
 
 const routes = [
   {
@@ -13,6 +14,11 @@ const routes = [
     name: 'Notice',
     component: NoticeComponent,
   },
+  {
+    path:'/item',
+    name: 'ItemComponent',
+    component: ItemComponent,
+  }
 ]
 
 const router = createRouter({
