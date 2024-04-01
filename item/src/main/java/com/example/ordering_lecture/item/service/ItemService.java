@@ -1,5 +1,7 @@
 package com.example.ordering_lecture.item.service;
 
+import com.example.ordering_lecture.common.ErrorCode;
+import com.example.ordering_lecture.common.OrTopiaException;
 import com.example.ordering_lecture.item.dto.ItemRequestDto;
 import com.example.ordering_lecture.item.dto.ItemResponseDto;
 import com.example.ordering_lecture.item.dto.ItemUpdateDto;
@@ -19,10 +21,10 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public ItemResponseDto createItem(ItemRequestDto itemRequestDto) {
+    public ItemResponseDto createItem(ItemRequestDto itemRequestDto)throws OrTopiaException {
         Item item = itemRequestDto.toEntity();
         itemRepository.save(item);
-        return null;
+        return ItemResponseDto.toDto(item);
     }
 
     public List<ItemResponseDto> showAllItem(){
@@ -33,8 +35,7 @@ public class ItemService {
 
     @Transactional
     public ItemResponseDto updateItem(Long id, ItemUpdateDto itemUpdateDto) {
-        //TODO : 에러 코드 추후 수정
-        Item item = itemRepository.findById(id).orElseThrow();
+        Item item = itemRepository.findById(id).orElseThrow(()->new OrTopiaException(ErrorCode.NOT_FOUND_ITEM));
         item = itemUpdateDto.toUpdate(item);
         return ItemResponseDto.toDto(item);
     }
@@ -45,8 +46,11 @@ public class ItemService {
 //        item.deleteItem();
     }
 
-    public List<ItemResponseDto> banItem(String sellerEmail){
+    public List<ItemResponseDto> banItem(String sellerEmail)throws OrTopiaException{
         List<Item> items = itemRepository.findAllBySellerEmail(sellerEmail);
+        if(items.isEmpty()){
+            throw new OrTopiaException(ErrorCode.EMPTY_ITEMS);
+        }
         for(Item item : items){
             item.banItem();
         }
@@ -55,8 +59,11 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
-    public List<ItemResponseDto>  releaseBanItem(String sellerEmail){
+    public List<ItemResponseDto>  releaseBanItem(String sellerEmail)throws OrTopiaException{
         List<Item> items = itemRepository.findAllBySellerEmail(sellerEmail);
+        if(items.isEmpty()){
+            throw new OrTopiaException(ErrorCode.EMPTY_ITEMS);
+        }
         for(Item item : items){
             item.releaseBanItem();
         }
@@ -65,8 +72,11 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
-    public List<ItemResponseDto> findItemByEmail(String sellerEmail) {
+    public List<ItemResponseDto> findItemByEmail(String sellerEmail)throws OrTopiaException {
         List<Item> items = itemRepository.findAllBySellerEmail(sellerEmail);
+        if(items.isEmpty()){
+            throw new OrTopiaException(ErrorCode.EMPTY_ITEMS);
+        }
         return items.stream()
                 .map(ItemResponseDto::toDto)
                 .collect(Collectors.toList());
