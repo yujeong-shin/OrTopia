@@ -17,7 +17,7 @@ public class ItemResponseDto {
     private int minimumStock;
     private boolean delYN;
     private boolean isBaned;
-    private String sellerEmail;
+    private Long sellerId;
 
     public static ItemResponseDto toDto(Item item){
         return ItemResponseDto.builder()
@@ -26,7 +26,7 @@ public class ItemResponseDto {
                 .price(item.getPrice())
                 .detail(item.getDetail())
                 .minimumStock(item.getMinimumStock())
-                .sellerEmail(item.getSellerEmail())
+                .sellerId(item.getSellerId())
                 .id(item.getId())
                 .category(item.getCategory().toString())
                 .delYN(item.isDelYN())
