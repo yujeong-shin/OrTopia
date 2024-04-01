@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequestMapping("/item")
 public class ItemController {
     private final ItemService itemService;
 

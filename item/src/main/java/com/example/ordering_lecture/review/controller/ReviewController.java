@@ -6,7 +6,7 @@ import com.example.ordering_lecture.review.service.ReviewService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/review_server")
+@RequestMapping("/review")
 public class ReviewController {
     private final ReviewService reviewService;
 
