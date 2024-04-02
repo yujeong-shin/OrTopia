@@ -27,6 +27,10 @@ public class AddressController {
     public List<AddressResponseDto> addresses() {
         return addressService.showAllAddress();
     }
+    @GetMapping("/address/{id}")
+    public Object findAddress(@PathVariable Long id) {
+        return addressService.findById(id);
+    }
 
     @PatchMapping("/update/{id}")
     public AddressResponseDto updateAddress(@PathVariable Long id, @RequestBody AddressUpdateDto addressUpdateDto) {
