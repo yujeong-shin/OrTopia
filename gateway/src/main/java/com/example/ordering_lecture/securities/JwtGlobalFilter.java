@@ -26,6 +26,10 @@ public class JwtGlobalFilter implements GlobalFilter {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
+    @Value("${jwt.token.access-expiration-time}")
+    private long accessExpirationTime;
+
+
     @Autowired
     private RedisTemplate<String, String> redisTemplate; // Changed to String, String
 
@@ -35,19 +39,13 @@ public class JwtGlobalFilter implements GlobalFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-        System.out.println("===ex===");
-        System.out.println(exchange);
-        System.out.println("===re===");
-        System.out.println(request);
         String reqUri = request.getURI().getPath();
         boolean isAllowed = allowUrl.stream().anyMatch(uri -> antPathMatcher.match(uri, reqUri));
 
         if (isAllowed) {
             return chain.filter(exchange);
         }
-
         String bearerToken = request.getHeaders().getFirst("Authorization");
-        System.out.println(bearerToken);
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             String accessToken = bearerToken.substring(7);
             try {
@@ -102,11 +100,9 @@ public class JwtGlobalFilter implements GlobalFilter {
 
 
     private String generateNewAccessToken(String email, String role) {
-        long expirationTimeLong = 3600000; // 예: 1시간
-        String secretKey = "mysecret"; // 실제 비밀키로 교체해야 합니다.
 
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expirationTimeLong);
+        Date expiryDate = new Date(now.getTime() + accessExpirationTime);
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role); // 필요에 따라 추가 클레임을 포함할 수 있습니다.
