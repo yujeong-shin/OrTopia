@@ -67,7 +67,7 @@ public class MemberService {
         seller.deleteSeller();
     }
     @Transactional
-    public Object likeSeller(MemberLikeSellerRequestDto memberLikeSellerRequestDto) {
+    public MemberLikeSellerResponseDto likeSeller(MemberLikeSellerRequestDto memberLikeSellerRequestDto) {
         //TODO : 에러 코드 추후 수정
         // memberID와 sellerID가 같다면 에러 처리
         Member buyer = memberRepository.findById(memberLikeSellerRequestDto.getBuyerID()).orElseThrow();
@@ -77,7 +77,7 @@ public class MemberService {
         return MemberLikeSellerResponseDto.toDto(likedSeller);
     }
 
-    public Object likeSellers(Long id) {
+    public List<SellerResponseDto> likeSellers(Long id) {
         return likedSellerRepository.findAllByBuyerId(id)
                 .stream()
                 .map(likedSeller -> SellerResponseDto.toDto(likedSeller.getSeller()))
