@@ -14,8 +14,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressRequestDto {
-    @NotNull
-    private Long id;
     private String name;
     private String street;
     private String zipcode;

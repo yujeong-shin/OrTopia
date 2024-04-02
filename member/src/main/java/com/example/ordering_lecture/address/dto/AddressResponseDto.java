@@ -15,6 +15,7 @@ public class AddressResponseDto {
 
     public static AddressResponseDto toDto(Address address){
         return AddressResponseDto.builder()
+                .id(address.getId())
                 .name(address.getName())
                 .street(address.getStreet())
                 .zipcode(address.getZipcode())

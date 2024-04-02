@@ -1,6 +1,8 @@
 package com.example.ordering_lecture.address.domain;
 
+import com.example.ordering_lecture.address.dto.AddressUpdateDto;
 import com.example.ordering_lecture.member.domain.Member;
+import com.example.ordering_lecture.member.dto.Buyer.MemberUpdateDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,16 +30,18 @@ public class Address {
     @JoinColumn(nullable = false)
     private Member member;
 
-    public void updateName(String name){
-        this.name = name;
-    }
-    public void updateStreet(String street){
-        this.street = street;
-    }
-    public void updateZipcode(String zipcode){
-        this.zipcode = zipcode;
-    }
-    public void updateDetails(String details){
-        this.details = details;
+    public void updateAddress(AddressUpdateDto addressUpdateDto) {
+        if (addressUpdateDto.getName() != null && !addressUpdateDto.getName().equals(this.name)) {
+            this.name = addressUpdateDto.getName();
+        }
+        if (addressUpdateDto.getStreet() != null && !addressUpdateDto.getStreet().equals(this.street)) {
+            this.street = addressUpdateDto.getStreet();
+        }
+        if (addressUpdateDto.getZipcode() != null && !addressUpdateDto.getZipcode().equals(this.zipcode)) {
+            this.zipcode = addressUpdateDto.getZipcode();
+        }
+        if (addressUpdateDto.getDetails() != null && !addressUpdateDto.getDetails().equals(this.details)) {
+            this.details = addressUpdateDto.getDetails();
+        }
     }
 }

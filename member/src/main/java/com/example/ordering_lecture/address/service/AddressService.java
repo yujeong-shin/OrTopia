@@ -6,6 +6,8 @@ import com.example.ordering_lecture.address.dto.AddressResponseDto;
 import com.example.ordering_lecture.address.dto.AddressUpdateDto;
 import com.example.ordering_lecture.address.repository.AddressRepository;
 import com.example.ordering_lecture.member.domain.Member;
+import com.example.ordering_lecture.member.dto.Buyer.MemberResponseDto;
+import com.example.ordering_lecture.member.dto.Buyer.MemberUpdateDto;
 import com.example.ordering_lecture.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +43,7 @@ public class AddressService {
     @Transactional
     public AddressResponseDto updateAddress(Long id, AddressUpdateDto addressUpdateDto) {
         Address address = addressRepository.findById(id).orElseThrow();
-        address = addressUpdateDto.toUpdate(address);
+        address.updateAddress(addressUpdateDto);
         return AddressResponseDto.toDto(address);
     }
     public void deleteAddress(Long id) {
