@@ -36,7 +36,7 @@ public class ItemController {
     }
     @GetMapping("/find_item_email/{sellerEmail}")
     public ResponseEntity<OrTopiaResponse> findItemByEmail(@PathVariable String sellerEmail){
-        List<ItemResponseDto> itemResponseDtos = itemService.findItemByEmail(sellerEmail);
+        List<ItemResponseDto> itemResponseDtos = itemService.findItemByEmail(Long.valueOf(sellerEmail));
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",itemResponseDtos);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
@@ -55,13 +55,13 @@ public class ItemController {
     }
     @PatchMapping("/ban_items/{sellerEmail}")
     public ResponseEntity<OrTopiaResponse> banItems(@PathVariable String sellerEmail){
-        List<ItemResponseDto> itemResponseDtos = itemService.banItem(sellerEmail);
+        List<ItemResponseDto> itemResponseDtos = itemService.banItem(Long.valueOf(sellerEmail));
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("ban success",itemResponseDtos);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
     @PatchMapping("/ban_canceled_items/{sellerEmail}")
     public ResponseEntity<OrTopiaResponse> banCanceled(@PathVariable String sellerEmail){
-        List<ItemResponseDto> itemResponseDtos = itemService.releaseBanItem(sellerEmail);
+        List<ItemResponseDto> itemResponseDtos = itemService.releaseBanItem(Long.valueOf(sellerEmail));
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("ban canceled success",itemResponseDtos);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }

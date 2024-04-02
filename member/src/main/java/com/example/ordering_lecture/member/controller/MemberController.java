@@ -1,26 +1,39 @@
 package com.example.ordering_lecture.member.controller;
 
-import com.example.ordering_lecture.member.dto.Buyer.MemberLikeSellerRequestDto;
-import com.example.ordering_lecture.member.dto.Buyer.MemberResponseDto;
-import com.example.ordering_lecture.member.dto.Buyer.MemberRequestDto;
-import com.example.ordering_lecture.member.dto.Buyer.MemberUpdateDto;
+import com.example.ordering_lecture.common.MemberLoginReqDto;
+import com.example.ordering_lecture.common.MemberLoginResDto;
+import com.example.ordering_lecture.member.domain.Member;
+import com.example.ordering_lecture.member.dto.Buyer.*;
 import com.example.ordering_lecture.member.service.MemberService;
+import com.example.ordering_lecture.securities.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class MemberController {
     @Autowired
     private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberController(MemberService memberService){
+    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider){
         this.memberService = memberService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
     /*
     BUYER 관련 API
      */
+
+    @PostMapping("/doLogin")
+    public MemberLoginResDto memberLogin(@Valid @RequestBody MemberLoginReqDto memberLoginReqDto) {
+        return memberService.loginService(memberLoginReqDto);
+    }
+
+
     // 사용자 생성
     @PostMapping("/member/create")
     public Object createMember(@RequestBody MemberRequestDto memberRequestDto){
