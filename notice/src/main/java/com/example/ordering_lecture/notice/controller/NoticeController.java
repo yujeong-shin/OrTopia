@@ -34,7 +34,6 @@ public class NoticeController {
     public NoticeResponseDto updateNotice(@PathVariable Long id, @RequestBody NoticeUpdateDto noticeUpdateDto) {
         return noticeService.updateNotice(id, noticeUpdateDto);
     }
-
     @PatchMapping("/delete/{id}")
     public String deleteNotice(@PathVariable Long id) {
         noticeService.deleteNotice(id);
