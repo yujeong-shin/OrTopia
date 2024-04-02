@@ -14,9 +14,13 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressRequestDto {
+    @NotNull
     private String name;
+    @NotNull
     private String street;
+    @NotNull
     private String zipcode;
+    @NotNull
     private String details;
 
     public Address toEntity(Member member){
