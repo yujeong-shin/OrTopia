@@ -4,21 +4,27 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-    WRONG_ITEM_INFORMATION("I1","아이템의 정보를 다시 입력해주세요."),
-    NOT_FOUND_ITEM("I2","아이템을 찾을 수 없습니다"),
-    EMPTY_ITEMS("I3","아이템 목록을 찾을 수 없습니다"),
-    EMPTY_ITEM_NAME("I4","아이템의 이름을 입력해주세요"),
-    EMPTY_ITEM_STOCK("I5","아이템의 재고를 입력해주세요"),
-    EMPTY_ITEM_PRICE("I6","아이템의 가격을 입력해주세요"),
-    EMPTY_ITEM_CATEGORY("I7","아이템의 카테고리를 입력해주세요"),
-    EMPTY_ITEM_DETAIL("I8","아이템의 설명을 입력해주세요"),
-    EMPTY_ITEM_SELLER("I9","아이템의 판매자 이메일 입력해주세요"),
-    EMPTY_REVIEW_SCORE("I10","리뷰 점수를 입력해주세요"),
-    EMPTY_REVIEW_CONTENT("I1","리뷰 내용을 입력해 주세요"),
-    EMPTY_REVIEW_BUYER_ID("I12","잘못된 구매자 입니다."),
-    EMPTY_REVIEW_ITEM_ID("I13","잘못된 아이템 입니다."),
-    EMPTY_REVIEWS("I14","리뷰목록을 찾을 수 없습니다" ),
-    NOT_FOUND_REVIEW("I15","해당 리뷰를 찾을 수 없습니다.");
+    EMAIL_IS_ESSENTIAL("M1","이메일을 입력해주세요"),
+    EMAIL_IS_NOT_VALID("M2","이메일 형식이 아닙니다"),
+    NAME_IS_ESSENTIAL("M3","이름을 입력해주세요"),
+    PASSWORD_IS_ESSENTIAL("M4","비밀번호를 입력해주세요"),
+    PASSWORD_LENGTH("M5","비밀번호를 4자리 이상 입력해주세요"),
+    AGE_IS_ESSENTIAL("M6","나이를 입력해주세요"),
+    GENDER_IS_ESSENTIAL("M7","성별을 선택해주세요"),
+    PHONENUMBER_IS_ESSENTIAL("M8","전화번호를 입력해주세요"),
+    NOT_FOUND_MEMBER("M9","해당 회원이 없습니다"),
+    SELLERID_IS_ESSENTIAL("M10","판매자 ID를 입력해주세요"),
+    BUYER_IS_ESSENTIAL("M11","구매자 ID를 입력해주세요"),
+    NOT_FOUND_MEMBERS("M12","조건에 맞는 회원목록이 없습니다"),
+    NOT_FOUND_SELLER("M13","해당 판매자가 없습니다"),
+    NOT_FOUND_SELLERS("M14","조건에 맞는 판매자 목록이 없습니다"),
+    BUSINNESSNUMBER_IS_ESSENTIAL("M15","사업자 번호를 입력해주세요"),
+    COMPANYNAME_IS_ESSENTIAL("M16","회사이름을 입력해주세요"),
+    BUSINNESSTYPE_IS_ESSENTIAL("M17","업종을 입력해주세요"),
+    STARTTIME_IS_ESSENTIAL("M18","벤 시작시간을 입력해주세요"),
+    ENDTIME_IS_ESSENTIAL("M19","벤 끝낼시간을 입력해주세요"),
+    NOT_FOUND_BANED_SELLER("M20","해당 벤 판매자가 없습니다"),
+    NOT_FOUND_BANED_SELLERS("M21","조건에 맞는 벤 판매자가 없습니다");
 
     private final String code;
     private final String message;
