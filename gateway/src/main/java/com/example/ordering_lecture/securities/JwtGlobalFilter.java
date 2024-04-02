@@ -60,7 +60,7 @@ public class JwtGlobalFilter implements GlobalFilter {
                         .build();
                 exchange = exchange.mutate().request(request).build();
             } catch (ExpiredJwtException e) {
-                return validateRefreshTokenAndGenerateNewAccessToken(exchange, e.getClaims().getSubject(), e.getClaims().get("role", String.class));
+                return validateRefreshTokenAndGenerateNewAccessToken(exchange, e.getClaims().getSubject(), e.getClaims().get("role", String.class), chain);
             } catch (UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
                 return onError(exchange, "Invalid token", HttpStatus.BAD_REQUEST);
             } catch (Exception e) {
@@ -82,20 +82,23 @@ public class JwtGlobalFilter implements GlobalFilter {
         return response.writeWith(Mono.just(buffer));
     }
 
-    private Mono<Void> validateRefreshTokenAndGenerateNewAccessToken(ServerWebExchange exchange, String email, String role) {
-        // 'Authorization' 헤더 대신 'X-Refresh-Token' 헤더에서 리프레시 토큰을 추출
+    private Mono<Void> validateRefreshTokenAndGenerateNewAccessToken(ServerWebExchange exchange, String email, String role, GatewayFilterChain chain) {
         String refreshToken = exchange.getRequest().getHeaders().getFirst("X-Refresh-Token");
         String storedRefreshToken = redisTemplate.opsForValue().get("RT:" + email);
 
         if (refreshToken != null && refreshToken.equals(storedRefreshToken)) {
             String newAccessToken = generateNewAccessToken(email, role);
-            ServerHttpResponse response = exchange.getResponse();
-            response.getHeaders().set("New-Access-Token", newAccessToken);
-            return response.setComplete();
+            // 새로운 액세스 토큰을 요청 헤더에 추가
+            ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
+                    .header("Authorization", "Bearer " + newAccessToken)
+                    .build();
+            // 원래의 요청을 계속 처리하기 위해 exchange 객체를 수정
+            return chain.filter(exchange.mutate().request(modifiedRequest).build());
         } else {
             return onError(exchange, "Invalid refresh token", HttpStatus.UNAUTHORIZED);
         }
     }
+
 
 
     private String generateNewAccessToken(String email, String role) {
