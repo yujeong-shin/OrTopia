@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeComponent from '@/components/HomeComponent.vue'
 import NoticeComponent from '@/components/NoticeComponent.vue'
 import ItemComponent from '@/components/ItemComponent.vue'
+import MypageComponent from '@/components/MypageComponent.vue'
 
 const routes = [
   {
@@ -18,7 +19,12 @@ const routes = [
     path:'/item',
     name: 'ItemComponent',
     component: ItemComponent,
-  }
+  },
+  {
+    path: '/mypage', // 마이페이지
+    name: 'Mypage',
+    component: MypageComponent,
+  },
 ]
 
 const router = createRouter({
