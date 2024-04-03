@@ -70,8 +70,14 @@ public class SellerService {
     public Object banSeller(Long id, BannedSellerRequestDto bannedSellerRequestDto) {
         //TODO : 에러 코드 추후 수정
         Seller seller = sellerRepository.findById(id).orElseThrow();
-        BannedSeller bannedSeller = bannedSellerRequestDto.toEntity(seller);
 
+        // 이미 차단된 판매자라면 에러
+        if (bannedSellerRepository.existsBySellerId(id)) {
+            //TODO : 에러 코드 추후 수정
+            throw new RuntimeException("이미 차단된 판매자입니다.");
+        }
+
+        BannedSeller bannedSeller = bannedSellerRequestDto.toEntity(seller);
         bannedSellerRepository.save(bannedSeller);
         return BannedSellerResponseDto.toDto(bannedSeller);
     }

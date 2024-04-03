@@ -69,7 +69,7 @@ public class Item {
     public void updateMinimumStock(int minimumStock){
         this.minimumStock = minimumStock;
     }
-    public void updateSellerEmail(Long sellerId){
+    public void updateSellerId(Long sellerId){
         this.sellerId = sellerId;
     }
     public void banItem(){
