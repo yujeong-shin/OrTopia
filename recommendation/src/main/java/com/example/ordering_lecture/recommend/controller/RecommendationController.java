@@ -1,9 +1,15 @@
 package com.example.ordering_lecture.recommend.controller;
 
+import com.example.ordering_lecture.common.OrTopiaResponse;
 import com.example.ordering_lecture.recommend.service.RecommendationService;
+import org.apache.mahout.cf.taste.recommender.RecommendedItem;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class RecommendationController {
@@ -19,7 +25,9 @@ public class RecommendationController {
     }
 
     @GetMapping("/member/{id}/recommendations")
-    public String recommendations(@PathVariable Long id){
-        return recommendationService.getRecommendations(id);
+    public ResponseEntity<OrTopiaResponse> recommendations(@PathVariable Long id){
+        List<RecommendedItem> recommendations = recommendationService.getRecommendations(id);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success", recommendations);
+        return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);
     }
 }
