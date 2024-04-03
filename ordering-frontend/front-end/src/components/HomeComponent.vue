@@ -58,4 +58,6 @@
   const goToNotice = () => {
     router.push('/notice')
   }
+  
+  
   </script>
