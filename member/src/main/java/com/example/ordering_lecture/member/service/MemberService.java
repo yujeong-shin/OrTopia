@@ -1,7 +1,10 @@
 package com.example.ordering_lecture.member.service;
 
+
 import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
+import com.example.ordering_lecture.common.MemberLoginReqDto;
+import com.example.ordering_lecture.common.MemberLoginResDto;
 import com.example.ordering_lecture.member.domain.LikedSeller;
 import com.example.ordering_lecture.member.domain.Member;
 import com.example.ordering_lecture.member.domain.Seller;
@@ -10,11 +13,13 @@ import com.example.ordering_lecture.member.dto.Seller.SellerResponseDto;
 import com.example.ordering_lecture.member.repository.LikedSellerRepository;
 import com.example.ordering_lecture.member.repository.MemberRepository;
 import com.example.ordering_lecture.member.repository.SellerRepository;
+import com.example.ordering_lecture.securities.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,11 +28,13 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final SellerRepository sellerRepository;
     private final LikedSellerRepository likedSellerRepository;
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, SellerRepository sellerRepository, LikedSellerRepository likedSellerRepository){
+    private final JwtTokenProvider jwtTokenProvider;
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, SellerRepository sellerRepository, LikedSellerRepository likedSellerRepository, JwtTokenProvider jwtTokenProvider){
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.sellerRepository = sellerRepository;
         this.likedSellerRepository = likedSellerRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
     public MemberResponseDto createMember(MemberRequestDto memberRequestDto) throws OrTopiaException{
         memberRequestDto.setPassword(passwordEncoder.encode(memberRequestDto.getPassword()));
@@ -105,5 +112,22 @@ public class MemberService {
             throw new OrTopiaException(ErrorCode.NOT_FOUND_SELLERS);
         }
         return sellerResponseDtos;
+    }
+
+    public MemberLoginResDto loginService(MemberLoginReqDto memberLoginReqDto) {
+        // 이메일을 기준으로 사용자 조회
+        Member member = memberRepository.findByEmail(memberLoginReqDto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("이메일을 찾지 못했습니다. " + memberLoginReqDto.getEmail()));
+        if (!passwordEncoder.matches(memberLoginReqDto.getPassword(), member.getPassword())) {
+            throw new IllegalArgumentException("유효하지 않은 이메일 입니다.");
+        }
+
+        // 비밀번호 일치 여부 검증
+        String accessToken = jwtTokenProvider.createAccessToken(member.getEmail(), member.getRole().toString());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail(), member.getRole().toString());
+
+        Map<String, String> result = new HashMap<>();
+        result.put("refresh_token", refreshToken);
+        return new MemberLoginResDto(member.getId(),accessToken,refreshToken);
     }
 }

@@ -46,7 +46,7 @@ public class ItemUpdateDto {
             item.updateMinimumStock(minimumStock);
         }
         if(sellerId !=null){
-            item.updateSellerEmail(sellerId);
+            item.updateSellerId(sellerId);
         }
         return item;
     }
