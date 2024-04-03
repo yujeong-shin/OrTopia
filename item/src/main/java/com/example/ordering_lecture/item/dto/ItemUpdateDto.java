@@ -20,7 +20,7 @@ public class ItemUpdateDto {
     private Integer minimumStock;
     private boolean delYN;
     private boolean isBaned;
-    private String sellerEmail;
+    private Long sellerId;
 
     public Item toUpdate(Item item){
         if(name !=null){
@@ -45,8 +45,8 @@ public class ItemUpdateDto {
         if(minimumStock !=null){
             item.updateMinimumStock(minimumStock);
         }
-        if(sellerEmail !=null){
-            item.updateSellerEmail(sellerEmail);
+        if(sellerId !=null){
+            item.updateSellerId(sellerId);
         }
         return item;
     }
