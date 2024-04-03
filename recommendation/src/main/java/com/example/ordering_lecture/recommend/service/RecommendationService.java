@@ -55,7 +55,7 @@ public class RecommendationService {
     }
 
     // 입력한 사용자에 대해 유사도 기반 맞춤형 상품 추천
-    public String getRecommendations(Long id) {
+    public List<RecommendedItem> getRecommendations(Long id) {
         DataModel model = null;
         try {
             // TODO : 파일 경로 추후 수정
@@ -91,8 +91,10 @@ public class RecommendationService {
             System.out.println(recommendation);
         }
 
-        // JSON 객체로 변환하여 리턴
-        Gson gson = new Gson();
-        return gson.toJson(recommendations);
+//        // JSON 객체로 변환하여 리턴
+//        Gson gson = new Gson();
+//        return gson.toJson(recommendations);
+
+        return recommendations;
     }
 }
