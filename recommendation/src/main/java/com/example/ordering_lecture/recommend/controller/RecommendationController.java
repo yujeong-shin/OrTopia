@@ -19,11 +19,6 @@ public class RecommendationController {
         this.recommendationService = recommendationService;
     }
 
-    @GetMapping("/export-csv")
-    public String exportCSV() {
-        return recommendationService.exportDataToCsv();
-    }
-
     @GetMapping("/member/{id}/recommendations")
     public ResponseEntity<OrTopiaResponse> recommendations(@PathVariable Long id){
         List<RecommendedItem> recommendations = recommendationService.getRecommendations(id);
