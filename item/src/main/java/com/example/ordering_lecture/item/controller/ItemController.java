@@ -34,7 +34,18 @@ public class ItemController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",itemResponseDtos);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
-
+    @GetMapping("read/{id}")
+    public ResponseEntity<OrTopiaResponse> readItem(@PathVariable Long id,@RequestHeader("myEmail") String email){
+        ItemResponseDto itemResponseDto = itemService.readItem(id,email);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",itemResponseDto);
+        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+    }
+    @GetMapping("/recent_items")
+    public ResponseEntity<OrTopiaResponse> readRecentItems(@RequestHeader("myEmail") String email){
+        List<ItemResponseDto> itemResponseDtos = itemService.readRecentItems(email);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",itemResponseDtos);
+        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+    }
     @GetMapping("/find_item_email/{sellerId}")
     public ResponseEntity<OrTopiaResponse> findItemById(@PathVariable Long sellerId){
         List<ItemResponseDto> itemResponseDtos = itemService.findItemByEmail(sellerId);
