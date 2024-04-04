@@ -3,8 +3,9 @@ package com.example.ordering_lecture.member.controller;
 
 import com.example.ordering_lecture.common.MemberLoginReqDto;
 import com.example.ordering_lecture.common.MemberLoginResDto;
-import com.example.ordering_lecture.member.domain.Member;
+import com.example.ordering_lecture.common.OrTopiaResponse;
 import com.example.ordering_lecture.member.dto.Buyer.*;
+import com.example.ordering_lecture.member.dto.Seller.SellerResponseDto;
 import com.example.ordering_lecture.member.service.MemberService;
 import com.example.ordering_lecture.securities.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,22 +22,20 @@ import java.util.Map;
 public class MemberController {
     @Autowired
     private final MemberService memberService;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider){
+    public MemberController(MemberService memberService){
         this.memberService = memberService;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
     /*
     BUYER 관련 API
      */
-
+    // 사용자 로그인
     @PostMapping("/doLogin")
-    public MemberLoginResDto memberLogin(@Valid @RequestBody MemberLoginReqDto memberLoginReqDto) {
-        return memberService.loginService(memberLoginReqDto);
+    public ResponseEntity<OrTopiaResponse> memberLogin(@Valid @RequestBody MemberLoginReqDto memberLoginReqDto) {
+        MemberLoginResDto memberLoginResDto = memberService.loginService(memberLoginReqDto);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("login success",memberLoginResDto);
+        return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
-
-
     // 사용자 생성
     @PostMapping("/member/create")
     public ResponseEntity<OrTopiaResponse> createMember(@RequestBody MemberRequestDto memberRequestDto){

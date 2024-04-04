@@ -43,7 +43,6 @@ public class MemberService {
         return MemberResponseDto.toDto(member);
     }
     public MemberResponseDto findById(Long id) throws OrTopiaException {
-        //TODO : 에러 코드 추후 수정
         Member member = memberRepository.findById(id).orElseThrow(
                 ()-> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
                 );
