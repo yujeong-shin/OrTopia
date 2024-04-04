@@ -28,14 +28,8 @@ public class Review {
     @JoinColumn(name="item_id",nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
+    @Column(nullable = false)
+    private Long itemId;
     @CreationTimestamp
     private LocalDateTime createdTime;
-
-    public void updateScore(byte score){
-        this.score = score;
-    }
-    public void updateContent(String content){
-        this.content = content;
-    }
-
 }

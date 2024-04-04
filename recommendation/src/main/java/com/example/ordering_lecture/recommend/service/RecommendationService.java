@@ -2,13 +2,9 @@ package com.example.ordering_lecture.recommend.service;
 
 import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
-import com.example.ordering_lecture.review.entity.Review;
 import com.example.ordering_lecture.review.repository.ReviewRepository;
-import com.google.gson.Gson;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
 import org.apache.mahout.cf.taste.common.TasteException;
-import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
+import org.apache.mahout.cf.taste.impl.model.jdbc.MySQLJDBCDataModel;
 import org.apache.mahout.cf.taste.impl.neighborhood.ThresholdUserNeighborhood;
 import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
 import org.apache.mahout.cf.taste.impl.similarity.PearsonCorrelationSimilarity;
@@ -18,12 +14,9 @@ import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.UserBasedRecommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 import org.springframework.stereotype.Service;
+import org.mariadb.jdbc.MariaDbDataSource;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.List;
 
 @Service
@@ -34,36 +27,33 @@ public class RecommendationService {
         this.reviewRepository = reviewRepository;
     }
 
-    // DB에서 필요한 데이터를 분석 가능한 CSV 파일로 추출
-    public String exportDataToCsv() {
-        // TODO : 파일 경로 추후 수정
-        String filePath = "./recommendation/src/main/java/com/example/ordering_lecture/recommend/Recommendation.csv";
-        List<Review> reviews = reviewRepository.findAll();
-        try (
-                BufferedWriter writer = Files.newBufferedWriter(Paths.get(filePath));
-                CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT);
-        ) {
-            for (Review review : reviews) {
-                csvPrinter.printRecord(review.getBuyerId(), review.getItem().getId(), review.getScore());
-            }
-            csvPrinter.flush();
-            return "ok";
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "error";
-        }
-    }
-
     // 입력한 사용자에 대해 유사도 기반 맞춤형 상품 추천
     public List<RecommendedItem> getRecommendations(Long id) {
-        DataModel model = null;
+        MariaDbDataSource dataSource = new MariaDbDataSource();
         try {
-            // TODO : 파일 경로 추후 수정
-            // 저장된 CSV 파일 읽기
-            model = new FileDataModel(new File("./recommendation/src/main/java/com/example/ordering_lecture/recommend/Recommendation.csv"));
-        } catch (IOException e) {
-            throw new OrTopiaException(ErrorCode.NOT_FOUND_FILE);
+            dataSource.setUrl("jdbc:mariadb://localhost:3306/recommendation");
+        } catch (SQLException e) {
+            throw new OrTopiaException(ErrorCode.NOT_SET_URL);
         }
+        try {
+            dataSource.setUser("root");
+        } catch (SQLException e) {
+            throw new OrTopiaException(ErrorCode.NOT_SET_USER);
+        }
+        try {
+            dataSource.setPassword("1234");
+        } catch (SQLException e) {
+            throw new OrTopiaException(ErrorCode.NOT_SET_PASSWORD);
+        }
+
+        DataModel model = new MySQLJDBCDataModel(
+                dataSource, // 데이터 소스
+                "review", // 사용할 테이블 이름
+                "buyer_id", // 사용자 ID 컬럼 이름
+                "item_id", // 아이템 ID 컬럼 이름
+                "score", // 평점 컬럼 이름
+                null // 타임스탬프 컬럼 이름, 필요 없으면 null
+        );
 
         // 유저 기준 유사성 측정
         UserSimilarity similarity = null;
@@ -79,7 +69,7 @@ public class RecommendationService {
         // 유저 기준 추천 모델 생성
         UserBasedRecommender recommender = new GenericUserBasedRecommender(model, neighborhood, similarity);
 
-        // id번 유저에게 RECOMMENDATION_COUNT개 아이템 추천  => (id, 3)
+        // id번 유저에게 3개 아이템 추천
         List<RecommendedItem> recommendations;
         try {
             recommendations = recommender.recommend(id, RECOMMENDATION_COUNT);
