@@ -31,7 +31,7 @@
             <v-subheader>판매중인 상품들</v-subheader>
           </v-col>
           <v-col v-for="item in this.itemList" :key="item.id" cols="12" sm="6" md="4" lg="3">
-            <v-card>
+            <v-card @click="goToDetailPage(item.id)">
               <v-img :src="item.imagePath" height="200px"></v-img>
               <v-card-title>{{ item.name }}</v-card-title>
               <v-card-subtitle>{{ item.price }}원</v-card-subtitle>
@@ -58,9 +58,17 @@
     const goToNotice = () => {
       router.push('/notice')
     }
+    const goToDetailPage = (itemId) =>{
+      if (itemId !== null) {
+        router.push({ name: 'ItemComponent', params: { id: itemId } }) // Assuming the name of your route is 'notice'
+      } else {
+        alert("해당 아이템이 없습니다.");
+      }
+    }
     return {
       search,
       goToNotice,
+      goToDetailPage,
     }
   },
   data(){

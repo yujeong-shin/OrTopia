@@ -61,8 +61,7 @@ onMounted(() => {
 });
 
 const logout = () => {
-  localStorage.removeItem('accessToken'); // accessToken 제거
-  localStorage.removeItem('refreshToken'); // refreshToken 제거
+  localStorage.clear();
   isLoggedIn.value = false;
   router.push('/login'); // 로그아웃 후 로그인 페이지로 리다이렉트
 };

@@ -4,15 +4,15 @@
       <v-row>
         <!-- 상품 이미지 -->
         <v-col cols="12" sm="6">
-          <v-img src="https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/c817/00cc68d197d40ea6130488bd10bc2626eccb524e2b1abd0d744fe9479f2e.png" alt="상품 이미지" max-height="400" />
+          <v-img :src="item.imagePath" alt="상품 이미지" max-height="400" />
         </v-col>
         <!-- 상품 정보 -->
         <v-col cols="12" sm="6">
           <div>
-            <h1 style="font-size: 40px; margin-top: 30px;">짱 멋진 운동화</h1>
-            <p style="font-size: 20px; margin-top: 30px;">가격: 100원</p>
-            <p style="font-size: 20px; margin-top: 30px;">카테고리</p>
-            <v-btn text style="margin-top: 30px;">판매자 이름</v-btn>
+            <h1 style="font-size: 40px; margin-top: 30px;">{{ item.name }}</h1>
+            <p style="font-size: 20px; margin-top: 30px;">가격: {{ item.price }}</p>
+            <p style="font-size: 20px; margin-top: 30px;">카테고리 {{ item.category }}</p>
+            <v-btn text style="margin-top: 30px;">판매자 이름 : {{ item.sellerId }}</v-btn>
             <v-btn color="primary" text style="margin-top: 30px;">즐겨찾기</v-btn>
             <p style="font-size: 20px; margin-top: 30px;">점수</p>
           </div>
@@ -104,26 +104,28 @@
       class="mb-2"
       outlined
     >
-      <v-img :src="product.img" height="100px"></v-img> 
+      <v-img :src="product.imagePath" height="100px"></v-img> 
     </v-card>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   data() {
     return {
+      itemId: null,
+      item : [],
       selectedOption: null,
       options: ['옵션 1', '옵션 2', '옵션 3'],
       quantity: 1,
-      recentProducts: [
-        { id: 1, img: 'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/1341027894628655-7c08d5a4-d0d3-4560-9803-113e75b97fee.jpg' },
-        { id: 2, img: 'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/29838384141585-d25eea29-955b-4845-bf3e-729c2ad57018.jpg' },
-        { id: 3, img: 'https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/1708806820802792-81731057-7274-4038-b4ab-887a3890ad74.jpg' },
-        { id: 4, img: 'https://thumbnail9.coupangcdn.com/thumbnails/remote/230x230ex/image/retail/images/1708806820802792-81731057-7274-4038-b4ab-887a3890ad74.jpg' },
-      ],
+      recentProducts: [],
       stickyTop: 0,
     };
+  },
+  created(){
+    this.itemId = this.$route.params.id;
+    this.getItemInfo();
   },
   methods: {
     buyNow() {
@@ -136,6 +138,41 @@ export default {
       const offsetTop = window.pageYOffset || document.documentElement.scrollTop;
       this.stickyTop = offsetTop > 100 ? 100 : offsetTop;
     },
+    async getItemInfo(){
+      const token = localStorage.getItem('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken')
+      const email = localStorage.getItem('email');
+        try{
+          const data = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/item-service/item/read/${this.itemId}`,{
+            headers: {
+              myEmail : `${email}`
+            }
+          });
+          this.item = data.data.result; 
+          console.log(this.item);
+        }catch(error){
+          alert(error.response.data.error_message);
+          console.log(error);
+        }
+        // 최근 본 상품 불러오기
+        
+        if(token != null){
+          try{
+            const data = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/item-service/item/recent_items`,{
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "X-Refresh-Token" : `${refreshToken}`
+            }
+          });
+          console.log(data)
+          this.recentProducts = data.data.result;
+          console.log(this.recentProducts);
+          }catch(error){
+            console.log(error);
+          }
+        }
+      }
+    
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll);
