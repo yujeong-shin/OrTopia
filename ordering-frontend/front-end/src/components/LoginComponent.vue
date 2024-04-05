@@ -51,7 +51,8 @@ export default {
     if (accessToken && refreshToken) {
       const decoded = jwtDecode(accessToken);
       const role = decoded.role;
-
+      const email = decoded.sub;
+      localStorage.setItem('email', email);
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('role', role);
       localStorage.setItem('refreshToken', refreshToken); // refreshToken을 localStorage에 저장

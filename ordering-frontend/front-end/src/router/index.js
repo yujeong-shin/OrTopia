@@ -19,7 +19,7 @@ const routes = [
     component: NoticeComponent,
   },
   {
-    path:'/item',
+    path:'/item/:id',
     name: 'ItemComponent',
     component: ItemComponent,
   },
@@ -38,11 +38,13 @@ const routes = [
     name: 'Signup',
     component: SignupComponent,
   },
+
   {
     path: '/sell', // 회원가입 페이지
     name: 'ItemCreate',
     component: ItemCreateComponent,
   },
+
   // 기타 경로...
 ];
 
