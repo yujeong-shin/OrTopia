@@ -4,6 +4,7 @@ package com.example.ordering_lecture.member.controller;
 import com.example.ordering_lecture.common.MemberLoginReqDto;
 import com.example.ordering_lecture.common.MemberLoginResDto;
 import com.example.ordering_lecture.common.OrTopiaResponse;
+import com.example.ordering_lecture.member.domain.Member;
 import com.example.ordering_lecture.member.dto.Buyer.*;
 import com.example.ordering_lecture.member.dto.Seller.SellerResponseDto;
 import com.example.ordering_lecture.member.service.MemberService;

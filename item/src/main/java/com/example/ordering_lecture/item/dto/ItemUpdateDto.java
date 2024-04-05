@@ -22,7 +22,7 @@ public class ItemUpdateDto {
     private boolean isBaned;
     private Long sellerId;
 
-    public Item toUpdate(Item item){
+    public Item toUpdate(Item item,String url){
         if(name !=null){
             item.updateName(name);
         }
@@ -39,7 +39,6 @@ public class ItemUpdateDto {
             item.updateDetail(detail);
         }
         if(imagePath !=null){
-            String url = "updateTest";
             item.updateImagePath(url);
         }
         if(minimumStock !=null){
