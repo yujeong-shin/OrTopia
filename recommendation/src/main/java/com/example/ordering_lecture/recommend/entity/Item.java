@@ -1,6 +1,6 @@
 package com.example.ordering_lecture.recommend.entity;
 
-import com.example.ordering_lecture.review.entity.Review;
+//import com.example.ordering_lecture.review.entity.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,8 +43,8 @@ public class Item {
     private boolean isBaned=false;
     @Column(nullable = false)
     private Long sellerId;
-    @OneToMany(mappedBy = "item",fetch = FetchType.LAZY, orphanRemoval = true,cascade = CascadeType.ALL)
-    private List<Review> review;
+//    @OneToMany(mappedBy = "item",fetch = FetchType.LAZY, orphanRemoval = true,cascade = CascadeType.ALL)
+//    private List<Review> review;
     @CreationTimestamp
     private LocalDateTime createdTime;
 

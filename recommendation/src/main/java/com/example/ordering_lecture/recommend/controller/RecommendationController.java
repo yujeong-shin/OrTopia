@@ -1,12 +1,13 @@
 package com.example.ordering_lecture.recommend.controller;
 
 import com.example.ordering_lecture.common.OrTopiaResponse;
+import com.example.ordering_lecture.recommend.dto.RecommendationRedisData;
 import com.example.ordering_lecture.recommend.service.RecommendationService;
-import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,8 +22,15 @@ public class RecommendationController {
 
     @GetMapping("/member/{id}/recommendations")
     public ResponseEntity<OrTopiaResponse> recommendations(@PathVariable Long id){
-        List<RecommendedItem> recommendations = recommendationService.getRecommendations(id);
-        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success", recommendations);
+        List<RecommendationRedisData> recommendationRedisDatas = recommendationService.getRecommendations(id);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success", recommendationRedisDatas);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/check/{id}/recommendations")
+    public ResponseEntity<OrTopiaResponse> readRecentItems(@PathVariable Long id){
+        List<RecommendationRedisData> recommendationRedisDatas = recommendationService.readRecommendationItems(id);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",recommendationRedisDatas);
+        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
 }
