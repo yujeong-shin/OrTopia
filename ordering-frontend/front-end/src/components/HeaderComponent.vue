@@ -20,6 +20,9 @@
       <v-btn icon>
         <v-icon color="white">mdi-bell</v-icon>
       </v-btn>
+      <v-btn icon @click="goToSellPage">
+        <v-icon color="white">mdi-cash-register</v-icon> <!-- 판매 아이콘 -->
+      </v-btn>
 
       <v-btn icon>
         <v-icon color="white">mdi-cart</v-icon>
@@ -61,8 +64,7 @@ onMounted(() => {
 });
 
 const logout = () => {
-  localStorage.removeItem('accessToken'); // accessToken 제거
-  localStorage.removeItem('refreshToken'); // refreshToken 제거
+  localStorage.clear();
   isLoggedIn.value = false;
   router.push('/login'); // 로그아웃 후 로그인 페이지로 리다이렉트
 };
@@ -82,6 +84,12 @@ const goToLogin = () => {
 const goToRegister = () => {
   router.push('/signup');
 };
+
+const goToSellPage = () => {
+  router.push('/sell'); // '/sell'은 판매 페이지의 경로로 가정합니다. 실제 경로에 맞게 조정해주세요.
+};
+
+
 </script>
 
 
