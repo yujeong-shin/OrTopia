@@ -103,6 +103,7 @@
       :key="product.id"
       class="mb-2"
       outlined
+      @click="goToDetailPage(product.id)"
     >
       <v-img :src="product.imagePath" height="100px"></v-img> 
     </v-card>
@@ -171,8 +172,10 @@ export default {
             console.log(error);
           }
         }
-      }
-    
+      },
+      goToDetailPage(Id){
+        window.location.href = `/item/${Id}`;
+    },
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll);
@@ -180,6 +183,7 @@ export default {
   beforeUnmount() { // beforeDestroy가 아닌 beforeUnmount를 사용합니다.
     window.removeEventListener('scroll', this.handleScroll);
   },
+  
 };
 </script>
 
