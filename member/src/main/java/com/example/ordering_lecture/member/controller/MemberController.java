@@ -23,22 +23,20 @@ import java.util.Map;
 public class MemberController {
     @Autowired
     private final MemberService memberService;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider){
+    public MemberController(MemberService memberService){
         this.memberService = memberService;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
     /*
     BUYER 관련 API
      */
-
+    // 사용자 로그인
     @PostMapping("/doLogin")
-    public MemberLoginResDto memberLogin(@Valid @RequestBody MemberLoginReqDto memberLoginReqDto) {
-        return memberService.loginService(memberLoginReqDto);
+    public ResponseEntity<OrTopiaResponse> memberLogin(@Valid @RequestBody MemberLoginReqDto memberLoginReqDto) {
+        MemberLoginResDto memberLoginResDto = memberService.loginService(memberLoginReqDto);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("login success",memberLoginResDto);
+        return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
-
-
     // 사용자 생성
     @PostMapping("/member/create")
     public ResponseEntity<OrTopiaResponse> createMember(@RequestBody MemberRequestDto memberRequestDto){
