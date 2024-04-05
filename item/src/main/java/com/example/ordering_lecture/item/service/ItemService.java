@@ -1,5 +1,8 @@
 package com.example.ordering_lecture.item.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
 import com.example.ordering_lecture.item.dto.ItemRequestDto;
@@ -10,25 +13,43 @@ import com.example.ordering_lecture.item.repository.ItemRepository;
 import com.example.ordering_lecture.redis.RedisService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
     private final ItemRepository itemRepository;
     private final RedisService redisService;
-    public ItemService(ItemRepository itemRepository, RedisService redisService) {
+    private final AmazonS3Client amazonS3Client;
+    public ItemService(ItemRepository itemRepository, RedisService redisService, AmazonS3Client amazonS3Client) {
         this.itemRepository = itemRepository;
         this.redisService = redisService;
+        this.amazonS3Client = amazonS3Client;
     }
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
     public ItemResponseDto createItem(ItemRequestDto itemRequestDto)throws OrTopiaException {
-        Item item = itemRequestDto.toEntity();
+        String fileName = itemRequestDto.getName()+System.currentTimeMillis();
+        String fileUrl = null;
+        try {
+            ObjectMetadata metadata= new ObjectMetadata();
+            metadata.setContentType(itemRequestDto.getImagePath().getContentType());
+            metadata.setContentLength(itemRequestDto.getImagePath().getSize());
+            amazonS3Client.putObject(bucket,fileName,itemRequestDto.getImagePath().getInputStream(),metadata);
+            fileUrl = amazonS3Client.getUrl(bucket,fileName).toString();
+        } catch (Exception e) {
+            throw new OrTopiaException(ErrorCode.S3_SERVER_ERROR);
+        }
+        Item item = itemRequestDto.toEntity(fileUrl);
         itemRepository.save(item);
         return ItemResponseDto.toDto(item);
     }
@@ -42,12 +63,38 @@ public class ItemService {
     @Transactional
     public ItemResponseDto updateItem(Long id, ItemUpdateDto itemUpdateDto) {
         Item item = itemRepository.findById(id).orElseThrow(()->new OrTopiaException(ErrorCode.NOT_FOUND_ITEM));
-        item = itemUpdateDto.toUpdate(item);
+        if(!itemUpdateDto.getImagePath().isEmpty()){
+            String fileUrl = item.getImagePath();
+            String splitStr = ".com/";
+            amazonS3Client.deleteObject(
+                    new DeleteObjectRequest(bucket,fileUrl.substring(fileUrl.lastIndexOf(splitStr)+splitStr.length())));
+            String fileName = itemUpdateDto.getName()+System.currentTimeMillis();
+            fileUrl = null;
+            try {
+                ObjectMetadata metadata= new ObjectMetadata();
+                metadata.setContentType(itemUpdateDto.getImagePath().getContentType());
+                metadata.setContentLength(itemUpdateDto.getImagePath().getSize());
+                amazonS3Client.putObject(bucket,fileName,itemUpdateDto.getImagePath().getInputStream(),metadata);
+                fileUrl = amazonS3Client.getUrl(bucket,fileName).toString();
+            } catch (Exception e) {
+                throw new OrTopiaException(ErrorCode.S3_SERVER_ERROR);
+            }
+            item = itemUpdateDto.toUpdate(item,fileUrl);
+        }else{
+            item = itemUpdateDto.toUpdate(item,item.getImagePath());
+        }
         return ItemResponseDto.toDto(item);
     }
 
     public void deleteItem(Long id) {
+        Item item = itemRepository.findById(id).orElseThrow(
+                ()-> new OrTopiaException(ErrorCode.NOT_FOUND_ITEM)
+                );
         itemRepository.deleteById(id);
+        String fileUrl = item.getImagePath();
+        String splitStr = ".com/";
+        amazonS3Client.deleteObject(
+                new DeleteObjectRequest(bucket,fileUrl.substring(fileUrl.lastIndexOf(splitStr)+splitStr.length())));
 //        Item item = itemRepository.findById(id).orElseThrow();
 //        item.deleteItem();
     }

@@ -22,7 +22,8 @@ public enum ErrorCode {
     EMPTY_REVIEWS("I14","리뷰목록을 찾을 수 없습니다" ),
     NOT_FOUND_REVIEW("I15","해당 리뷰를 찾을 수 없습니다."),
     REDIS_ERROR("I16","레디스 저장에 실패했습니다"),
-    JSON_PARSE_ERROR("I7","JSON 형변환에 실패했습니다");
+    JSON_PARSE_ERROR("I17","JSON 형변환에 실패했습니다"),
+    S3_SERVER_ERROR("I18","이미지 저장에 실패했습니다.");
 
     private final String code;
     private final String message;

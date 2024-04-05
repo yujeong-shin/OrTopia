@@ -32,9 +32,8 @@ public class ItemRequestDto {
     @NotNull(message =  "EMPTY_ITEM_SELLER")
     private Long sellerId;
 
-    public Item toEntity() throws OrTopiaException {
+    public Item toEntity(String fileUrl) throws OrTopiaException {
         //TODO : S3 저장 후 나오는 url를 넣어줌
-        String fileUrl = "testing";
         try {
             Category category = null;
             category = Category.valueOf(this.getCategory());
