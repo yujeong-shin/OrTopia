@@ -43,8 +43,8 @@ export default {
   try {
     const loginData = { email: this.email, password: this.password };
     const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/member-service/doLogin`, loginData);
-    const accessToken = response.data.accessToken;
-    const refreshToken = response.data.refreshToken; // refreshToken 추가
+    const accessToken = response.data.result.accessToken;
+    const refreshToken = response.data.result.refreshToken; // refreshToken 추가
 
     console.log(accessToken);
 
