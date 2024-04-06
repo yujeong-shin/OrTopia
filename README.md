@@ -45,7 +45,7 @@
 ---
 <div align=center>
 <h2> 🕒 WBS </h2>
-<a href="https://github.com/beyond-sw-camp/be03-fin-3team-OrTopia-OMS/blob/main/Docs/WBS.pdf">WBS</a>
+<a href="https://docs.google.com/spreadsheets/d/1CD0nicl3kXgS9II6lAFP7dmLQwqjgxOPLRZpEL5Bj7E/edit#gid=0">WBS</a>
 <img src="https://github.com/beyond-sw-camp/be03-fin-3team-OrTopia-OMS/blob/main/Docs/WBS1.png?raw=true" />
 <img src="https://github.com/beyond-sw-camp/be03-fin-3team-OrTopia-OMS/blob/main/Docs/WBS2.png?raw=true" />
 </div>
