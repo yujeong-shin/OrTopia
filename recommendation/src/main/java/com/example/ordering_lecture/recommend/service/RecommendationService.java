@@ -2,7 +2,10 @@ package com.example.ordering_lecture.recommend.service;
 
 import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
-import com.example.ordering_lecture.review.repository.ReviewRepository;
+import com.example.ordering_lecture.recommend.dto.RecommendationRedisData;
+import com.example.ordering_lecture.redis.RedisService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.model.jdbc.MySQLJDBCDataModel;
 import org.apache.mahout.cf.taste.impl.neighborhood.ThresholdUserNeighborhood;
@@ -17,18 +20,20 @@ import org.springframework.stereotype.Service;
 import org.mariadb.jdbc.MariaDbDataSource;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class RecommendationService {
     private final byte RECOMMENDATION_COUNT = 3;
-    private final ReviewRepository reviewRepository;
-    public RecommendationService(ReviewRepository reviewRepository) {
-        this.reviewRepository = reviewRepository;
+    private final RedisService redisService;
+    public RecommendationService(RedisService redisService) {
+        this.redisService = redisService;
     }
 
     // 입력한 사용자에 대해 유사도 기반 맞춤형 상품 추천
-    public List<RecommendedItem> getRecommendations(Long id) {
+    public List<RecommendationRedisData> getRecommendations(Long id) {
         MariaDbDataSource dataSource = new MariaDbDataSource();
         try {
             dataSource.setUrl("jdbc:mariadb://localhost:3306/recommendation");
@@ -76,15 +81,39 @@ public class RecommendationService {
         } catch (TasteException e) {
             throw new OrTopiaException(ErrorCode.NOT_MAKE_TASTE);
         }
-        System.out.println("----- RecommendedItem -----");
+
         for (RecommendedItem recommendation : recommendations) {
-            System.out.println(recommendation);
+            System.out.println(recommendation.getItemID());
         }
 
-//        // JSON 객체로 변환하여 리턴
-//        Gson gson = new Gson();
-//        return gson.toJson(recommendations);
+        List<RecommendationRedisData> recommendationRedisDatas = new ArrayList<>();
+        for (RecommendedItem recommendation : recommendations) {
+            // Feign : item 서버에서 해당 아이템 이미지 경로 얻어오기
+            String imagePath = "test";
+            // [itemId, itemImagePath] 형식으로 저장
+            RecommendationRedisData recommendationRedisData = new RecommendationRedisData(recommendation.getItemID(), imagePath);
+            recommendationRedisDatas.add(recommendationRedisData);
+        }
 
-        return recommendations;
+        // redis에 저장
+        redisService.setValues(id, recommendationRedisDatas);
+
+        return recommendationRedisDatas;
+    }
+
+    public List<RecommendationRedisData> readRecommendationItems(Long id) {
+        List<String> list = redisService.getValues(id);
+        List<RecommendationRedisData> recommendationRedisDatas = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
+        for(String str: list){
+            RecommendationRedisData  recommendationRedisData = null;
+            try {
+                recommendationRedisData = objectMapper.readValue(str, RecommendationRedisData.class);
+            } catch (JsonProcessingException e) {
+                throw new OrTopiaException(ErrorCode.JSON_PARSE_ERROR);
+            }
+            recommendationRedisDatas.add(recommendationRedisData);
+        }
+        return recommendationRedisDatas;
     }
 }
