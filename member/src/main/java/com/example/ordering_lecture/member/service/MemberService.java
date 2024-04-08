@@ -125,8 +125,10 @@ public class MemberService {
         String accessToken = jwtTokenProvider.createAccessToken(member.getEmail(), member.getRole().toString());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail(), member.getRole().toString());
 
-        Map<String, String> result = new HashMap<>();
-        result.put("refresh_token", refreshToken);
         return new MemberLoginResDto(member.getId(),accessToken,refreshToken);
+    }
+
+    public MemberResponseDto findIdByEmail(String email) {
+        return null;
     }
 }

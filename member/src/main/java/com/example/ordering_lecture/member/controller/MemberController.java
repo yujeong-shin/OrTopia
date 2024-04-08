@@ -93,4 +93,10 @@ public class MemberController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success",sellerResponseDtos);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
+    @GetMapping("member/search/{email}")
+    public ResponseEntity<OrTopiaResponse> searchIdByEmail(String email){
+        MemberResponseDto memberResponseDto = memberService.findIdByEmail(email);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",memberResponseDto);
+        return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
+    }
 }

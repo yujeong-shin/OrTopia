@@ -49,6 +49,7 @@ public class ItemService {
         } catch (Exception e) {
             throw new OrTopiaException(ErrorCode.S3_SERVER_ERROR);
         }
+
         Item item = itemRequestDto.toEntity(fileUrl);
         itemRepository.save(item);
         return ItemResponseDto.toDto(item);
