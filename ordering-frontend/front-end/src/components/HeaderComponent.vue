@@ -22,7 +22,8 @@
       </v-btn>
 
       <v-btn icon>
-        <v-icon color="white">mdi-cart</v-icon>
+        <v-icon color="white" @click="goToMyCart">mdi-cart </v-icon>
+        <span class="v-badge__badge v-theme--dark bg-error" aria-atomic="true" aria-label="Badge" aria-live="polite" role="status" style="bottom: calc(100% - 12px); left: calc(100% - 12px);"> {{totalQuantity}} </span>
       </v-btn>
 
       <v-btn icon @click="goToMypageComponent">
@@ -33,13 +34,12 @@
         <v-icon color="white">mdi-logout</v-icon> <!-- 로그아웃 아이콘 -->
       </v-btn>
     </template>
-
+    
     <template v-else>
       <!-- 로그인하지 않았을 때 보이는 아이콘 버튼들 -->
       <v-btn icon @click="goToLogin">
         <v-icon color="white">mdi-login</v-icon> <!-- 로그인 아이콘 -->
       </v-btn>
-
       <v-btn icon @click="goToRegister">
         <v-icon color="white">mdi-account-plus</v-icon> <!-- 회원가입 아이콘 -->
       </v-btn>
@@ -48,10 +48,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted,computed } from 'vue';
 import { useRouter } from 'vue-router';
+// import {mapGetters} from 'vuex'
+import { useStore } from 'vuex'
 
 const router = useRouter();
+
+const store = useStore();
+const totalQuantity = computed(() => store.getters.getTotalQuantity);
 
 const isLoggedIn = ref(false);
 
@@ -74,6 +79,10 @@ const goToMypageComponent = () => {
   router.push('/mypage');
 };
 
+const goToMyCart = () => {
+  router.push('/mycart');
+};
+
 const goToLogin = () => {
   router.push('/login');
 };
@@ -81,9 +90,8 @@ const goToLogin = () => {
 const goToRegister = () => {
   router.push('/signup');
 };
+
 </script>
-
-
 
 <style scoped>
 /* 로고 호버 효과가 적용되지 않는 문제를 해결하기 위해 :deep 선택자를 사용 */

@@ -112,6 +112,7 @@
 
 <script>
 import axios from 'axios';
+import { mapActions } from 'vuex';
 export default {
   data() {
     return {
@@ -119,7 +120,7 @@ export default {
       item : [],
       selectedOption: null,
       options: ['옵션 1', '옵션 2', '옵션 3'],
-      quantity: 1,
+      quantity: 0,
       recentProducts: [],
       stickyTop: 0,
     };
@@ -129,11 +130,22 @@ export default {
     this.getItemInfo();
   },
   methods: {
+    ...mapActions('addToCart'),
     buyNow() {
       // 바로 구매 동작 구현
     },
     addToCart() {
-      // 장바구니 담기 동작 구현
+      if(this.quantity==0){
+        alert("0개는 주문 할 수 없습니다.");
+      }else{
+        if(confirm("장바구니에 담습니까?")){
+          this.item.count = this.quantity;
+          this.$store.dispatch('addToCart',this.item); 
+        if(confirm("장바구니로 이동하시겠습니까?")){
+          this.$router.push('/mycart')
+          }
+        }
+      }
     },
     handleScroll() {
       const offsetTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -173,6 +185,7 @@ export default {
           }
         }
       },
+      // 최근 본 상품 사진을 클릭시 리다이렉트
       goToDetailPage(Id){
         window.location.href = `/item/${Id}`;
     },
