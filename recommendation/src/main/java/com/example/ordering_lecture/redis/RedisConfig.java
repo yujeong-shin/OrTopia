@@ -1,8 +1,10 @@
 package com.example.ordering_lecture.redis;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -21,13 +23,30 @@ public class RedisConfig {
     private String host;
 
     @Bean
+    @Primary
     public RedisConnectionFactory redisConnectionFactory() {
         return createConnectionFactoryWith(2);
     }
 
     @Bean
+    @Primary
     public RedisTemplate redisTemplate() {
         RedisTemplate<Long, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        return redisTemplate;
+    }
+    @Bean
+    @Qualifier("2")
+    public RedisConnectionFactory redisConnectionFactory2() {
+        return createConnectionFactoryWith(0);
+    }
+
+    @Bean
+    @Qualifier("2")
+    public RedisTemplate redisTemplate2() {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory());

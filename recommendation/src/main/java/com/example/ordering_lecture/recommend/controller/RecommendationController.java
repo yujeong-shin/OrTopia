@@ -21,8 +21,8 @@ public class RecommendationController {
     }
 
     @GetMapping("/member/{id}/recommendations")
-    public ResponseEntity<OrTopiaResponse> recommendations(@PathVariable Long id){
-        List<RecommendationRedisData> recommendationRedisDatas = recommendationService.getRecommendations(id);
+    public ResponseEntity<OrTopiaResponse> recommendations(@PathVariable Long id,@RequestHeader("myEmail") String email,@RequestHeader("myRole") String role){
+        List<RecommendationRedisData> recommendationRedisDatas = recommendationService.getRecommendations(id,email,role);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success", recommendationRedisDatas);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);
     }

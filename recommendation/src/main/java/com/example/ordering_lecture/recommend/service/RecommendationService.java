@@ -4,6 +4,7 @@ import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
 import com.example.ordering_lecture.recommend.dto.RecommendationRedisData;
 import com.example.ordering_lecture.redis.RedisService;
+import com.example.ordering_lecture.token.JwtTokenProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.mahout.cf.taste.common.TasteException;
@@ -22,18 +23,20 @@ import org.mariadb.jdbc.MariaDbDataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class RecommendationService {
+
+    private final JwtTokenProvider jwtTokenProvider;
     private final byte RECOMMENDATION_COUNT = 3;
     private final RedisService redisService;
-    public RecommendationService(RedisService redisService) {
+    public RecommendationService(JwtTokenProvider jwtTokenProvider, RedisService redisService) {
+        this.jwtTokenProvider = jwtTokenProvider;
         this.redisService = redisService;
     }
 
     // 입력한 사용자에 대해 유사도 기반 맞춤형 상품 추천
-    public List<RecommendationRedisData> getRecommendations(Long id) {
+    public List<RecommendationRedisData> getRecommendations(Long id ,String email,String role) {
         MariaDbDataSource dataSource = new MariaDbDataSource();
         try {
             dataSource.setUrl("jdbc:mariadb://localhost:3306/recommendation");
@@ -97,7 +100,8 @@ public class RecommendationService {
 
         // redis에 저장
         redisService.setValues(id, recommendationRedisDatas);
-
+        // token발행
+        jwtTokenProvider.createRecommandToken(email,role);
         return recommendationRedisDatas;
     }
 

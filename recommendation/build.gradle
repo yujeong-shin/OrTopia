@@ -45,6 +45,12 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.8.7'
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	// jwt token
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	//spring security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+
 }
 
 tasks.named('test') {
