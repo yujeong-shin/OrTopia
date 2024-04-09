@@ -80,4 +80,11 @@ public class ItemController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("ban canceled success",itemResponseDtos);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
+
+    @GetMapping("/{id}/imagePath")
+    public ResponseEntity<OrTopiaResponse> getImagePath(@PathVariable Long id){
+        String imagePath = itemService.getImagePath(id);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",imagePath);
+        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+    }
 }

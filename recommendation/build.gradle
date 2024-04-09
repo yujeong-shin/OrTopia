@@ -45,6 +45,10 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.8.7'
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	// feign client
+	implementation group: 'io.github.openfeign', name: 'feign-gson', version: '11.0'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+//	implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
 }
 
 tasks.named('test') {

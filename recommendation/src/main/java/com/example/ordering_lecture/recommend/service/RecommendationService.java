@@ -2,6 +2,7 @@ package com.example.ordering_lecture.recommend.service;
 
 import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
+import com.example.ordering_lecture.feign.FeignClient;
 import com.example.ordering_lecture.recommend.dto.RecommendationRedisData;
 import com.example.ordering_lecture.redis.RedisService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,20 +23,22 @@ import org.mariadb.jdbc.MariaDbDataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class RecommendationService {
     private final byte RECOMMENDATION_COUNT = 3;
     private final RedisService redisService;
-    public RecommendationService(RedisService redisService) {
+    private final FeignClient feignClient;
+    public RecommendationService(RedisService redisService, FeignClient feignClient) {
         this.redisService = redisService;
+        this.feignClient = feignClient;
     }
 
     // 입력한 사용자에 대해 유사도 기반 맞춤형 상품 추천
     public List<RecommendationRedisData> getRecommendations(Long id) {
         MariaDbDataSource dataSource = new MariaDbDataSource();
         try {
+            // TODO : RDS 주소로 변경
             dataSource.setUrl("jdbc:mariadb://localhost:3306/recommendation");
         } catch (SQLException e) {
             throw new OrTopiaException(ErrorCode.NOT_SET_URL);
@@ -89,7 +92,7 @@ public class RecommendationService {
         List<RecommendationRedisData> recommendationRedisDatas = new ArrayList<>();
         for (RecommendedItem recommendation : recommendations) {
             // Feign : item 서버에서 해당 아이템 이미지 경로 얻어오기
-            String imagePath = "test";
+            String imagePath = feignClient.getImagePath(recommendation.getItemID());
             // [itemId, itemImagePath] 형식으로 저장
             RecommendationRedisData recommendationRedisData = new RecommendationRedisData(recommendation.getItemID(), imagePath);
             recommendationRedisDatas.add(recommendationRedisData);
