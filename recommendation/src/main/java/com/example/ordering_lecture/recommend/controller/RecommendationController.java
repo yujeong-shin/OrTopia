@@ -19,10 +19,10 @@ public class RecommendationController {
         this.recommendationService = recommendationService;
     }
 
-    @GetMapping("/member/{id}/recommendations")
-    public ResponseEntity<OrTopiaResponse> recommendations(@PathVariable Long id){
-        List<RecommendationRedisData> recommendationRedisDatas = recommendationService.getRecommendations(id);
-        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success", recommendationRedisDatas);
+    @GetMapping("/member/recommendations")
+    public ResponseEntity<OrTopiaResponse> recommendations(){
+        recommendationService.getRecommendations();
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success", "ok");
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);
     }
 

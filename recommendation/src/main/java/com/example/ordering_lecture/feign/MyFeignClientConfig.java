@@ -1,14 +1,28 @@
 package com.example.ordering_lecture.feign;
 
+import com.example.ordering_lecture.common.ErrorCode;
+import com.example.ordering_lecture.common.OrTopiaException;
 import feign.RequestInterceptor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.core.RedisTemplate;
 
 public class MyFeignClientConfig {
-    // Feign Client 요청에 토큰 설정
     @Bean
-    public RequestInterceptor requestInterceptor() {
+    public RequestInterceptor requestInterceptor(RedisTemplate<String, String> redisTemplate2) {
         return requestTemplate -> {
-            requestTemplate.header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0MkB0ZXN0LmNvbSIsInJvbGUiOiJCVVlFUiIsImlhdCI6MTcxMjYyNjE2MiwiZXhwIjoxNzEyNjI3OTYyfQ.qfKjQUAehjMvFUO-dToM90QO1z-w0rxCto1ErXmvHAM");
+            // Redis 채널과 키를 조합한 전체 키 생성
+            String key = "RC:admin@test.com";
+
+            // 키 존재 여부 확인
+            boolean hasKey = redisTemplate2.hasKey(key);
+            if (hasKey) {
+                // 조합한 전체 키로 값 가져오기
+                String token = redisTemplate2.opsForValue().get(key);
+                System.out.println("token = " + token);
+                requestTemplate.header("Authorization", "Bearer " + token);
+            } else {
+                throw new OrTopiaException(ErrorCode.REDIS_NOT_FOUND_KEY);
+            }
         };
     }
 }

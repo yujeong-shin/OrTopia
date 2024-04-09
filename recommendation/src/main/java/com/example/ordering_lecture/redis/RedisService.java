@@ -16,8 +16,8 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class RedisService {
-
     private final RedisTemplate redisTemplate;
+    private final RedisTemplate redisTemplate2;
 
     public void setValues(Long key, List<RecommendationRedisData> recommendationRedisDatas) {
         ListOperations<Long, String> values = redisTemplate.opsForList();
@@ -35,5 +35,11 @@ public class RedisService {
     public List<String> getValues(Long key) {
         ListOperations<Long, String> values = redisTemplate.opsForList();
         return values.range(key, 0, 2);
+    }
+    @Transactional(readOnly = true)
+    public String getTokenValues(String email) {
+        // Redis에서 이메일을 키로 사용하여 토큰 값 가져오기
+        String key = "RC:" + email;
+        return (String) redisTemplate2.opsForValue().get(key);
     }
 }

@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class RecommendationRedisData {
-    private Long id;
+    private Long itemId;
     private String imagePath;
 }

@@ -82,9 +82,7 @@ public class ItemController {
     }
 
     @GetMapping("/{id}/imagePath")
-    public ResponseEntity<OrTopiaResponse> getImagePath(@PathVariable Long id){
-        String imagePath = itemService.getImagePath(id);
-        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",imagePath);
-        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+    public String getImagePath(@PathVariable Long id){
+        return itemService.getImagePath(id);
     }
 }
