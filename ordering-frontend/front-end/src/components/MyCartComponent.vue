@@ -75,7 +75,7 @@ export default {
                 return;
             }
             if(confirm(`${orderItems.length}개의 종류의 아이템을 주문하시겠습니까?`)){
-                this.$store.commit('setOrderItems', orderItems); // orderItems를 Vuex 상태에 저장
+              localStorage.setItem('buyItem', JSON.stringify(orderItems)); // orderItems를 Vuex 상태에 저장
                 this.$router.push('/buypage');
             }else{
                 console.log("주문이 취소되었습니다.")
