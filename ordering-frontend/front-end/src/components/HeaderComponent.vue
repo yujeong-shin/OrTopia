@@ -101,8 +101,6 @@ const goToSellPage = () => {
 </script>
 
 
-</script>
-
 <style scoped>
 /* 로고 호버 효과가 적용되지 않는 문제를 해결하기 위해 :deep 선택자를 사용 */
 :deep(.logo-hover) {
