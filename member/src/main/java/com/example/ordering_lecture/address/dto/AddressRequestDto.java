@@ -7,30 +7,29 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AddressRequestDto {
-    @NotNull
     private String name;
-    @NotNull
-    private String street;
-    @NotNull
-    private String zipcode;
-    @NotNull
-    private String details;
+    private String sido;
+    private String sigungu;
+    private String bname;
+    private String roadAddress;
+    private String zonecode;
+    private String detail;
 
     public Address toEntity(Member member){
-        Address address = Address.builder()
+        return Address.builder()
+                .name(this.name)
+                .sido(this.sido)
+                .sigungu(this.sigungu)
+                .bname(this.bname)
+                .roadAddress(this.roadAddress)
+                .zonecode(this.zonecode)
+                .detail(this.detail)
                 .member(member)
-                .name(this.getName())
-                .street(this.getStreet())
-                .zipcode(this.getZipcode())
-                .details(this.getDetails())
                 .build();
-        return address;
     }
 }

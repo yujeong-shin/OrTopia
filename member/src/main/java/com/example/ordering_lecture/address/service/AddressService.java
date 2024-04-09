@@ -26,17 +26,27 @@ public class AddressService {
         this.addressRepository = addressRepository;
         this.memberRepository = memberRepository;
     }
-    public Address createAddress(Long id, AddressRequestDto addressRequestDto){
-        Member member = memberRepository.findById(id).orElseThrow();
+    public Address createAddress(String email, AddressRequestDto addressRequestDto) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이메일을 가진 회원이 존재하지 않습니다."));
         Address address = addressRequestDto.toEntity(member);
         return addressRepository.save(address);
     }
+
     public AddressResponseDto findById(Long id) {
         Address address = addressRepository.findById(id).orElseThrow();
         return AddressResponseDto.toDto(address);
     }
     public List<AddressResponseDto> showAllAddress(){
         return addressRepository.findAll().stream()
+                .map(AddressResponseDto::toDto)
+                .collect(Collectors.toList());
+    }
+    public List<AddressResponseDto> findAllAddressesByEmail(String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이메일을 가진 회원이 존재하지 않습니다."));
+        List<Address> addresses = addressRepository.findAllByMember(member);
+        return addresses.stream()
                 .map(AddressResponseDto::toDto)
                 .collect(Collectors.toList());
     }
@@ -49,5 +59,4 @@ public class AddressService {
     public void deleteAddress(Long id) {
         addressRepository.deleteById(id);
     }
-
 }
