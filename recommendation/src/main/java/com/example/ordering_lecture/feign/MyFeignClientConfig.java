@@ -18,7 +18,6 @@ public class MyFeignClientConfig {
             if (hasKey) {
                 // 조합한 전체 키로 값 가져오기
                 String token = redisTemplate2.opsForValue().get(key);
-                System.out.println("token = " + token);
                 requestTemplate.header("Authorization", "Bearer " + token);
             } else {
                 throw new OrTopiaException(ErrorCode.REDIS_NOT_FOUND_KEY);

@@ -118,8 +118,11 @@ public class RecommendationService {
                 recommendationRedisDatas.add(recommendationRedisData);
             }
 
+            // 기존 값들 비우기
+
             // redis에 저장
             redisService.setValues(id, recommendationRedisDatas);
+            System.out.println(id + "번 사용자에게 아이템 추천 완료");
         }
     }
 
@@ -130,9 +133,7 @@ public class RecommendationService {
         for(String str: list){
             RecommendationRedisData  recommendationRedisData = null;
             try {
-                System.out.println("str = " + str);
                 recommendationRedisData = objectMapper.readValue(str, RecommendationRedisData.class);
-                System.out.println("recommendationRedisData = " + recommendationRedisData);
             } catch (JsonProcessingException e) {
                 throw new OrTopiaException(ErrorCode.JSON_PARSE_ERROR);
             }
