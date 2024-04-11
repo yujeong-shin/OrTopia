@@ -40,7 +40,6 @@ public class RecommendationService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    // 입력한 사용자에 대해 유사도 기반 맞춤형 상품 추천
     public void getRecommendations() {
         // 기존 값들 비우기
         redisService.flushAll();
