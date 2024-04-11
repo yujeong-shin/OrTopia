@@ -3,82 +3,55 @@
     <v-row>
       <v-col cols="12">
         <h1>공지사항</h1>
+        <!-- 공지사항 목록을 표시합니다 -->
         <v-list>
-          <v-list-item v-for="(notice, index) in paginatedNotices" :key="index" @click="goToNoticeDetail(notice.id)">
+          <v-list-item
+            v-for="(notice, index) in paginatedNotices"
+            :key="index"
+          >
             <v-list-item-content>
-              <v-list-item-title>{{ notice.name }} {{ notice.start_date }}</v-list-item-title>
+              <v-list-item-title>{{ notice.title }}</v-list-item-title>
+              <v-list-item-subtitle>{{ notice.date }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
-          <v-btn @click="showModal = true">글쓰기</v-btn>
-          <EditorModal v-model="showModal" />
         </v-list>
-        <v-pagination v-model="page" :length="totalPages" circle></v-pagination>
+        <!-- 페이지네이션 컴포넌트 -->
+        <v-pagination
+          v-model="page"
+          :length="totalPages"
+          circle
+        ></v-pagination>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
-<script>
-import { ref, computed, onMounted } from 'vue';
-import axios from 'axios';
-import EditorModal from "@/components/EditorModal.vue";
-import { useRouter } from 'vue-router';
+<script setup>
+import { ref, computed } from 'vue';
 
-export default {
-  components: {
-    EditorModal,
-  },
-  setup() {
-    const router = useRouter();
-    const showModal = ref(false);
-    const notices = ref([]);
-    const page = ref(1);
-    const noticesPerPage = 5;
+// 예시 공지사항 데이터
+const notices = ref([
+  { title: '공지사항 1', date: '2024-01-01' },
+  { title: '공지사항 2', date: '2024-01-02' },
+  // 여기에 더 많은 공지사항 추가...
+]);
 
-    const goToNoticeDetail = (id) => {
-      router.push({ name: 'NoticeDetail', params: { id } });
-    };
+const page = ref(1);
+const noticesPerPage = 5;
 
-    // 서버에서 공지사항 데이터를 불러오는 함수
-    const fetchNotices = async () => {
-      try {
-        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/notice-service/notices`);
-        notices.value = response.data;
-      } catch (error) {
-        console.error("공지사항을 불러오는 중 에러 발생:", error);
-      }
-    };
+// 전체 페이지 수를 계산합니다
+const totalPages = computed(() => {
+  return Math.ceil(notices.value.length / noticesPerPage);
+});
 
-    onMounted(fetchNotices);
-
-    const totalPages = computed(() => {
-      return Math.ceil(notices.value.length / noticesPerPage);
-    });
-
-    const paginatedNotices = computed(() => {
-      const start = (page.value - 1) * noticesPerPage;
-      const end = start + noticesPerPage;
-      return notices.value.slice(start, end);
-    });
-
-    // 모달을 닫는 메소드
-    const close = () => {
-      showModal.value = false;
-    };
-
-    return {
-      showModal,
-      notices,
-      page,
-      totalPages,
-      paginatedNotices,
-      goToNoticeDetail,
-      close,
-    };
-  },
-};
+// 현재 페이지의 공지사항을 계산합니다
+const paginatedNotices = computed(() => {
+  const start = (page.value - 1) * noticesPerPage;
+  const end = start + noticesPerPage;
+  return notices.value.slice(start, end);
+});
 </script>
 
 <style scoped>
-/* 여기에 스타일을 추가하세요 */
+
 </style>
