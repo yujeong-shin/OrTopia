@@ -8,9 +8,9 @@
         <v-text-field v-model="item.detail" label="상세 설명" required></v-text-field>
         <v-file-input v-model="item.imagePath" label="이미지 파일" accept="image/*"></v-file-input>
         <v-text-field v-model="item.minimumStock" label="최소 재고" type="number" required></v-text-field>
-        <v-checkbox v-model="item.delYN" label="삭제 여부"></v-checkbox>
-        <v-checkbox v-model="item.isBaned" label="금지 여부"></v-checkbox>
-        <v-text-field v-model="item.sellerId" label="판매자 ID" type="number" required></v-text-field>
+        <!-- <v-checkbox v-model="item.delYN" label="삭제 여부"></v-checkbox>
+        <v-checkbox v-model="item.isBaned" label="금지 여부"></v-checkbox> -->
+        <!-- <v-text-field v-model="item.sellerId" label="판매자 ID" type="number" required></v-text-field> -->
         
         <v-btn type="submit" color="success">등록하기</v-btn>
       </v-form>
@@ -32,7 +32,7 @@
           minimumStock: 0,
           delYN: false,
           isBaned: false,
-          sellerId: null
+         // sellerId: null
         },
         categories: ['FOOD', 'LAPTOP', 'MOBILE'] // 실제 카테고리 목록으로 교체해야 합니다.
       };
@@ -49,7 +49,7 @@
         formData.append('imagePath', this.item.imagePath[0], this.item.imagePath[0].name);
       }
     });
-
+    const email = localStorage.getItem('email');
     const response = await axios.post(
       `${process.env.VUE_APP_API_BASE_URL}/item-service/item/create`, 
       formData, 
@@ -57,7 +57,8 @@
         headers: { 
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`, // 필요한 경우
-          'X-Refresh-Token': `${localStorage.getItem('refreshToken')}`
+          'X-Refresh-Token': `${localStorage.getItem('refreshToken')}`,
+          myEmail : `${email}`
         }
       }
     );
