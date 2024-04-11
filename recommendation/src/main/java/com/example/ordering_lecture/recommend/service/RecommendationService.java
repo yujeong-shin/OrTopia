@@ -18,6 +18,7 @@ import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.UserBasedRecommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.stereotype.Service;
 import org.mariadb.jdbc.MariaDbDataSource;
 
@@ -42,6 +43,9 @@ public class RecommendationService {
 
     // 입력한 사용자에 대해 유사도 기반 맞춤형 상품 추천
     public void getRecommendations() {
+        // 기존 값들 비우기
+        redisService.flushAll();
+
         // jwt 토큰 발행 후 Redis 3번 채널에 저장
         jwtTokenProvider.createRecommandToken();
 
@@ -117,8 +121,6 @@ public class RecommendationService {
                 RecommendationRedisData recommendationRedisData = new RecommendationRedisData(recommendation.getItemID(), imagePath);
                 recommendationRedisDatas.add(recommendationRedisData);
             }
-
-            // 기존 값들 비우기
 
             // redis에 저장
             redisService.setValues(id, recommendationRedisDatas);

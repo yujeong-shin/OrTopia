@@ -35,4 +35,8 @@ public class RedisService {
         ListOperations<Long, String> values = redisTemplate.opsForList();
         return values.range(key, 0, 2);
     }
+
+    public void flushAll(){
+        redisTemplate.getConnectionFactory().getConnection().serverCommands().flushAll();
+    }
 }
