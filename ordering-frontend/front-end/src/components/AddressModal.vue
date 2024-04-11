@@ -87,7 +87,6 @@ export default {
     return {
       addresses: [],
       id: '',
-      memberId: localStorage.getItem('email'), // localStorage에서 이메일을 memberId로 사용
       name: '', 
       roadAddress: '',
       zonecode: '',
@@ -99,26 +98,26 @@ export default {
     };
   },
   methods: {
-    async deleteAddress(id) {
-        if (!confirm("이 주소를 삭제하시겠습니까?")) {
-            return;
-        }
+    async deleteAddress(addressId) {
+  if (!confirm("이 주소를 삭제하시겠습니까?")) {
+      return;
+  }
 
-        try {
-            await axios.delete(`${process.env.VUE_APP_API_BASE_URL}/member-service/delete/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-                    "X-Refresh-Token": localStorage.getItem('refreshToken'),
-                    "Content-Type": "application/json",
-                }
-            });
-            this.getMemberInfo(); // 주소 목록 새로고침
-            this.$emit('address-deleted'); // 필요한 경우, 주소가 삭제되었다는 사실을 부모 컴포넌트에 알림
-        } catch (error) {
-            console.error("주소 삭제 중 오류 발생: ", error);
-            alert("주소를 삭제하는 동안 오류가 발생했습니다.");
-        }
-    },
+  try {
+      const email = localStorage.getItem('email');
+      await axios.delete(`${process.env.VUE_APP_API_BASE_URL}/member-service/address/delete/${addressId}`, {
+          headers: {
+              Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+              "X-Refresh-Token": localStorage.getItem('refreshToken'),
+              "myEmail": email, // 헤더에 이메일 정보 추가
+          }
+      });
+      this.getMemberInfo(); // 주소 목록 새로고침
+  } catch (error) {
+      console.error("주소 삭제 중 오류 발생: ", error);
+      alert("주소를 삭제하는 동안 오류가 발생했습니다.");
+  }
+},
     updateDialog(value) {
       this.$emit('update:dialog', value);
     },
@@ -126,19 +125,21 @@ export default {
       this.$emit('update:dialog', false);
     },
     async getMemberInfo() {
-      try {
-        // 여기에서 memberId 대신 이메일을 사용하여 요청
-        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/member-service/members/${this.memberId}/addresses`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-            "X-Refresh-Token": localStorage.getItem('refreshToken'),
-          }
-        });
-        this.addresses = response.data;
-      } catch (error) {
-        console.error("Error fetching member addresses: ", error);
+  try {
+    const email = localStorage.getItem('email');
+    const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/member-service/address/by-email`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        "X-Refresh-Token": localStorage.getItem('refreshToken'),
+        "myEmail": email,
       }
-    },
+    });
+    console.log(response); // 응답 구조 확인
+    this.addresses = response.data.result; // 가정된 응답 구조에 따라 조정
+  } catch (error) {
+    console.error("Error fetching member addresses: ", error);
+  }
+},
     openPostcode() {
       new window.daum.Postcode({
       oncomplete: (data) => {
@@ -162,10 +163,12 @@ export default {
       detail: this.detail,
     };
     // URL에 이메일을 직접 포함하여 요청 보냄
-    await axios.post(`${process.env.VUE_APP_API_BASE_URL}/member-service/create/${this.memberId}`, addressData, {
+    const email = localStorage.getItem('email');
+    await axios.post(`${process.env.VUE_APP_API_BASE_URL}/member-service/address/create`, addressData, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         "X-Refresh-Token": localStorage.getItem('refreshToken'),
+        myEmail : `${email}`,
       }
     });
     this.getMemberInfo(); // 주소 목록 새로고침
