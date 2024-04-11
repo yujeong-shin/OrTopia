@@ -6,6 +6,9 @@ import MypageComponent from '@/components/MypageComponent.vue';
 import LoginComponent from '@/components/LoginComponent.vue'; // 로그인 컴포넌트 import
 import SignupComponent from '@/components/SignupComponent.vue'; // 회원가입 컴포넌트 import
 import ItemCreateComponent from '@/components/ItemCreateComponent.vue';
+import ItemBuyComponent from '@/components/ItemBuyComponent';
+import MyCartComponent from '@/components/MyCartComponent.vue';
+
 
 const routes = [
   {
@@ -37,6 +40,16 @@ const routes = [
     path: '/signup', // 회원가입 페이지
     name: 'Signup',
     component: SignupComponent,
+  },
+  {
+    path: '/buypage', // 아이템 구매 페이지
+    name: 'Buypage',
+    component: ItemBuyComponent,
+  },
+  {
+    path: '/mycart', // 아이템 구매 페이지
+    name: 'MyCart',
+    component: MyCartComponent,
   },
 
   {
