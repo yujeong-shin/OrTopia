@@ -33,7 +33,7 @@ public class JwtGlobalFilter implements GlobalFilter {
     @Autowired
     private RedisTemplate<String, String> redisTemplate; // Changed to String, String
 
-    private final List<String> allowUrl = Arrays.asList("/member/create", "/doLogin", "/item/items");
+    private final List<String> allowUrl = Arrays.asList("/member/create", "/doLogin", "/item/items","/item/read/{id}");
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Override
