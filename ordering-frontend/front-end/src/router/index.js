@@ -5,9 +5,11 @@ import ItemComponent from '@/components/ItemComponent.vue';
 import MypageComponent from '@/components/MypageComponent.vue';
 import LoginComponent from '@/components/LoginComponent.vue'; // 로그인 컴포넌트 import
 import SignupComponent from '@/components/SignupComponent.vue'; // 회원가입 컴포넌트 import
+import ItemCreateComponent from '@/components/ItemCreateComponent.vue';
 import ItemBuyComponent from '@/components/ItemBuyComponent';
 import MyCartComponent from '@/components/MyCartComponent.vue';
 import OrderByKakaoComponent from '@/components/OrderByKakaoComponent.vue';
+
 
 const routes = [
   {
@@ -54,6 +56,11 @@ const routes = [
     path: '/order/kakao', // 아이템 구매 페이지
     name: 'OrderByKakao',
     component: OrderByKakaoComponent,
+  },
+  {
+    path: '/sell', // 회원가입 페이지
+    name: 'ItemCreate',
+    component: ItemCreateComponent,
   },
   // 기타 경로...
 ];

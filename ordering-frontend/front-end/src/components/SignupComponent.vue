@@ -60,7 +60,10 @@
 
 <script setup>
 import { reactive } from 'vue';
+import axios from 'axios';
+import { useRouter } from 'vue-router'; // Vue Router를 사용하기 위해 useRouter 가져오기
 
+// 회원가입 양식 데이터
 const signupForm = reactive({
   email: '',
   name: '',
@@ -70,8 +73,39 @@ const signupForm = reactive({
   phoneNumber: '',
 });
 
-function signup() {
+const router = useRouter(); // useRouter 훅을 사용하여 router 인스턴스 가져오기
+
+// 회원가입 함수
+async function signup() {
   console.log('회원가입 시도:', signupForm);
-  // 여기에 회원가입 로직을 추가하세요.
+
+  // 입력 검증 로직 (예시)
+  if (!signupForm.email || !signupForm.password) {
+    alert('이메일과 비밀번호를 입력해주세요.');
+    return;
+  }
+
+  try {
+    // axios를 사용하여 회원가입 요청 전송
+    const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/member-service/member/create`, {
+      email: signupForm.email,
+      name: signupForm.name,
+      password: signupForm.password,
+      age: signupForm.age,
+      gender: signupForm.gender,
+      phoneNumber: signupForm.phoneNumber,
+    });
+
+    // 성공 응답 처리
+    console.log('회원가입 성공:', response.data);
+    alert('회원가입에 성공했습니다. 로그인 페이지로 이동합니다.');
+
+    // 성공 후 로그인 페이지로 리디렉션
+    router.push('/login'); // '/login'은 로그인 페이지의 경로입니다. 프로젝트의 실제 경로에 맞게 수정해야 합니다.
+  } catch (error) {
+    // 오류 응답 처리
+    console.error('회원가입 오류:', error.response);
+    alert(`회원가입 오류: ${error.response.data.message}`);
+  }
 }
 </script>
