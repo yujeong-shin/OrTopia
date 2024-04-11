@@ -121,7 +121,6 @@ public class MemberService {
             throw new IllegalArgumentException("유효하지 않은 이메일 입니다.");
         }
 
-        // 비밀번호 일치 여부 검증
         String accessToken = jwtTokenProvider.createAccessToken(member.getEmail(), member.getRole().toString());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail(), member.getRole().toString());
 
@@ -129,6 +128,8 @@ public class MemberService {
     }
 
     public MemberResponseDto findIdByEmail(String email) {
-        return null;
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("이메일을 찾지 못했습니다. " + email));
+        return MemberResponseDto.toDto(member);
     }
 }

@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "member-service")
 public interface MemberServiceClient {
-    @GetMapping("member/search/{email}")
-    ResponseEntity<OrTopiaResponse> searchIdByEmail(String email);
+    @GetMapping("/member/search/{email}")
+    Long searchIdByEmail(@PathVariable("email") String email);
 }
