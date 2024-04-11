@@ -20,7 +20,7 @@
         </v-card>
       </v-col>
     </v-row>
-      <!-- 주문관리 섹션 -->
+    <!-- 주문관리 섹션 -->
     <v-row>
       <v-col cols="12">
         <v-card outlined tile class="pa-3 mb-3">
@@ -37,31 +37,29 @@
         </v-card>
       </v-col>
     </v-row>
-  
-      <!-- 하단 섹션: 구매내역, 판매내역, 즐겨찾기한 업체 목록 -->
-      <v-row>
-        <v-col cols="12" md="6">
-          <v-card outlined tile class="pa-3 mb-3">
-            <v-card-title class="headline">구매내역</v-card-title>
-            <!-- 구매내역 내용 -->
-          </v-card>
-        </v-col>
-        <v-col cols="12" md="6">
-          <v-card outlined tile class="pa-3 mb-3">
-            <v-card-title class="headline">판매내역</v-card-title>
-            <!-- 판매내역 내용 -->
-          </v-card>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12">
-          <v-card outlined tile class="pa-3">
-            <v-card-title class="headline">즐겨찾기한 업체 목록</v-card-title>
-            <!-- 즐겨찾기한 업체 목록 내용 -->
-          </v-card>
-        </v-col>
-      </v-row>
-    
+    <!-- 하단 섹션: 구매내역, 판매내역, 즐겨찾기한 업체 목록 -->
+    <v-row>
+      <v-col cols="12" md="6">
+        <v-card outlined tile class="pa-3 mb-3">
+          <v-card-title class="headline">구매내역</v-card-title>
+          <!-- 구매내역 내용 -->
+        </v-card>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-card outlined tile class="pa-3 mb-3">
+          <v-card-title class="headline">판매내역</v-card-title>
+          <!-- 판매내역 내용 -->
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-card outlined tile class="pa-3">
+          <v-card-title class="headline">즐겨찾기한 업체 목록</v-card-title>
+          <!-- 즐겨찾기한 업체 목록 내용 -->
+        </v-card>
+      </v-col>
+    </v-row>
     <AddressModal
       v-model="showModal"
       :member-id="memberId"
@@ -71,12 +69,26 @@
 </template>
 
 <script>
+import { ref } from 'vue';
 import axios from 'axios';
 import AddressModal from "@/components/AddressModal.vue";
 
 export default {
   components: {
     AddressModal
+  },
+  setup() {
+    const orderInfo = ref([
+      { name: '입금전', quantity: 0 },
+      { name: '배송준비중', quantity: 0 },
+      { name: '배송중', quantity: 0 },
+      { name: '배송완료', quantity: 0 }
+    ]);
+    // 나머지 로직 구현
+    return {
+      orderInfo
+      // 다른 반응형 데이터를 여기에 반환
+    };
   },
   data() {
     return {
