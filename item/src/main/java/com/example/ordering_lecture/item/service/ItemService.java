@@ -19,8 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -165,10 +163,5 @@ public class ItemService {
             itemResponseDtos.add(itemResponseDto);
         }
         return itemResponseDtos;
-    }
-
-    public String getImagePath(Long itemId) {
-        Item item = itemRepository.findImagePathById(itemId).orElseThrow(()->new OrTopiaException(ErrorCode.NOT_FOUND_ITEM));
-        return item.getImagePath();
     }
 }
