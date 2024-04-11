@@ -9,12 +9,12 @@ import org.springframework.util.LinkedMultiValueMap;
 @RequiredArgsConstructor
 public class MakePayRequest {
 
-    public PayRequest getReadyRequest(Long id, PayInfoDto payInfoDto){
+    public PayRequest getReadyRequest(String email, PayInfoDto payInfoDto){
         LinkedMultiValueMap<String,String> map=new LinkedMultiValueMap<>();
         /** partner_user_id,partner_order_id는 결제 승인 요청에서도 동일해야함 */
-        String memberId=id+"";
+        String memberId=email+"";
 
-        String orderId="point"+id;
+        String orderId="point"+email;
         // 가맹점 코드 테스트코드는 TC0ONETIME 이다.
         map.add("cid","TC0ONETIME");
 
@@ -27,7 +27,7 @@ public class MakePayRequest {
 
         // 리액트에서 받아온 payInfoDto로 결제 주문서의 item 이름을
         // 지어주는 과정입니다.
-        map.add("item_name",payInfoDto.getItemName());
+        map.add("item_name", String.valueOf(payInfoDto.getItemDtoList().get(0).getId()));
 
         //수량
         map.add("quantity","1");
@@ -41,17 +41,17 @@ public class MakePayRequest {
         // 아래 url은 사용자가 결제 url에서 결제를 성공, 실패, 취소시
         // redirect할 url로 위에서 설명한 동작 과정에서 5번과 6번 사이 과정에서
         // 나온 결과로 이동할 url을 설정해 주는 것입니다.
-        map.add("approval_url", "http://localhost:8080/order/payment/success"+"/"+id); // 성공 시 redirect url
-        map.add("cancel_url", "http://localhost:8080/order/payment/cancel"); // 취소 시 redirect url
-        map.add("fail_url", "http://localhost:8080/order/payment/fail"); // 실패 시 redirect url
+        map.add("approval_url", "http://localhost:8080/order-service/payment/success"+"/"+email); // 성공 시 redirect url
+        map.add("cancel_url", "http://localhost:8080/order-service/payment/cancel"); // 취소 시 redirect url
+        map.add("fail_url", "http://localhost:8080/order-service/payment/fail"); // 실패 시 redirect url
 
         return new PayRequest("https://kapi.kakao.com/v1/payment/ready",map);
     }
 
-    public PayRequest getApproveRequest(String tid, Long id, String pgToken){
+    public PayRequest getApproveRequest(String tid, String email, String pgToken){
         LinkedMultiValueMap<String,String> map=new LinkedMultiValueMap<>();
 
-        String orderId="point"+id;
+        String orderId="point"+email;
         // 가맹점 코드 테스트코드는 TC0ONETIME 이다.
         map.add("cid", "TC0ONETIME");
 
@@ -66,7 +66,6 @@ public class MakePayRequest {
         // 여기에 &pg_token= 토큰값 이 붙어서 redirect 된다.
         // 해당 내용을 뽑아 내서 사용하면 된다.
         map.add("pg_token", pgToken);
-
         return new PayRequest("https://kapi.kakao.com/v1/payment/approve",map);
     }
 
