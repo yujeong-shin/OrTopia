@@ -7,6 +7,7 @@ import LoginComponent from '@/components/LoginComponent.vue'; // 로그인 컴�
 import SignupComponent from '@/components/SignupComponent.vue'; // 회원가입 컴포넌트 import
 import ItemBuyComponent from '@/components/ItemBuyComponent';
 import MyCartComponent from '@/components/MyCartComponent.vue';
+import OrderByKakaoComponent from '@/components/OrderByKakaoComponent.vue';
 
 const routes = [
   {
@@ -49,7 +50,11 @@ const routes = [
     name: 'MyCart',
     component: MyCartComponent,
   },
-
+  {
+    path: '/order/kakao', // 아이템 구매 페이지
+    name: 'OrderByKakao',
+    component: OrderByKakaoComponent,
+  },
   // 기타 경로...
 ];
 

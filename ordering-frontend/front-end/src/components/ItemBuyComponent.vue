@@ -135,6 +135,7 @@
                 <v-col cols="6">
                 <v-img
                   :class="['my-3', { 'logo-hover': hover }]"
+                  @click="kakaoPay"
                   src="@/assets/kapay.png"
                   contain
                   height="40"
@@ -160,7 +161,7 @@
 </template>
   
   <script>
-    // import axios from 'axios';  
+  import axios from 'axios';  
   export default {
     data() {
       return {
@@ -198,7 +199,32 @@
       updatePrice() {
       // 예시로 임의의 값인 500으로 설정
       this.price = this.totalPrice + this.deliveryPrice - this.dicountPrice;
-    }
+      },
+      async kakaoPay() {
+        const token = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem('refreshToken');
+        try {
+          const itemList = this.myItems.map(item => ({ id: item.id, count: item.count }));
+          const body = { price: this.price, itemDtoList: itemList }; // itemList을 itemDtoList로 변경
+          const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
+          const data = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/order-service/payment/ready`, body, { headers });
+          console.log(data);
+          const reDirectURL = data.data.result.next_redirect_pc_url;
+          // window.open(reDirectURL, '_blank');// 결제 창을 하나 띄우기
+          const order = {
+            name: this.name,
+            totalPrice : this.totalPrice,
+            phoneNumber: this.phoneNumber,
+            address: this.address,
+            addressDetail: this.addressDetail,
+            request: this.request
+          }
+          localStorage.setItem("order",JSON.stringify(order));
+          window.location.href = reDirectURL; // 페이지 이동
+        } catch (e) {
+          console.log(e);
+        }
+      },
     },
     mounted() {
     // 컴포넌트가 마운트되면 updatePrice 메서드 호출하여 price 값 업데이트
