@@ -42,8 +42,8 @@ public class MemberService {
         memberRepository.save(member);
         return MemberResponseDto.toDto(member);
     }
-    public MemberResponseDto findById(Long id) throws OrTopiaException {
-        Member member = memberRepository.findById(id).orElseThrow(
+    public MemberResponseDto readMember(String email) throws OrTopiaException {
+        Member member = memberRepository.findByEmail(email).orElseThrow(
                 ()-> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
                 );
         return MemberResponseDto.toDto(member);

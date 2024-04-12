@@ -41,9 +41,9 @@ public class MemberController {
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);
     }
     // 사용자 상세조회
-    @GetMapping("/member/{id}")
-    public ResponseEntity<OrTopiaResponse> findMember(@PathVariable Long id){
-        MemberResponseDto memberResponseDto = memberService.findById(id);
+    @GetMapping("/member/{email}")
+    public ResponseEntity<OrTopiaResponse> findMember(@RequestHeader("myEmail") String email){
+        MemberResponseDto memberResponseDto = memberService.readMember(email);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",memberResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class ItemExceptionHandler {
+public class OrderExceptionHandler {
     @ExceptionHandler(OrTopiaException.class)
     public ResponseEntity<Map<String,String>> OrTopiaException(OrTopiaException e){
         Map<String,String> body = new HashMap<>();
