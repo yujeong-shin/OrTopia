@@ -9,6 +9,7 @@ import ItemCreateComponent from '@/components/ItemCreateComponent.vue';
 import ItemBuyComponent from '@/components/ItemBuyComponent';
 import MyCartComponent from '@/components/MyCartComponent.vue';
 import OrderByKakaoComponent from '@/components/OrderByKakaoComponent.vue';
+import NoticeDetail from '@/components/NoticeDetail.vue'
 
 
 const routes = [
@@ -62,7 +63,12 @@ const routes = [
     name: 'ItemCreate',
     component: ItemCreateComponent,
   },
-  // 기타 경로...
+  {
+    path: '/notice/:id',
+    name: 'NoticeDetail',
+    component: NoticeDetail,
+    props: true
+  }
 ];
 
 const router = createRouter({

@@ -60,7 +60,7 @@
         </v-menu>
 
         <!-- 텍스트 에디터 -->
-        <text-editor v-model="content" />
+        <text-editor v-model="contents" />
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -90,9 +90,10 @@ export default {
         name: '',
         startDate: '',
         endDate: '',
+        contents: '',
       },
       selectedFile: null,
-      content: '', // 'content'를 위한 초기 값 설정
+      contents: '', 
       startMenu: false,
       endMenu: false,
     };
@@ -107,45 +108,33 @@ export default {
   },
   methods: {
     close() {
-      this.dialog = false;
-    },
-    handleFileChange(file) {
-      if (file) {
-        this.notice.imagePath = file.name;
-      }
+      window.location.reload();
     },
     saveContent() {
-      const formData = new FormData();
-      formData.append("name", this.notice.name);
-      formData.append("startDate", this.notice.startDate);
-      formData.append("endDate", this.notice.endDate);
-      formData.append("content", this.content); // 'content'도 서버로 전송
-      if (this.selectedFile) {
-        formData.append("file", this.selectedFile);
-      }
-      
-      // 토큰 사용 예시, 실제 구현에서는 적절한 인증 헤더를 설정해야 합니다.
-      const token = localStorage.getItem('accessToken');
-      const refreshToken = localStorage.getItem('refreshToken');
-      
-      axios.post(`${process.env.VUE_APP_API_BASE_URL}/notice-service/create`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-          "X-Refresh-Token": refreshToken,
-        },
-      })
-      .then(response => {
-        console.log(response.data);
-        this.close();
-      })
-      .catch(error => {
-        console.error("저장 중 에러 발생: ", error);
-        if (error.response && error.response.data && error.response.data.error_message) {
-          alert(error.response.data.error_message);
-        }
-      });
+  const noticeData = JSON.stringify({
+    name: this.notice.name,
+    startDate: this.notice.startDate,
+    endDate: this.notice.endDate,
+    contents: this.contents
+  });
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+      "X-Refresh-Token": localStorage.getItem('refreshToken'),
     },
+  };
+
+  axios.post(`${process.env.VUE_APP_API_BASE_URL}/notice-service/create`, noticeData, config)
+    .then(response => {
+      console.log(response.data);
+      window.location.reload();
+    })
+    .catch(error => {
+      console.error("저장 중 에러 발생: ", error);
+    });
+},
   },
-};
+}
 </script>

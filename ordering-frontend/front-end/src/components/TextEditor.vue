@@ -4,13 +4,13 @@
     <button
       @click="editor.chain().focus().toggleBold().run()"
       :disabled="!editor.can().chain().focus().toggleBold().run()"
-      :class="{ 'is-active': editor.isActive('bold') }" class="mx-2"
+      :class="{ 'is-active': editor.isActive('bold') }" 
     >
       <v-icon color="orange">mdi-format-bold</v-icon>
     </button>
 
-    <!-- 이미지 추가 -->
-    <button @click="onImageAdd" class="mx-2">
+     <!-- 이미지 추가 -->
+     <button @click="addImage" class="mx-2">
       <v-icon color="orange">mdi-image</v-icon>
     </button>
 
@@ -71,95 +71,110 @@
     >
       <v-icon color="orange">mdi-redo-variant</v-icon>
     </button>
+        <!-- 리스트 추가 -->
+        <button @click="editor.chain().focus().toggleBulletList().run()" :class="{ 'is-active': editor.isActive('bulletList') }" class="mx-2">
+          <v-icon color="orange">mdi-format-list-bulleted</v-icon>
+        </button>
+    
+        <button @click="editor.chain().focus().toggleOrderedList().run()" :class="{ 'is-active': editor.isActive('orderedList') }" class="mx-2">
+          <v-icon color="orange">mdi-format-list-numbered</v-icon>
+        </button>
+    
+        <!-- 인용구 -->
+        <button @click="editor.chain().focus().toggleBlockquote().run()" :class="{ 'is-active': editor.isActive('blockquote') }" class="mx-2">
+          <v-icon color="orange">mdi-format-quote-close</v-icon>
+        </button>
+    
+        <!-- 코드 블록 -->
+        <button @click="editor.chain().focus().toggleCodeBlock().run()" :class="{ 'is-active': editor.isActive('codeBlock') }" class="mx-2">
+          <v-icon color="orange">mdi-code-tags</v-icon>
+        </button>
+    
+        <!-- 수평선 -->
+        <button @click="editor.chain().focus().setHorizontalRule().run()" class="mx-2">
+          <v-icon color="orange">mdi-minus</v-icon>
+        </button>
+  
   </div>
   <input type="file" ref="fileInput" accept="image/*" @change="handleFileChange" style="display: none" />
   <!-- 에디터 영역 -->
   <editor-content :editor="editor" style="height: 90%" />
 </template>
   
-  <script>
-  import StarterKit from "@tiptap/starter-kit";
-  import Image from "@tiptap/extension-image"; // Image 확장 기능 import
-  import { Editor, EditorContent } from "@tiptap/vue-3";
-  
-  export default {
-    components: {
-      EditorContent,
+<script>
+import StarterKit from "@tiptap/starter-kit";
+import Image from "@tiptap/extension-image"; // Image 확장 기능 import
+import { Editor, EditorContent } from "@tiptap/vue-3";
+import axios from 'axios';
+
+export default {
+  components: {
+    EditorContent,
+  },
+  props: {
+    modelValue: {
+      type: String,
+      default: "",
     },
-  
-    props: {
-      modelValue: {
-          type: String,
-          default: "",
+  },
+  emits: ["update:modelValue"],
+  data() {
+    return {
+      editor: null,
+    };
+  },
+  mounted() {
+    this.editor = new Editor({
+      extensions: [
+        StarterKit,
+        Image,
+      ],
+      content: this.modelValue,
+      onUpdate: ({ editor }) => {
+        this.$emit("update:modelValue", editor.getHTML());
       },
-    },
-  
-    emits: ["update:modelValue"],
-  
-    data() {
-      return {
-        editor: null,
-      };
-    },
-  
-    watch: {
-      modelValue(value) {
-        if (this.editor && this.editor.getHTML() !== value) {
-          this.editor.commands.setContent(value, false);
-        }
-      },
-    },
-  
-    mounted() {
-      this.editor = new Editor({
-        extensions: [
-          StarterKit,
-          Image, // Editor에 Image 확장 기능 추가
-        ],
-        content: this.modelValue,
-        onUpdate: ({ editor }) => {
-          this.$emit("update:modelValue", editor.getHTML());
-        },
-      });
-    },
-  
-    beforeUnmount() {
-      if (this.editor) {
-        this.editor.destroy();
-      }
-    },
-  
-    methods: {
-      addImage() {
-        this.$refs.fileInput.click();
-      },
-      onImageAdd() {
-      this.$refs.fileInput.click(); // 숨겨진 파일 입력 요소를 클릭하도록 함
+    });
+  },
+  beforeUnmount() {
+    if (this.editor) {
+      this.editor.destroy();
+    }
+  },
+  methods: {
+    addImage() {
+      this.$refs.fileInput.click();
     },
     handleFileChange(event) {
       const files = event.target.files;
       if (files.length === 0) {
-        return; // 파일이 선택되지 않은 경우 아무 작업도 수행하지 않음
+        return;
       }
-      
-      // 선택된 첫 번째 파일을 처리
       const file = files[0];
-      
-      // FileReader를 사용하여 파일을 읽음
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const src = e.target.result; // 읽어들인 파일의 내용(데이터 URL)
-        
-        // 에디터에 이미지 삽입
-        this.editor.chain().focus().setImage({ src }).run();
-      };
-      reader.readAsDataURL(file); // 파일을 데이터 URL로 읽음
+      this.uploadImage(file);
+    },
+    uploadImage(file) {
+      let formData = new FormData();
+      formData.append('file', file); // 'file' 파라미터 이름 확인
 
-      // 파일 입력 요소를 초기화하여 다음 선택을 위해 준비
-      this.$refs.fileInput.value = '';
+      axios.post(`${process.env.VUE_APP_API_BASE_URL}/notice-service/upload`, formData, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          "X-Refresh-Token": localStorage.getItem('refreshToken'),          
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(response => {
+        const imageUrl = response.data; // 서버로부터 응답받은 이미지 URL
+        this.insertImageToEditor(imageUrl);
+      }).catch(error => {
+        console.error('Error uploading image:', error);
+      });
+    },
+    insertImageToEditor(imageUrl) {
+      const imageHtml = `<img src="${imageUrl}" alt="Uploaded Image"/>`;
+      this.editor.chain().focus().insertContent(imageHtml).run();
     },
   },
-};
+}
 </script>
   
   <style lang="scss">

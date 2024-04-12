@@ -1,26 +1,118 @@
 <template>
-    <div>
-      <h1>{{ notice.name }}</h1>
-      <img :src="notice.imagePath" alt="Notice Image" />
-      <p>시작일: {{ notice.startDate }}</p>
-      <p>종료일: {{ notice.endDate }}</p>
-    </div>
-  </template>
-  
-  <script setup>
-  import { onMounted, ref } from 'vue';
-  import { useRoute } from 'vue-router';
-  import axios from 'axios';
-  
-  const route = useRoute();
-  const notice = ref({});
-  
-  onMounted(async () => {
-    try {
-      const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/notice-service/notice/${route.params.id}`);
-      notice.value = response.data;
-    } catch (error) {
-      console.error("공지사항 상세 정보를 불러오는 중 에러 발생:", error);
-    }
-  });
-  </script>
+  <v-container class="my-5 py-4">
+    <v-card :class="{ 'gray-scale': noticeDeleted }" elevation="10" class="mx-auto" max-width="800">
+      <v-card-title class="justify-center">{{ notice.name }}</v-card-title>
+      <v-card-text>
+        <v-row justify="center">
+          <v-col cols="12" sm="6" class="text-center">
+            <v-subheader>시작일:</v-subheader>
+            <div>{{ notice.startDate }}</div>
+          </v-col>
+          <v-col cols="12" sm="6" class="text-center">
+            <v-subheader>종료일:</v-subheader>
+            <div>{{ notice.endDate }}</div>
+          </v-col>
+        </v-row>
+        <v-divider class="my-4"></v-divider>
+        <div v-html="notice.contents" class="body-1 text-center py-2"></div>
+        <!-- 메시지 표시 -->
+        <div v-if="noticeDeleted" class="text-center caption">
+          종료된 이벤트입니다.
+        </div>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="red" @click="deleteNotice" v-if="!noticeDeleted">삭제하기</v-btn>
+      </v-card-actions>
+      <v-dialog v-model="dialog" persistent max-width="300px">
+        <v-card>
+          <v-card-title class="headline">삭제 확인</v-card-title>
+          <v-card-text>정말로 이 공지사항을 삭제하시겠습니까?</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="closeDialog">취소</v-btn>
+            <v-btn color="red" text @click="confirmDelete">삭제</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-card>
+  </v-container>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      notice: {},
+      noticeDeleted: false,
+      dialog: false,
+    };
+  },
+  created() {
+    this.fetchNotice();
+  },
+  methods: {
+    deleteNotice() {
+      this.dialog = true;
+    },
+    closeDialog() {
+      this.dialog = false;
+    },
+    confirmDelete() {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          'X-Refresh-Token': localStorage.getItem('refreshToken')
+        }
+      };
+      axios.patch(`${process.env.VUE_APP_API_BASE_URL}/notice-service/delete/${this.$route.params.id}`, null, config)
+        .then(() => {
+          this.noticeDeleted = true;
+          this.dialog = false;
+        })
+        .catch(error => {
+          console.error("공지사항 삭제 중 에러 발생:", error);
+        });
+    },
+    fetchNotice() {
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+        'X-Refresh-Token': localStorage.getItem('refreshToken')
+      }
+    };
+    axios.get(`${process.env.VUE_APP_API_BASE_URL}/notice-service/notice/${this.$route.params.id}`, config)
+      .then(response => {
+        this.notice = response.data;
+        // 서버로부터 받은 delYN 값을 확인하여 noticeDeleted 상태를 설정
+        this.noticeDeleted = this.notice.delYN === 1;  // '===' 연산자를 사용하여 엄격하게 비교
+      })
+      .catch(error => {
+        console.error("공지사항 상세 정보를 불러오는 중 에러 발생:", error);
+      });
+  },
+  },
+}
+</script>
+
+<style scoped>
+.gray-scale {
+  filter: grayscale(100%);
+}
+
+.v-subheader {
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.caption {
+  font-size: 14px;
+  color: #757575;
+}
+
+.v-container {
+  max-width: 800px;
+}
+</style>
