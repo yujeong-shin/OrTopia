@@ -9,12 +9,20 @@
         <!-- 상품 정보 -->
         <v-col cols="12" sm="6">
           <div>
-            <h1 style="font-size: 40px; margin-top: 30px;">{{ item.name }}</h1>
-            <p style="font-size: 20px; margin-top: 30px;">가격: {{ item.price }}</p>
-            <p style="font-size: 20px; margin-top: 30px;">카테고리 {{ item.category }}</p>
-            <v-btn text style="margin-top: 30px;">판매자 이름 : {{ item.sellerId }}</v-btn>
-            <v-btn color="primary" text style="margin-top: 30px;">즐겨찾기</v-btn>
-            <p style="font-size: 20px; margin-top: 30px;">점수</p>
+            <h1 style="font-size: 40px; margin-top: 30px">{{ item.name }}</h1>
+            <p style="font-size: 20px; margin-top: 30px">
+              가격: {{ item.price }}
+            </p>
+            <p style="font-size: 20px; margin-top: 30px">
+              카테고리 {{ item.category }}
+            </p>
+            <v-btn text style="margin-top: 30px"
+              >판매자 이름 : {{ item.sellerId }}</v-btn
+            >
+            <v-btn color="primary" text style="margin-top: 30px"
+              >즐겨찾기</v-btn
+            >
+            <p style="font-size: 20px; margin-top: 30px">점수</p>
           </div>
         </v-col>
       </v-row>
@@ -27,7 +35,12 @@
               <p>수량:</p>
             </v-col>
             <v-col>
-              <v-text-field v-model.number="quantity" type="number" min="1" max="10" />
+              <v-text-field
+                v-model.number="quantity"
+                type="number"
+                min="1"
+                max="10"
+              />
             </v-col>
           </v-row>
         </v-card-text>
@@ -88,13 +101,12 @@
       <h1 style="text-align: center">상품 상세 설명</h1>
       <h1 style="text-align: center">상품 상세 설명</h1>
       <h1 style="text-align: center">상품 상세 설명</h1>
-      
     </v-container>
     <v-container>
       <h1 style="text-align: center">리뷰</h1>
     </v-container>
   </v-main>
-  
+
   <!-- 스티키 사이드바 -->
   <div class="sticky-sidebar" :style="{ top: stickyTop + 'px' }">
     <h5 style="text-align: center">최근본상품</h5>
@@ -105,98 +117,105 @@
       outlined
       @click="goToDetailPage(product.id)"
     >
-      <v-img :src="product.imagePath" height="100px"></v-img> 
+      <v-img :src="product.imagePath" height="100px"></v-img>
     </v-card>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import { mapActions } from 'vuex';
+import axios from "axios";
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
       itemId: null,
-      item : [],
+      item: [],
       selectedOption: null,
-      options: ['옵션 1', '옵션 2', '옵션 3'],
+      options: ["옵션 1", "옵션 2", "옵션 3"],
       quantity: 0,
       recentProducts: [],
       stickyTop: 0,
     };
   },
-  created(){
+  created() {
     this.itemId = this.$route.params.id;
     this.getItemInfo();
   },
   methods: {
-    ...mapActions('addToCart'),
+    ...mapActions("addToCart"),
     buyNow() {
       // 바로 구매 동작 구현
     },
     addToCart() {
-      if(this.quantity==0){
+      if (this.quantity == 0) {
         alert("0개는 주문 할 수 없습니다.");
-      }else{
-        if(confirm("장바구니에 담습니까?")){
+      } else {
+        if (confirm("장바구니에 담습니까?")) {
           this.item.count = this.quantity;
-          this.$store.dispatch('addToCart',this.item); 
-        if(confirm("장바구니로 이동하시겠습니까?")){
-          this.$router.push('/mycart')
+          this.$store.dispatch("addToCart", this.item);
+          if (confirm("장바구니로 이동하시겠습니까?")) {
+            this.$router.push("/mycart");
           }
         }
       }
     },
     handleScroll() {
-      const offsetTop = window.pageYOffset || document.documentElement.scrollTop;
+      const offsetTop =
+        window.pageYOffset || document.documentElement.scrollTop;
       this.stickyTop = offsetTop > 100 ? 100 : offsetTop;
     },
-    async getItemInfo(){
-      const token = localStorage.getItem('accessToken');
-      const refreshToken = localStorage.getItem('refreshToken')
-      const email = localStorage.getItem('email');
-        try{
-          const data = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/item-service/item/read/${this.itemId}`,{
+    async getItemInfo() {
+      const token = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+      const email = localStorage.getItem("email");
+      try {
+        const data = await axios.get(
+          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/read/${email}`,
+          {
             headers: {
-              myEmail : `${email}`
+              myEmail: `${email}`,
+            },
+          }
+        );
+        this.item = data.data.result;
+        console.log(this.item);
+      } catch (error) {
+        alert(error.response.data.error_message);
+        console.log(error);
+      }
+      // 최근 본 상품 불러오기
+
+      if (token != null) {
+        try {
+          const data = await axios.get(
+            `${process.env.VUE_APP_API_BASE_URL}/item-service/item/recent_items`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "X-Refresh-Token": `${refreshToken}`,
+              },
             }
-          });
-          this.item = data.data.result; 
-          console.log(this.item);
-        }catch(error){
-          alert(error.response.data.error_message);
-          console.log(error);
-        }
-        // 최근 본 상품 불러오기
-        
-        if(token != null){
-          try{
-            const data = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/item-service/item/recent_items`,{
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "X-Refresh-Token" : `${refreshToken}`
-            }
-          });
-          console.log(data)
+          );
+          console.log(data);
           this.recentProducts = data.data.result;
           console.log(this.recentProducts);
-          }catch(error){
-            console.log(error);
-          }
+        } catch (error) {
+          console.log(error);
         }
-      },
-      // 최근 본 상품 사진을 클릭시 리다이렉트
-      goToDetailPage(Id){
-        window.location.href = `/item/${Id}`;
+      }
+    },
+    // 최근 본 상품 사진을 클릭시 리다이렉트
+    goToDetailPage(Id) {
+      window.location.href = `/item/${Id}`;
     },
   },
   mounted() {
-    window.addEventListener('scroll', this.handleScroll);
+    window.addEventListener("scroll", this.handleScroll);
   },
-  beforeUnmount() { // beforeDestroy가 아닌 beforeUnmount를 사용합니다.
-    window.removeEventListener('scroll', this.handleScroll);
+  beforeUnmount() {
+    // beforeDestroy가 아닌 beforeUnmount를 사용합니다.
+    window.removeEventListener("scroll", this.handleScroll);
   },
-  
 };
 </script>
 
@@ -204,8 +223,8 @@ export default {
 .sticky-sidebar {
   position: fixed;
   right: 20px;
-  width: 120px; 
-  max-height: calc(50vh - 50px); 
+  width: 120px;
+  max-height: calc(50vh - 50px);
   overflow-y: hi;
 }
 </style>
