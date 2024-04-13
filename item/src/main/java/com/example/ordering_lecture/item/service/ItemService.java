@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
+import com.example.ordering_lecture.item.controller.MemberServiceClient;
 import com.example.ordering_lecture.item.dto.ItemRequestDto;
 import com.example.ordering_lecture.item.dto.ItemResponseDto;
 import com.example.ordering_lecture.item.dto.ItemUpdateDto;
@@ -13,15 +14,16 @@ import com.example.ordering_lecture.item.repository.ItemRepository;
 import com.example.ordering_lecture.redis.RedisService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,30 +31,35 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final RedisService redisService;
     private final AmazonS3Client amazonS3Client;
-    public ItemService(ItemRepository itemRepository, RedisService redisService, AmazonS3Client amazonS3Client) {
+    private final MemberServiceClient memberServiceClient;
+    public ItemService(ItemRepository itemRepository, RedisService redisService, AmazonS3Client amazonS3Client, MemberServiceClient memberServiceClient) {
         this.itemRepository = itemRepository;
         this.redisService = redisService;
         this.amazonS3Client = amazonS3Client;
+        this.memberServiceClient = memberServiceClient;
     }
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public ItemResponseDto createItem(ItemRequestDto itemRequestDto)throws OrTopiaException {
-        String fileName = itemRequestDto.getName()+System.currentTimeMillis();
+    public ItemResponseDto createItem(ItemRequestDto itemRequestDto, String email) throws OrTopiaException {
+        String fileName = itemRequestDto.getName() + System.currentTimeMillis();
         String fileUrl = null;
         try {
-            ObjectMetadata metadata= new ObjectMetadata();
+            ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(itemRequestDto.getImagePath().getContentType());
             metadata.setContentLength(itemRequestDto.getImagePath().getSize());
-            amazonS3Client.putObject(bucket,fileName,itemRequestDto.getImagePath().getInputStream(),metadata);
-            fileUrl = amazonS3Client.getUrl(bucket,fileName).toString();
+            amazonS3Client.putObject(bucket, fileName, itemRequestDto.getImagePath().getInputStream(), metadata);
+            fileUrl = amazonS3Client.getUrl(bucket, fileName).toString();
+
+            Long sellerId = memberServiceClient.searchIdByEmail(email);
+            Item item = itemRequestDto.toEntity(fileUrl, sellerId);
+            itemRepository.save(item);
+            return ItemResponseDto.toDto(item);
         } catch (Exception e) {
             throw new OrTopiaException(ErrorCode.S3_SERVER_ERROR);
         }
-        Item item = itemRequestDto.toEntity(fileUrl);
-        itemRepository.save(item);
-        return ItemResponseDto.toDto(item);
     }
+
 
     public List<ItemResponseDto> showAllItem(){
         return itemRepository.findAll().stream()
@@ -158,5 +165,10 @@ public class ItemService {
             itemResponseDtos.add(itemResponseDto);
         }
         return itemResponseDtos;
+    }
+
+    public String getImagePath(Long itemId) {
+        Item item = itemRepository.findImagePathById(itemId).orElseThrow(()->new OrTopiaException(ErrorCode.NOT_FOUND_ITEM));
+        return item.getImagePath();
     }
 }

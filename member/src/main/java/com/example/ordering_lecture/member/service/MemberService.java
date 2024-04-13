@@ -42,8 +42,8 @@ public class MemberService {
         memberRepository.save(member);
         return MemberResponseDto.toDto(member);
     }
-    public MemberResponseDto findById(Long id) throws OrTopiaException {
-        Member member = memberRepository.findById(id).orElseThrow(
+    public MemberResponseDto readMember(String email) throws OrTopiaException {
+        Member member = memberRepository.findByEmail(email).orElseThrow(
                 ()-> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
                 );
         return MemberResponseDto.toDto(member);
@@ -121,12 +121,15 @@ public class MemberService {
             throw new IllegalArgumentException("유효하지 않은 이메일 입니다.");
         }
 
-        // 비밀번호 일치 여부 검증
         String accessToken = jwtTokenProvider.createAccessToken(member.getEmail(), member.getRole().toString());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail(), member.getRole().toString());
 
-        Map<String, String> result = new HashMap<>();
-        result.put("refresh_token", refreshToken);
         return new MemberLoginResDto(member.getId(),accessToken,refreshToken);
+    }
+
+    public MemberResponseDto findIdByEmail(String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("이메일을 찾지 못했습니다. " + email));
+        return MemberResponseDto.toDto(member);
     }
 }

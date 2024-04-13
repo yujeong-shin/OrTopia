@@ -4,20 +4,16 @@ package com.example.ordering_lecture.member.controller;
 import com.example.ordering_lecture.common.MemberLoginReqDto;
 import com.example.ordering_lecture.common.MemberLoginResDto;
 import com.example.ordering_lecture.common.OrTopiaResponse;
-import com.example.ordering_lecture.member.domain.Member;
 import com.example.ordering_lecture.member.dto.Buyer.*;
 import com.example.ordering_lecture.member.dto.Seller.SellerResponseDto;
 import com.example.ordering_lecture.member.service.MemberService;
-import com.example.ordering_lecture.securities.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class MemberController {
@@ -45,9 +41,9 @@ public class MemberController {
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);
     }
     // 사용자 상세조회
-    @GetMapping("/member/{id}")
-    public ResponseEntity<OrTopiaResponse> findMember(@PathVariable Long id){
-        MemberResponseDto memberResponseDto = memberService.findById(id);
+    @GetMapping("/member/{email}")
+    public ResponseEntity<OrTopiaResponse> findMember(@RequestHeader("myEmail") String email){
+        MemberResponseDto memberResponseDto = memberService.readMember(email);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",memberResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
@@ -93,4 +89,10 @@ public class MemberController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success",sellerResponseDtos);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
+    @GetMapping("/member/search/{email}")
+    public Long searchIdByEmail(@PathVariable("email") String email){
+        MemberResponseDto memberResponseDto = memberService.findIdByEmail(email);
+        return memberResponseDto.getId();
+    }
+
 }
