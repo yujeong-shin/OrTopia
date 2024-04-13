@@ -85,9 +85,8 @@ export default {
     };
     axios.get(`${process.env.VUE_APP_API_BASE_URL}/notice-service/notice/${this.$route.params.id}`, config)
       .then(response => {
-        this.notice = response.data;
-        // 서버로부터 받은 delYN 값을 확인하여 noticeDeleted 상태를 설정
-        this.noticeDeleted = this.notice.delYN === 1;  // '===' 연산자를 사용하여 엄격하게 비교
+        this.notice = response.data.result;
+        this.noticeDeleted = this.notice.delYN === 1; 
       })
       .catch(error => {
         console.error("공지사항 상세 정보를 불러오는 중 에러 발생:", error);

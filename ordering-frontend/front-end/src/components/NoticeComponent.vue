@@ -43,7 +43,9 @@ export default {
     const fetchNotices = async () => {
       try {
         const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/notice-service/notices`);
-        notices.value = response.data;
+        if (Array.isArray(response.data.result)) { 
+          notices.value = response.data.result;
+        } 
       } catch (error) {
         console.error("공지사항을 불러오는 중 에러 발생:", error);
       }
@@ -58,7 +60,7 @@ export default {
     const paginatedNotices = computed(() => {
       const start = (page.value - 1) * noticesPerPage;
       const end = start + noticesPerPage;
-      return notices.value.slice(start, end);
+      return Array.isArray(notices.value) ? notices.value.slice(start, end) : [];
     });
 
     // 모달을 닫는 메소드
