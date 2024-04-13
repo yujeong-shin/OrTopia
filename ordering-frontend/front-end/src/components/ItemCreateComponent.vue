@@ -5,7 +5,14 @@
         <v-text-field v-model="item.stock" label="재고" type="number" required></v-text-field>
         <v-text-field v-model="item.price" label="가격" type="number" required></v-text-field>
         <v-select v-model="item.category" :items="categories" label="카테고리" required></v-select>
-        <v-text-field v-model="item.detail" label="상세 설명" required></v-text-field>
+        <v-text-field
+        readonly
+        v-model="item.detail"
+        @click="showModal = true"
+        label="상세 설명"
+        required
+        append-icon="mdi-pencil"
+      ></v-text-field>
         <v-file-input v-model="item.imagePath" label="이미지 파일" accept="image/*"></v-file-input>
         <v-text-field v-model="item.minimumStock" label="최소 재고" type="number" required></v-text-field>
         <!-- <v-checkbox v-model="item.delYN" label="삭제 여부"></v-checkbox>
@@ -14,12 +21,22 @@
         
         <v-btn type="submit" color="success">등록하기</v-btn>
       </v-form>
+      <item-create-modal
+      :value="showModal"
+      :detail="itemDetail"
+      @update:value="showModal = $event"
+      @update:detail="itemDetail = $event"
+      />
     </v-container>
   </template>
   
   <script>
  import axios from 'axios';
+ import ItemCreateModal from "@/components/ItemCreateModal.vue";
   export default {
+    components: {
+    ItemCreateModal
+  },
     data() {
       return {
         item: {
@@ -34,7 +51,8 @@
           isBaned: false,
          // sellerId: null
         },
-        categories: ['FOOD', 'LAPTOP', 'MOBILE'] // 실제 카테고리 목록으로 교체해야 합니다.
+        categories: ['FOOD', 'LAPTOP', 'MOBILE'], // 실제 카테고리 목록으로 교체해야 합니다.
+        showModal: false,
       };
     },
     methods: {
