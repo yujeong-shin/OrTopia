@@ -56,7 +56,7 @@
       { 
         headers: { 
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`, // 필요한 경우
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`, 
           'X-Refresh-Token': `${localStorage.getItem('refreshToken')}`,
           myEmail : `${email}`
         }

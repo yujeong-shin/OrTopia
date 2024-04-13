@@ -170,7 +170,7 @@ export default {
       const email = localStorage.getItem("email");
       try {
         const data = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/read/${email}`,
+          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/read/${this.itemId}`,
           {
             headers: {
               myEmail: `${email}`,
