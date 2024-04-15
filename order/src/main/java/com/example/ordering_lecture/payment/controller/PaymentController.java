@@ -5,6 +5,7 @@ import com.example.ordering_lecture.payment.dto.PayApproveResDto;
 import com.example.ordering_lecture.payment.dto.PayInfoDto;
 import com.example.ordering_lecture.payment.dto.PayReadyResDto;
 import com.example.ordering_lecture.payment.service.PaymentService;
+import com.example.ordering_lecture.redis.RedisService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +16,11 @@ import org.springframework.web.servlet.view.RedirectView;
 public class PaymentController {
 
     private final PaymentService paymentService;
+    private final RedisService redisService;
 
-    public PaymentController(PaymentService paymentService) {
+    public PaymentController(PaymentService paymentService, RedisService redisService) {
         this.paymentService = paymentService;
+        this.redisService = redisService;
     }
 
     /** 결제 준비 redirect url 받기 --> 상품명과 가격을 같이 보내줘야함 */
@@ -46,13 +49,13 @@ public class PaymentController {
                                             @RequestParam("pg_token") String pgToken) {
         try {
             PayApproveResDto kakaoApprove = paymentService.getApprove(pgToken,email);
-            OrTopiaResponse orTopiaResponse = new OrTopiaResponse("success",kakaoApprove);
-//            return new ResponseEntity<>(orTopiaResponse,HttpStatus.PROCESSING);
-            return new RedirectView("http://localhost:8081/order/kakao");
+            // 결제가 성공하면 redis에 pgToken에 저장.
+            redisService.setValues(email,pgToken);
+            return new RedirectView("http://localhost:8081/order/kakao/"+pgToken);
         }
         catch(Exception e){
+            e.printStackTrace();
             return new RedirectView("http://localhost:8081/");
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 

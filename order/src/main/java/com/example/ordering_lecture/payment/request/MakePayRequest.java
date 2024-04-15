@@ -23,7 +23,7 @@ public class MakePayRequest {
         // 중요한점은 다음 결제 승인 정보를 얻을 때
         // 아래 partner_order_id,partner_user_id 가 동일해야 합니다.
         map.add("partner_order_id",orderId);
-        map.add("partner_user_id","본인의 서비스명");
+        map.add("partner_user_id","오토피아");
 
         // 리액트에서 받아온 payInfoDto로 결제 주문서의 item 이름을
         // 지어주는 과정입니다.
@@ -61,7 +61,7 @@ public class MakePayRequest {
         // getReadyRequest 에서 받아온 tid
         map.add("tid", tid);
         map.add("partner_order_id", orderId); // 주문명
-        map.add("partner_user_id", "본인의 서비스명");
+        map.add("partner_user_id", "오토피아");
 
         // getReadyRequest에서 받아온 redirect url에 클라이언트가
         // 접속하여 결제를 성공시키면 아래의 url로 redirect 되는데
