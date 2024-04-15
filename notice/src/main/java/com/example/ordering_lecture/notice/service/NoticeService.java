@@ -65,7 +65,7 @@ public class NoticeService {
         if (notices.isEmpty()) {
             throw new OrTopiaException(ErrorCode.EMPTY_NOTICE_CONTENTS);
         }
-        return notices.stream().map(NoticeResponseDto::toDto).collect(Collectors.toList());
+        return notices.stream().filter(notice -> !notice.isDelYN()).map(NoticeResponseDto::toDto).collect(Collectors.toList());
     }
     public NoticeResponseDto findById(Long id) throws OrTopiaException {
         Notice notice = noticeRepository.findById(id)
