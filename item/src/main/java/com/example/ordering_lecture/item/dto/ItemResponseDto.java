@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -24,6 +26,7 @@ public class ItemResponseDto {
     private boolean delYN;
     private boolean isBaned;
     private Long sellerId;
+    private LocalDateTime createdTime;
 
     public static ItemResponseDto toDto(Item item){
         return ItemResponseDto.builder()
@@ -38,6 +41,7 @@ public class ItemResponseDto {
                 .delYN(item.isDelYN())
                 .isBaned(item.isBaned())
                 .stock(item.getStock())
+                .createdTime(item.getCreatedTime())
                 .build();
     }
 }

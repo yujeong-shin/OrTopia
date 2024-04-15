@@ -132,7 +132,8 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
-    public List<ItemResponseDto> findItemByEmail(Long sellerId)throws OrTopiaException {
+    public List<ItemResponseDto> findItemByEmail(String email)throws OrTopiaException {
+        Long sellerId = memberServiceClient.searchIdByEmail(email);
         List<Item> items = itemRepository.findAllBySellerId(sellerId);
         if(items.isEmpty()){
             throw new OrTopiaException(ErrorCode.EMPTY_ITEMS);
