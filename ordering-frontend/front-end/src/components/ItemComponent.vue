@@ -54,55 +54,7 @@
     </v-container>
     <v-container>
       <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
+      <div v-html="item.detail" style="margin-top: 20px; text-align: center;"></div>
     </v-container>
     <v-container>
       <h1 style="text-align: center">리뷰</h1>
