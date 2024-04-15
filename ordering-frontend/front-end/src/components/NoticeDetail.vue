@@ -86,7 +86,7 @@ export default {
     axios.get(`${process.env.VUE_APP_API_BASE_URL}/notice-service/notice/${this.$route.params.id}`, config)
       .then(response => {
         this.notice = response.data.result;
-        this.noticeDeleted = this.notice.delYN === 1; 
+        this.noticeDeleted = this.notice.delYN === false; 
       })
       .catch(error => {
         console.error("공지사항 상세 정보를 불러오는 중 에러 발생:", error);

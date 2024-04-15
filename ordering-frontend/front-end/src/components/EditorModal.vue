@@ -13,8 +13,11 @@
           dense
         ></v-text-field>
         
-        <!-- 시작 날짜 선택 -->
-        <v-menu
+        <!-- 썸내일 올리기 -->
+        <v-file-input label="썸네일 업로드" v-model="selectedFile" @change="handleFileUpload"></v-file-input>
+
+          <!-- 시작 날짜 선택 -->
+          <v-menu
           v-model="startMenu"
           :close-on-content-click="false"
           :nudge-right="40"
@@ -58,7 +61,6 @@
           </template>
           <v-date-picker v-model="notice.endDate" @input="endMenu = false"></v-date-picker>
         </v-menu>
-
         <!-- 텍스트 에디터 -->
         <text-editor v-model="contents" />
       </v-card-text>
@@ -70,7 +72,7 @@
     </v-card>
   </v-dialog>
 </template>
-  
+
 <script>
 import TextEditor from "@/components/TextEditor.vue";
 import axios from "axios";
@@ -92,10 +94,8 @@ export default {
         endDate: '',
         contents: '',
       },
-      selectedFile: null,
+      selectedFile: null, // 선택된 파일을 저장하는 변수
       contents: '', 
-      startMenu: false,
-      endMenu: false,
     };
   },
   watch: {
@@ -110,31 +110,37 @@ export default {
     close() {
       window.location.reload();
     },
-    saveContent() {
-  const noticeData = JSON.stringify({
-    name: this.notice.name,
-    startDate: this.notice.startDate,
-    endDate: this.notice.endDate,
-    contents: this.contents
-  });
-
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-      "X-Refresh-Token": localStorage.getItem('refreshToken'),
+    handleFileUpload(event) {
+        this.selectedFile = event.target.files[0];
     },
-  };
+    saveContent() {
+      // FormData 생성
+      const formData = new FormData();
+      // 파일을 formData에 추가
+      formData.append('imagePath', this.selectedFile);
+      // 나머지 데이터를 JSON 형식으로 추가
+      formData.append('name', this.notice.name);
+      formData.append('startDate', this.notice.startDate);
+      formData.append('endDate', this.notice.endDate);
+      formData.append('contents', this.contents);
+      console.log(formData);
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data', // 파일 업로드를 위해 필수적으로 설정해야 함
+          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          "X-Refresh-Token": localStorage.getItem('refreshToken'),
+        },
+      };
 
-  axios.post(`${process.env.VUE_APP_API_BASE_URL}/notice-service/create`, noticeData, config)
-    .then(response => {
-      console.log(response.data);
-      window.location.reload();
-    })
-    .catch(error => {
-      console.error("저장 중 에러 발생: ", error);
-    });
-},
+      axios.post(`${process.env.VUE_APP_API_BASE_URL}/notice-service/create`, formData, config)
+        .then(response => {
+          console.log(response.data);
+          window.location.reload();
+        })
+        .catch(error => {
+          console.error("저장 중 에러 발생: ", error);
+        });
+    },
   },
 }
 </script>

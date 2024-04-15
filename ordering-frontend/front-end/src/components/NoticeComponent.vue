@@ -43,8 +43,12 @@ export default {
     const fetchNotices = async () => {
       try {
         const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/notice-service/notices`);
-        if (Array.isArray(response.data.result)) { 
-          notices.value = response.data.result;
+        console.log(response.data.result[0].delYn);
+        if (Array.isArray(response.data.result)) {
+          // 삭제 되지 않은 공지만 불러옴. 실패
+          if(!response.data.result.delYn){
+            notices.value = response.data.result;
+          } 
         } 
       } catch (error) {
         console.error("공지사항을 불러오는 중 에러 발생:", error);
