@@ -28,30 +28,30 @@ public class OrderingService {
 
     @Transactional
     // 더티 체킹 설정
-    public Ordering createOrder(OrderRequestDto orderRequestDto) {
+    public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
         Ordering ordering = orderRequestDto.toEntity();
         orderRepository.save(ordering);
         for(OrderDetailRequestDto orderDetailRequestDto:orderRequestDto.getOrderDetailRequestDtoList()){
             OrderDetail orderDetail = orderDetailRequestDto.toEntity(ordering);
             orderDetailRepository.save(orderDetail);
         }
-        return ordering;
+        return OrderResponseDto.toDto(ordering);
     }
 
-    public Object updateOrder(OrderUpdateDto orderUpdateDto) {
+    public OrderResponseDto updateOrder(OrderUpdateDto orderUpdateDto) {
         Ordering ordering = orderRepository.findById(orderUpdateDto.getId()).orElseThrow();
         ordering.updateStatue(orderUpdateDto.getStatue());
-        return ordering;
+        return OrderResponseDto.toDto(ordering);
     }
 
-    public Object showAllOrder() {
+    public List<OrderResponseDto> showAllOrder() {
         List<Ordering> orderings = orderRepository.findAll();
         return orderings.stream()
                 .map(OrderResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 
-    public Object showAllOrdersDetail() {
+    public List<OrderResponseDto> showAllOrdersDetail() {
         List<Ordering> orderings = orderRepository.findAll();
         List<OrderResponseDto> orderResponseDtos = new ArrayList<>();
         for(Ordering ordering : orderings){
@@ -66,14 +66,14 @@ public class OrderingService {
         return orderResponseDtos;
     }
 
-    public Object showMyOrders(String email) {
+    public List<OrderResponseDto> showMyOrders(String email) {
         List<Ordering> orderings = orderRepository.findAllByEmail(email);
         return orderings.stream()
                 .map(OrderResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 
-    public Object showMyOrdersDetail(String email) {
+    public List<OrderResponseDto> showMyOrdersDetail(String email) {
         List<Ordering> orderings = orderRepository.findAllByEmail(email);
         List<OrderResponseDto> orderResponseDtos = new ArrayList<>();
         for(Ordering ordering : orderings){

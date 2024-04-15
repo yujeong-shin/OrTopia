@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class OrderingController {
     private final OrderingService orderingService;
@@ -34,28 +36,38 @@ public class OrderingController {
 
     // 주문 수정
     @PatchMapping("/update")
-    public Object updateOrder(@RequestBody OrderUpdateDto orderUpdateDto){
-        return orderingService.updateOrder(orderUpdateDto);
+    public ResponseEntity<OrTopiaResponse> updateOrder(@RequestBody OrderUpdateDto orderUpdateDto){
+        OrderResponseDto orderResponseDto = orderingService.updateOrder(orderUpdateDto);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("update success",orderResponseDto);
+        return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
     // 전체 주문 조회
     @GetMapping("/all_order")
-    public Object showAllOrder(){
-        return orderingService.showAllOrder();
+    public ResponseEntity<OrTopiaResponse> showAllOrder(){
+        List<OrderResponseDto> orderResponseDtos =  orderingService.showAllOrder();
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",orderResponseDtos);
+        return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
     // 전체 주문 + 디테일 조회
     @GetMapping("/all_detail_order")
-    public Object showAllOrdersDetail(){
-        return orderingService.showAllOrdersDetail();
+    public ResponseEntity<OrTopiaResponse> showAllOrdersDetail(){
+        List<OrderResponseDto> orderResponseDtos = orderingService.showAllOrdersDetail();
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",orderResponseDtos);
+        return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
     // 특정 회원의 전체 주문 조회
     @GetMapping("/my_order_detail/{email}")
-    public Object showMyOrders(@PathVariable String email){
-        return orderingService.showMyOrders(email);
+    public ResponseEntity<OrTopiaResponse> showMyOrders(@PathVariable String email){
+        List<OrderResponseDto> orderResponseDtos = orderingService.showMyOrders(email);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",orderResponseDtos);
+        return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
     // 특정 회원 전체 주문 조회 + 디테일 조회
     @GetMapping("/all_my_order_detail/{email}")
-    public Object showOrders(@PathVariable String email){
-        return orderingService.showMyOrdersDetail(email);
+    public ResponseEntity<OrTopiaResponse> showOrders(@PathVariable String email){
+        List<OrderResponseDto> orderResponseDtos = orderingService.showMyOrdersDetail(email);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",orderResponseDtos);
+        return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
 
 }
