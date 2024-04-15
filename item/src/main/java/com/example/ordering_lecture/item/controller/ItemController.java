@@ -22,8 +22,8 @@ public class ItemController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<OrTopiaResponse> createItem(@Valid @ModelAttribute ItemRequestDto itemRequestDto){
-        ItemResponseDto itemResponseDto = itemService.createItem(itemRequestDto);
+    public ResponseEntity<OrTopiaResponse> createItem(@Valid @ModelAttribute ItemRequestDto itemRequestDto, @RequestHeader("myEmail") String email){
+        ItemResponseDto itemResponseDto = itemService.createItem(itemRequestDto,email);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success",itemResponseDto);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.CREATED);
     }
@@ -46,9 +46,9 @@ public class ItemController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",itemResponseDtos);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
-    @GetMapping("/find_item_email/{sellerId}")
-    public ResponseEntity<OrTopiaResponse> findItemById(@PathVariable Long sellerId){
-        List<ItemResponseDto> itemResponseDtos = itemService.findItemByEmail(sellerId);
+    @GetMapping("/find_item_email")
+    public ResponseEntity<OrTopiaResponse> findItemById(@RequestHeader("myEmail") String email){
+        List<ItemResponseDto> itemResponseDtos = itemService.findItemByEmail(email);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",itemResponseDtos);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
@@ -79,5 +79,10 @@ public class ItemController {
         List<ItemResponseDto> itemResponseDtos = itemService.releaseBanItem(sellerId);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("ban canceled success",itemResponseDtos);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/imagePath")
+    public String getImagePath(@PathVariable Long id){
+        return itemService.getImagePath(id);
     }
 }

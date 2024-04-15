@@ -17,20 +17,28 @@ public class AddressRequestDto {
     @NotNull
     private String name;
     @NotNull
-    private String street;
+    private String sido;
     @NotNull
-    private String zipcode;
+    private String sigungu;
     @NotNull
-    private String details;
+    private String bname;
+    @NotNull
+    private String roadAddress;
+    @NotNull
+    private String zonecode;
+    @NotNull
+    private String detail;
 
     public Address toEntity(Member member){
-        Address address = Address.builder()
+        return Address.builder()
+                .name(this.name)
+                .sido(this.sido)
+                .sigungu(this.sigungu)
+                .bname(this.bname)
+                .roadAddress(this.roadAddress)
+                .zonecode(this.zonecode)
+                .detail(this.detail)
                 .member(member)
-                .name(this.getName())
-                .street(this.getStreet())
-                .zipcode(this.getZipcode())
-                .details(this.getDetails())
                 .build();
-        return address;
     }
 }

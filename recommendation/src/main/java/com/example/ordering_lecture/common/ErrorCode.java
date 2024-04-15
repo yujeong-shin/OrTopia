@@ -13,7 +13,9 @@ public enum ErrorCode {
     NOT_SET_USER("R5","DB 유저 정보를 설정할 수 없습니다."),
     NOT_SET_PASSWORD("R6","DB 비밀번호 정보를 설정할 수 없습니다."),
     REDIS_ERROR("R7","레디스 저장에 실패했습니다"),
-    JSON_PARSE_ERROR("R8","JSON 형변환에 실패했습니다");
+    JSON_PARSE_ERROR("R8","JSON 형변환에 실패했습니다"),
+    DB_ERROR("R9","buyer ID를 불러 오는데 실패했습니다"),
+    REDIS_NOT_FOUND_KEY("R10","키 값이 존재하지 않습니다");
 
 
     private final String code;

@@ -16,7 +16,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class RedisService {
-
     private final RedisTemplate redisTemplate;
 
     public void setValues(Long key, List<RecommendationRedisData> recommendationRedisDatas) {
@@ -35,5 +34,9 @@ public class RedisService {
     public List<String> getValues(Long key) {
         ListOperations<Long, String> values = redisTemplate.opsForList();
         return values.range(key, 0, 2);
+    }
+
+    public void flushAll(){
+        redisTemplate.getConnectionFactory().getConnection().serverCommands().flushAll();
     }
 }

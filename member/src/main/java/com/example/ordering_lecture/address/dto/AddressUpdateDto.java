@@ -10,7 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AddressUpdateDto {
     private String name;
-    private String street;
-    private String zipcode;
-    private String details;
+    private String sido;
+    private String sigungu;
+    private String bname;
+    private String roadAddress;
+    private String zonecode;
+    private String detail;
 }

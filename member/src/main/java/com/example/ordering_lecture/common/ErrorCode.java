@@ -24,7 +24,10 @@ public enum ErrorCode {
     STARTTIME_IS_ESSENTIAL("M18","벤 시작시간을 입력해주세요"),
     ENDTIME_IS_ESSENTIAL("M19","벤 끝낼시간을 입력해주세요"),
     NOT_FOUND_BANED_SELLER("M20","해당 벤 판매자가 없습니다"),
-    NOT_FOUND_BANED_SELLERS("M21","조건에 맞는 벤 판매자가 없습니다");
+    NOT_FOUND_BANED_SELLERS("M21","조건에 맞는 벤 판매자가 없습니다"),
+    NOT_FOUND_ADDRESS("A1", "해당 주소가 없습니다."),
+    NOT_FOUND_ADDRESS_BY_EMAIL("A2", "해당 이메일로 등록된 주소가 없습니다."),
+    ADDRESS_IS_ESSENTIAL("A3", "주소 정보를 입력해주세요");
 
     private final String code;
     private final String message;
