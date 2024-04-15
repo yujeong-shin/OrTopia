@@ -27,10 +27,13 @@ public class MakePayRequest {
 
         // 리액트에서 받아온 payInfoDto로 결제 주문서의 item 이름을
         // 지어주는 과정입니다.
-        map.add("item_name", String.valueOf(payInfoDto.getItemDtoList().get(0).getId()));
-
+        if(payInfoDto.getItemDtoList().size()==1){
+            map.add("item_name", payInfoDto.getItemDtoList().get(0).getName());
+        }else{
+            map.add("item_name", payInfoDto.getItemDtoList().get(0).getName()+" 포함 " + payInfoDto.getItemDtoList().size() +"개");
+        }
         //수량
-        map.add("quantity","1");
+        map.add("quantity",String.valueOf(payInfoDto.getItemDtoList().size()-1));
 
         //가격
         map.add("total_amount",payInfoDto.getPrice()+"");
