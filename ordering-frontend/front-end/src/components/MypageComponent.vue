@@ -92,7 +92,13 @@
           <v-card-title class="headline">배송지 관리</v-card-title>
         </v-card>
       </v-col>
+      <v-col cols="12" md="6">
+  <v-card outlined tile class="pa-3 mb-3" @click="showItemListModal = true">
+    <v-card-title class="headline">판매목록</v-card-title>
+  </v-card>
+</v-col>
     </v-row>
+    
     <AddressModal
       v-model="showAddressModal"
       @update:dialog="updateDialog"
@@ -105,6 +111,11 @@
       v-model="showSellListModal"
       @update:dialog="updateDialog"
     ></SellListModal>
+    <ItemListModal
+      v-model="showItemListModal"
+      @update:dialog="updateDialog"
+     ></ItemListModal>
+
   </v-container>
 </template>
 
@@ -114,12 +125,14 @@ import axios from "axios";
 import AddressModal from "@/components/AddressModal.vue";
 import BuyListModal from "@/components/BuyListModal.vue";
 import SellListModal from "@/components/SellListModal.vue";
+import ItemListModal from "@/components/ItemListModal.vue";
 
 export default {
   components: {
     AddressModal,
     BuyListModal,
     SellListModal,
+    ItemListModal,
   },
   setup() {
     const orderInfo = ref([
@@ -138,6 +151,7 @@ export default {
       showAddressModal: false,
       showBuyListModal: false,
       showSellListModal: false,
+      showItemListModal: false,
     };
   },
   created() {
@@ -170,6 +184,7 @@ export default {
       this.showAddressModal = newVal;
       this.showBuyListModal = newVal;
       this.showSellListModal = newVal;
+      this.showItemListModal = newVal;
     },
     editUserInfo() {
       // 로직 구현
