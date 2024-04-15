@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 
@@ -17,14 +16,17 @@ import javax.validation.constraints.NotNull;
 public class NoticeRequestDto {
     @NotNull
     private String name;
-    private MultipartFile imagePath;
+    @NotNull
+    private String contents;
+    @NotNull
     private String startDate;
+    @NotNull
     private String endDate;
 
-    public Notice toEntity(String fileUrl){
+    public Notice toEntity(){
         Notice notice = Notice.builder()
                 .name(this.getName())
-                .imagePath(fileUrl)
+                .contents(this.getContents())
                 .startDate(this.getStartDate())
                 .endDate(this.getEndDate())
                 .build();

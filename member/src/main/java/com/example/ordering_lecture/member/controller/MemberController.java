@@ -43,7 +43,7 @@ public class MemberController {
     // 사용자 상세조회
     @GetMapping("/member/{email}")
     public ResponseEntity<OrTopiaResponse> findMember(@PathVariable String email){
-        MemberResponseDto memberResponseDto = memberService.findByEmail(email);
+        MemberResponseDto memberResponseDto = memberService.findIdByEmail(email);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",memberResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }

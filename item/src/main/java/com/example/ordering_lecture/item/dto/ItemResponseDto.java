@@ -26,7 +26,7 @@ public class ItemResponseDto {
     private boolean delYN;
     private boolean isBaned;
     private Long sellerId;
-    private LocalDateTime createdTime;
+    private String createdTime;
 
     public static ItemResponseDto toDto(Item item){
         return ItemResponseDto.builder()
@@ -41,7 +41,7 @@ public class ItemResponseDto {
                 .delYN(item.isDelYN())
                 .isBaned(item.isBaned())
                 .stock(item.getStock())
-                .createdTime(item.getCreatedTime())
+                .createdTime(item.getCreatedTime().toString())
                 .build();
     }
 }
