@@ -22,6 +22,8 @@ public class Notice {
     @Column(nullable = false)
     private String contents;
     @Column(nullable = false)
+    private String imagePath;
+    @Column(nullable = false)
     @Builder.Default
     private boolean delYN=false;
     @Column(nullable = false)

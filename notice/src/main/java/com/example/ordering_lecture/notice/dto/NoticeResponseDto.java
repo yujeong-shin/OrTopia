@@ -13,6 +13,7 @@ public class NoticeResponseDto {
     private String startDate;
     private String endDate;
     private boolean delYn;
+    private String imagePath;
 
     public static NoticeResponseDto toDto(Notice notice){
         return NoticeResponseDto.builder()
@@ -22,6 +23,7 @@ public class NoticeResponseDto {
                 .startDate(notice.getStartDate())
                 .endDate(notice.getEndDate())
                 .delYn(notice.isDelYN())
+                .imagePath(notice.getImagePath())
                 .build();
     }
 }

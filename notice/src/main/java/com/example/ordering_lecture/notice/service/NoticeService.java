@@ -56,7 +56,26 @@ public class NoticeService {
         if (noticeRequestDto.getName() == null || noticeRequestDto.getName().isEmpty()) {
             throw new OrTopiaException(ErrorCode.EMPTY_NOTICE_TITLE);
         }
-        Notice notice = noticeRequestDto.toEntity();
+        if(noticeRequestDto.getImagePath() != null){
+            String fileName = System.currentTimeMillis() + "_" + noticeRequestDto.getImagePath().getOriginalFilename();
+            try {
+                // 파일 메타데이터 설정
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setContentType(noticeRequestDto.getImagePath() .getContentType());
+                metadata.setContentLength(noticeRequestDto.getImagePath() .getSize());
+
+                // S3에 파일 업로드
+                amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, noticeRequestDto.getImagePath() .getInputStream(), metadata));
+
+                // 업로드된 파일의 URL 반환
+                String fileUrl =  amazonS3Client.getUrl(bucket, fileName).toString();
+                Notice notice = noticeRequestDto.toEntity(fileUrl);
+                return NoticeResponseDto.toDto(noticeRepository.save(notice));
+            } catch (IOException e) {
+                throw new RuntimeException("s3에 업로드 실패", e);
+            }
+        }
+        Notice notice = noticeRequestDto.toEntity(null);
         Notice savedNotice = noticeRepository.save(notice);
         return NoticeResponseDto.toDto(savedNotice);
     }
