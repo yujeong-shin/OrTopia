@@ -150,6 +150,14 @@ export default {
         return;
       }
       const file = files[0];
+      
+      // 파일 크기 검사
+      const fileSizeInMegabytes = file.size / 1024 / 1024; // 파일 크기를 MB 단위로 변환
+      if (fileSizeInMegabytes > 5) {
+        alert('파일 크기가 5MB를 초과합니다. 다른 파일을 선택해주세요.');
+        return;
+      }
+      
       this.uploadImage(file);
     },
     uploadImage(file) {
@@ -159,7 +167,7 @@ export default {
       axios.post(`${process.env.VUE_APP_API_BASE_URL}/notice-service/upload`, formData, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-          "X-Refresh-Token": localStorage.getItem('refreshToken'),          
+          "X-Refresh-Token": localStorage.getItem('refreshToken'),
           'Content-Type': 'multipart/form-data'
         }
       }).then(response => {

@@ -20,8 +20,15 @@
       <v-btn icon>
         <v-icon color="white">mdi-bell</v-icon>
       </v-btn>
-      <v-btn icon @click="goToSellPage">
-        <v-icon color="white">mdi-cash-register</v-icon> <!-- 판매 아이콘 -->
+
+      <!-- 판매자인 경우에만 판매 아이콘 보이기 -->
+      <v-btn icon v-if="isSeller">
+        <v-icon color="white" @click="goToSellPage">mdi-cash-register</v-icon> <!-- 판매 아이콘 -->
+      </v-btn>
+
+      <!-- 판매자가 아닌 경우 판매자 등록 버튼 보이기 -->
+      <v-btn text v-else @click="goToSellerRegistration">
+        <v-icon left color="white" size="24">mdi-account-check</v-icon>
       </v-btn>
 
       <v-btn icon>
@@ -50,28 +57,30 @@
   </v-app-bar>
 </template>
 
+
 <script setup>
-import { ref, onMounted,computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-// import {mapGetters} from 'vuex'
 import { useStore } from 'vuex'
 
 const router = useRouter();
-
 const store = useStore();
 const totalQuantity = computed(() => store.getters.getTotalQuantity);
-
 const isLoggedIn = ref(false);
+const isSeller = ref(false); // 판매자인지 확인하는 ref 추가
 
 onMounted(() => {
   const token = localStorage.getItem('accessToken');
+  const role = localStorage.getItem('role'); // localStorage에서 사용자 역할 가져오기
   isLoggedIn.value = !!token;
+  isSeller.value = role === 'SELLER'; // 사용자 역할이 판매자인 경우 true 설정
 });
 
 const logout = () => {
   localStorage.clear();
   isLoggedIn.value = false;
-  router.push('/login'); // 로그아웃 후 로그인 페이지로 리다이렉트
+  isSeller.value = false; // 로그아웃 시 isSeller도 초기화
+  router.push('/login');
 };
 
 const redirectToHome = () => {
@@ -95,10 +104,23 @@ const goToRegister = () => {
 };
 
 const goToSellPage = () => {
-  router.push('/sell'); // '/sell'은 판매 페이지의 경로로 가정합니다. 실제 경로에 맞게 조정해주세요.
+  router.push('/sell');
 };
 
+const goToSellerRegistration = async () => {
+  try {
+    await router.push('/sellerCreate'); // 판매자 등록 페이지로 리다이렉트
+    // 판매자 등록 후 사용자 역할을 다시 확인하여 isSeller 값 업데이트
+    const role = localStorage.getItem('role'); 
+    isSeller.value = role === 'SELLER';
+  } catch (error) {
+    console.error('Error navigating to seller registration page:', error);
+  }
+};
+
+
 </script>
+
 
 
 <style scoped>

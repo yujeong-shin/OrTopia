@@ -1,34 +1,34 @@
 <template>
   <v-main>
     <v-container>
-      <v-row>
+      <v-row align="center">
         <!-- 상품 이미지 -->
-        <v-col cols="12" sm="6">
+        <v-col cols="12" sm="6" class="d-flex justify-center">
           <v-img :src="item.imagePath" alt="상품 이미지" max-height="400" />
         </v-col>
         <!-- 상품 정보 -->
         <v-col cols="12" sm="6">
           <div>
             <h1 style="font-size: 40px; margin-top: 30px">{{ item.name }}</h1>
-            <p style="font-size: 20px; margin-top: 30px">
-              가격: {{ item.price }}
-            </p>
-            <p style="font-size: 20px; margin-top: 30px">
-              카테고리 {{ item.category }}
-            </p>
+              <p style="font-size: 20px; margin-top: 30px">
+                가격: {{ item.price }}
+              </p>
+              <p style="font-size: 20px; margin-top: 30px">
+                카테고리: {{ item.category }}
+              </p>
             <v-btn text style="margin-top: 30px"
               >판매자 이름 : {{ item.sellerId }}</v-btn
             >
+            &nbsp;&nbsp;&nbsp;
             <v-btn color="primary" text style="margin-top: 30px"
               >즐겨찾기</v-btn
             >
-            <p style="font-size: 20px; margin-top: 30px">점수</p>
+            <p style="font-size: 20px; margin-top: 30px">점수 :</p>
           </div>
-        </v-col>
-      </v-row>
-      <v-card>
-        <v-card-title>구매 옵션 및 수량 선택</v-card-title>
-        <v-card-text>
+          <br>
+          <v-card>
+          <v-card-title>구매 옵션 및 수량 선택</v-card-title>
+          <v-card-text>
           <v-select v-model="selectedOption" :items="options" label="옵션" />
           <v-row align="center">
             <v-col cols="4">
@@ -41,66 +41,20 @@
                 min="1"
                 max="10"
               />
-            </v-col>
-          </v-row>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" @click="buyNow">바로 구매</v-btn>
-          <v-btn color="secondary" @click="addToCart">장바구니 담기</v-btn>
-        </v-card-actions>
-      </v-card>
+             </v-col>
+             </v-row>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="primary" @click="buyNow">바로 구매</v-btn>
+              <v-btn color="secondary" @click="addToCart">장바구니 담기</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
     <v-container>
       <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
-      <h1 style="text-align: center">상품 상세 설명</h1>
+      <div v-html="item.detail" style="margin-top: 20px; text-align: center;"></div>
     </v-container>
     <v-container>
       <h1 style="text-align: center">리뷰</h1>
@@ -145,6 +99,18 @@ export default {
     ...mapActions("addToCart"),
     buyNow() {
       // 바로 구매 동작 구현
+      if (this.quantity == 0) {
+        alert("0개는 주문 할 수 없습니다.");
+      } else {
+        let orderItem = this.item;
+        orderItem.count = this.quantity;
+        if (!Array.isArray(orderItem)) {
+            orderItem = [orderItem];
+        }
+        console.log(orderItem);
+        localStorage.setItem('buyItem', JSON.stringify(orderItem));
+        this.$router.push("/buypage");
+      }
     },
     addToCart() {
       if (this.quantity == 0) {
@@ -170,7 +136,7 @@ export default {
       const email = localStorage.getItem("email");
       try {
         const data = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/read/${email}`,
+          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/read/${this.itemId}`,
           {
             headers: {
               myEmail: `${email}`,

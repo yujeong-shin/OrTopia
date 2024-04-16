@@ -167,7 +167,7 @@
       return {
         defaultName: "John Doe", // 디폴트 이름
         defaultPhoneNumber: "123-456-7890", // 디폴트 전화번호
-        defaultEmail: "example@example.com", // 디폴트 이메일
+        defaultEmail: localStorage.getItem('email'), // 디폴트 이메일
         name: '',
         phoneNumber: '',
         address:'',
@@ -183,9 +183,23 @@
     created(){
         // async showMyItems(){
         // }
+        this.myInfo();
         this.calculateTotalPrice();
     },
     methods: {
+      async myInfo(){
+      try{
+        const token = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem('refreshToken');
+        const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
+        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/member-service/member/${localStorage.getItem('email')}`, { headers });
+        console.log(response);
+        this.defaultName = response.data.result.name;
+        this.defaultPhoneNumber = response.data.result.phoneNumber;
+      }catch(e){
+        alert(e.message);
+      }
+      },
       calculateTotalPrice(){
       this.totalPrice = 0; 
       for (let item of this.myItems) {
@@ -204,7 +218,7 @@
         const token = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
         try {
-          const itemList = this.myItems.map(item => ({ id: item.id, count: item.count }));
+          const itemList = this.myItems.map(item => ({ id: item.id, count: item.count, name : item.name }));
           const body = { price: this.price, itemDtoList: itemList }; // itemList을 itemDtoList로 변경
           const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
           const data = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/order-service/payment/ready`, body, { headers });

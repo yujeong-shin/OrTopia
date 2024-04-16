@@ -10,7 +10,7 @@ import ItemBuyComponent from '@/components/ItemBuyComponent';
 import MyCartComponent from '@/components/MyCartComponent.vue';
 import OrderByKakaoComponent from '@/components/OrderByKakaoComponent.vue';
 import NoticeDetail from '@/components/NoticeDetail.vue'
-
+import SellerComponent from '@/components/SellerCreateComponent.vue';
 
 const routes = [
   {
@@ -67,6 +67,12 @@ const routes = [
     path: '/notice/:id',
     name: 'NoticeDetail',
     component: NoticeDetail,
+    props: true
+  },
+  {
+    path: '/sellerCreate',
+    name: 'SellerCreate',
+    component: SellerComponent,
     props: true
   }
 ];
