@@ -16,13 +16,13 @@
         <v-row>
           <v-col cols="12">
             <v-carousel cycle hide-delimiters height="200">
-              <v-carousel-item
-                v-for="n in 3"
-                :key="n"
-                src="https://static.coupangcdn.com/ra/cmg_paperboy/image/1710923773901/PC.jpg"
-                @click="goToNotice"
-              ></v-carousel-item>
-            </v-carousel>
+            <v-carousel-item
+              v-for="notice in noticeList"
+              :key="notice.id" 
+              :src="notice.imagePath" 
+              @click="goToNotice(notice)" 
+            ></v-carousel-item>
+          </v-carousel>
           </v-col>
         </v-row>
   
@@ -50,6 +50,7 @@
   export default {
   created(){
     this.getItems();
+    this.getNotice();
   },
   setup() {
     const search = ref('')
@@ -74,6 +75,7 @@
   data(){
         return{
             itemList : [],
+            noticeList: [],
         }
     },
     methods:{
@@ -88,6 +90,16 @@
             }catch(error){
                 alert(error.response.data.error_message);
                 console.log(error);
+            }
+        },
+        async getNotice(){
+          try{
+              const data = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/notice-service/notices`);
+              this.noticeList = data.data.result; 
+              console.log(this.noticeList);
+            }catch(error){
+              alert(error.response.data.error_message);
+              console.log(error);
             }
         }
     }
