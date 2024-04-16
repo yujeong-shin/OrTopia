@@ -23,9 +23,9 @@ public class SellerController {
     SELLER 관련 API
     */
     // 판매자 등록 : id번 사용자의 판매자 등록 요청
-    @PostMapping("/seller/{id}/create")
-    public ResponseEntity<OrTopiaResponse> createSeller(@PathVariable Long id, @RequestBody SellerRequestDto sellerRequestDto){
-        SellerResponseDto sellerResponseDto = sellerService.createSeller(id, sellerRequestDto);
+    @PostMapping("/seller/{email}/create")
+    public ResponseEntity<OrTopiaResponse> createSeller(@RequestHeader("myEmail") String email, @RequestBody SellerRequestDto sellerRequestDto){
+        SellerResponseDto sellerResponseDto = sellerService.createSeller(email, sellerRequestDto);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success", sellerResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);
     }
