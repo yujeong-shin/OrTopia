@@ -9,6 +9,7 @@ import com.example.ordering_lecture.item.controller.MemberServiceClient;
 import com.example.ordering_lecture.item.dto.ItemRequestDto;
 import com.example.ordering_lecture.item.dto.ItemResponseDto;
 import com.example.ordering_lecture.item.dto.ItemUpdateDto;
+import com.example.ordering_lecture.item.dto.RecommendedItemDto;
 import com.example.ordering_lecture.item.entity.Item;
 import com.example.ordering_lecture.item.repository.ItemRepository;
 import com.example.ordering_lecture.redis.RedisService;
@@ -171,5 +172,22 @@ public class ItemService {
     public String getImagePath(Long itemId) {
         Item item = itemRepository.findImagePathById(itemId).orElseThrow(()->new OrTopiaException(ErrorCode.NOT_FOUND_ITEM));
         return item.getImagePath();
+    }
+
+    public List<RecommendedItemDto> findRecommendItem(String email) {
+        Long id = memberServiceClient.searchIdByEmail(email);
+        List<String> list = redisService.getValues2(id);
+        List<RecommendedItemDto> recommendationRedisDatas = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
+        for(String str: list){
+            RecommendedItemDto  recommendationRedisData = null;
+            try {
+                recommendationRedisData = objectMapper.readValue(str, RecommendedItemDto.class);
+            } catch (JsonProcessingException e) {
+                throw new OrTopiaException(ErrorCode.JSON_PARSE_ERROR);
+            }
+            recommendationRedisDatas.add(recommendationRedisData);
+        }
+        return recommendationRedisDatas;
     }
 }
