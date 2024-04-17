@@ -52,6 +52,28 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-container class="text-center">
+      <v-row>
+      <!-- 첫 번째 열 -->
+      <v-col cols="12">
+        <p class="grid-text">나와 취향이 비슷한 회원들이 구매한 상품</p>
+      </v-col>
+      </v-row>
+      <v-row>
+      <v-col cols="4">
+        <!-- 첫 번째 이미지 -->
+        <img src="이미지_주소_또는_경로" alt="이미지_설명">
+      </v-col>
+      <v-col cols="4">
+        <!-- 두 번째 이미지 -->
+        <img src="이미지_주소_또는_경로" alt="이미지_설명">
+      </v-col>
+      <v-col cols="4">
+        <!-- 세 번째 이미지 -->
+        <img src="이미지_주소_또는_경로" alt="이미지_설명">
+      </v-col>
+    </v-row>
+    </v-container>
     <v-container>
       <h1 style="text-align: center">상품 상세 설명</h1>
       <div v-html="item.detail" style="margin-top: 20px; text-align: center;"></div>
@@ -94,6 +116,7 @@ export default {
   created() {
     this.itemId = this.$route.params.id;
     this.getItemInfo();
+    this.getRecommend();
   },
   methods: {
     ...mapActions("addToCart"),
@@ -129,6 +152,25 @@ export default {
       const offsetTop =
         window.pageYOffset || document.documentElement.scrollTop;
       this.stickyTop = offsetTop > 100 ? 100 : offsetTop;
+    },
+    // 추천 아이템 받아오는 method
+    async getRecommend(){
+      const token = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+      try{
+        const data  = await axios.get(
+          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/recommendItems`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "X-Refresh-Token": `${refreshToken}`,
+              },
+            }
+        );
+        console.log(data);
+      }catch(e){
+        console.log(e);
+      }
     },
     async getItemInfo() {
       const token = localStorage.getItem("accessToken");

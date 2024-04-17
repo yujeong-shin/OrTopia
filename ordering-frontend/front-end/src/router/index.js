@@ -5,12 +5,10 @@ import ItemComponent from '@/components/ItemComponent.vue';
 import MypageComponent from '@/components/MypageComponent.vue';
 import LoginComponent from '@/components/LoginComponent.vue'; // 로그인 컴포넌트 import
 import SignupComponent from '@/components/SignupComponent.vue'; // 회원가입 컴포넌트 import
-import ItemCreateComponent from '@/components/ItemCreateComponent.vue';
 import ItemBuyComponent from '@/components/ItemBuyComponent';
 import MyCartComponent from '@/components/MyCartComponent.vue';
 import OrderByKakaoComponent from '@/components/OrderByKakaoComponent.vue';
 import NoticeDetail from '@/components/NoticeDetail.vue'
-import SellerComponent from '@/components/SellerCreateComponent.vue';
 
 const routes = [
   {
@@ -49,19 +47,14 @@ const routes = [
     component: ItemBuyComponent,
   },
   {
-    path: '/mycart', // 아이템 구매 페이지
+    path: '/mycart', // 장바구니 페이지
     name: 'MyCart',
     component: MyCartComponent,
   },
   {
-    path: '/order/kakao', // 아이템 구매 페이지
+    path: '/order/kakao/:pgToken', // 카카오 구매 결과 페이지
     name: 'OrderByKakao',
     component: OrderByKakaoComponent,
-  },
-  {
-    path: '/sell', // 회원가입 페이지
-    name: 'ItemCreate',
-    component: ItemCreateComponent,
   },
   {
     path: '/notice/:id',
@@ -69,12 +62,6 @@ const routes = [
     component: NoticeDetail,
     props: true
   },
-  {
-    path: '/sellerCreate',
-    name: 'SellerCreate',
-    component: SellerComponent,
-    props: true
-  }
 ];
 
 const router = createRouter({

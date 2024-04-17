@@ -87,14 +87,14 @@
           outlined
           tile
           class="pa-3 mb-3"
-          @click="showRegisterSellerModal = true"
+          @click=registerModal()
         >
-          <v-card-title class="headline">판매자등록</v-card-title>
+          <v-card-title class="headline">{{sellerModalTitle}}</v-card-title>
         </v-card>
       </v-col>
     </v-row>
-
-    <v-row>
+    <!-- seller로 로그인한 경우에만 보이도록 설정 -->
+    <v-row v-if="userRole === 'SELLER'">
       <v-col cols="12" md="6">
         <v-card
           outlined
@@ -119,23 +119,23 @@
 
     <AddressModal
       v-model="showAddressModal"
-      @update:dialog="updateDialog"
+      @update:dialog="updateDialog('showAddressModal', $event)"
     ></AddressModal>
     <BuyListModal
       v-model="showBuyListModal"
-      @update:dialog="updateDialog"
+      @update:dialog="updateDialog('showBuyListModal', $event)"
     ></BuyListModal>
     <SellListModal
       v-model="showSellListModal"
-      @update:dialog="updateDialog"
+      @update:dialog="updateDialog('showSellListModal', $event)"
     ></SellListModal>
     <registerSellerModal
       v-model="showRegisterSellerModal"
-      @update:dialog="updateDialog"
+      @update:dialog="updateDialog('showRegisterSellerModal', $event)"
     ></registerSellerModal>
     <ManageItemsModal
       v-model="showManageItemsModal"
-      @update:dialog="updateDialog"
+      @update:dialog="updateDialog('showManageItemsModal', $event)"
     ></ManageItemsModal>
   </v-container>
 </template>
@@ -157,6 +157,10 @@ export default {
     RegisterSellerModal,
     ManageItemsModal,
   },
+  mounted() {
+    // 컴포넌트가 마운트되면 localStorage에서 role 값을 가져옴
+    this.userRole = localStorage.getItem('role');
+  },
   setup() {
     const orderInfo = ref([
       { name: "입금전", quantity: 0 },
@@ -170,6 +174,9 @@ export default {
   },
   data() {
     return {
+      userRole: null,
+      // 판매자 등록 상태를 나타내는 변수
+      sellerModalTitle: "판매자 등록",
       member: [],
       showAddressModal: false,
       showBuyListModal: false,
@@ -180,6 +187,7 @@ export default {
   },
   created() {
     this.getMemberInfo();
+    this.checkUserRole();
   },
   methods: {
     async getMemberInfo() {
@@ -204,13 +212,33 @@ export default {
         console.log(error);
       }
     },
-    updateDialog(newVal) {
-      this.showAddressModal = newVal;
-      this.showBuyListModal = newVal;
-      this.showSellListModal = newVal;
-      this.showItemListModal = newVal;
-      this.showRegisterSellerModal = newVal;
-      this.showManageItemsModal = newVal;
+    checkUserRole() {
+      const role = localStorage.getItem("role");
+      if (role === "SELLER") {
+        // 판매자인 경우 버튼의 제목을 '판매자 등록 취소'로 설정
+        this.sellerModalTitle = "판매자 등록 취소";
+      }
+    },
+    registerModal(){
+      const role = localStorage.getItem("role");
+      if (role === "SELLER") {
+        // 판매자인 경우 버튼의 제목을 '판매자 등록 취소'로 설정
+        alert("판매자 등록을 취소하겠습니까?");
+      }else{
+        this.showRegisterSellerModal = true;
+      }
+    },
+    toggleRegisterSellerModal() {
+      this.showRegisterSellerModal = !this.showRegisterSellerModal;
+      if (this.showRegisterSellerModal) {
+        this.sellerModalTitle = "판매자 등록 취소";
+      } else {
+        this.sellerModalTitle = "판매자 등록";
+      }
+    },
+
+    updateDialog(modalName,newVal) {
+      this[modalName] = newVal; 
     },
     editUserInfo() {
       // 로직 구현

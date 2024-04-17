@@ -21,16 +21,6 @@
         <v-icon color="white">mdi-bell</v-icon>
       </v-btn>
 
-      <!-- 판매자인 경우에만 판매 아이콘 보이기 -->
-      <v-btn icon v-if="isSeller">
-        <v-icon color="white" @click="goToSellPage">mdi-cash-register</v-icon> <!-- 판매 아이콘 -->
-      </v-btn>
-
-      <!-- 판매자가 아닌 경우 판매자 등록 버튼 보이기 -->
-      <v-btn text v-else @click="goToSellerRegistration">
-        <v-icon left color="white" size="24">mdi-account-check</v-icon>
-      </v-btn>
-
       <v-btn icon>
         <v-icon color="white" @click="goToMyCart">mdi-cart </v-icon>
         <span class="v-badge__badge v-theme--dark bg-error" aria-atomic="true" aria-label="Badge" aria-live="polite" role="status" style="bottom: calc(100% - 12px); left: calc(100% - 12px);"> {{totalQuantity}} </span>
@@ -101,21 +91,6 @@ const goToLogin = () => {
 
 const goToRegister = () => {
   router.push('/signup');
-};
-
-const goToSellPage = () => {
-  router.push('/sell');
-};
-
-const goToSellerRegistration = async () => {
-  try {
-    await router.push('/sellerCreate'); // 판매자 등록 페이지로 리다이렉트
-    // 판매자 등록 후 사용자 역할을 다시 확인하여 isSeller 값 업데이트
-    const role = localStorage.getItem('role'); 
-    isSeller.value = role === 'SELLER';
-  } catch (error) {
-    console.error('Error navigating to seller registration page:', error);
-  }
 };
 
 
