@@ -26,12 +26,10 @@ public class OrderingController {
     //주문 생성
     @PostMapping("/create")
     public ResponseEntity<OrTopiaResponse> createOrder(@RequestBody OrderRequestDto orderRequestDto, @RequestHeader("myEmail")String email) {
-        if(redisService.getValues(email).equals(orderRequestDto.getPgToken())){
-            OrderResponseDto orderResponseDto = orderingService.createOrder(orderRequestDto);
-            OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success",orderResponseDto);
-            return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);
-        }
-            throw new OrTopiaException(ErrorCode.ACCESS_DENIED);
+        OrderResponseDto orderResponseDto = orderingService.createOrder(orderRequestDto,email);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success",orderResponseDto);
+        return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);
+
     }
 
     // 주문 수정

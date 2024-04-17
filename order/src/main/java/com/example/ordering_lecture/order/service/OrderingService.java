@@ -1,5 +1,7 @@
 package com.example.ordering_lecture.order.service;
 
+import com.example.ordering_lecture.common.ErrorCode;
+import com.example.ordering_lecture.common.OrTopiaException;
 import com.example.ordering_lecture.order.dto.OrderRequestDto;
 import com.example.ordering_lecture.order.dto.OrderResponseDto;
 import com.example.ordering_lecture.order.dto.OrderUpdateDto;
@@ -9,6 +11,7 @@ import com.example.ordering_lecture.orderdetail.dto.OrderDetailRequestDto;
 import com.example.ordering_lecture.orderdetail.dto.OrderDetailResponseDto;
 import com.example.ordering_lecture.orderdetail.entity.OrderDetail;
 import com.example.ordering_lecture.orderdetail.repository.OrderDetailRepository;
+import com.example.ordering_lecture.redis.RedisService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -20,22 +23,27 @@ import java.util.stream.Collectors;
 public class OrderingService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
-
-    public OrderingService(OrderRepository orderRepository, OrderDetailRepository orderDetailRepository) {
+    private final RedisService redisService;
+    public OrderingService(OrderRepository orderRepository, OrderDetailRepository orderDetailRepository, RedisService redisService) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
+        this.redisService = redisService;
     }
 
     @Transactional
     // 더티 체킹 설정
-    public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
-        Ordering ordering = orderRequestDto.toEntity();
-        orderRepository.save(ordering);
-        for(OrderDetailRequestDto orderDetailRequestDto:orderRequestDto.getOrderDetailRequestDtoList()){
-            OrderDetail orderDetail = orderDetailRequestDto.toEntity(ordering);
-            orderDetailRepository.save(orderDetail);
+    public OrderResponseDto createOrder(OrderRequestDto orderRequestDto,String email) {
+        // 정상 주문 진행
+        if(redisService.getValues(email).equals(orderRequestDto.getPgToken())){
+            Ordering ordering = orderRequestDto.toEntity();
+            orderRepository.save(ordering);
+            for(OrderDetailRequestDto orderDetailRequestDto:orderRequestDto.getOrderDetailRequestDtoList()){
+                OrderDetail orderDetail = orderDetailRequestDto.toEntity(ordering);
+                orderDetailRepository.save(orderDetail);
+            }
+            return OrderResponseDto.toDto(ordering);
         }
-        return OrderResponseDto.toDto(ordering);
+        throw new OrTopiaException(ErrorCode.ACCESS_DENIED);
     }
 
     public OrderResponseDto updateOrder(OrderUpdateDto orderUpdateDto) {
