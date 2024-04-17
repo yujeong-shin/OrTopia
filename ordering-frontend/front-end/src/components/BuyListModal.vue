@@ -21,17 +21,84 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="order in orderList" :key="order.id">
-                    <td class="text-center">{{ order.id }}</td>
-                    <td class="text-center">
-                      {{ formatDateTime(order.createdTime) }}
-                    </td>
-                    <td class="text-center">{{ order.totalPrice }}</td>
-                    <td class="text-center">{{ order.statue }}</td>
-                    <td class="text-center">{{ order.email }}</td>
-                    <td class="text-center">{{ order.recipient }}</td>
-                    <td class="text-center">{{ order.paymentMethod }}</td>
-                  </tr>
+                  <template v-for="(order, index) in orderList" :key="order.id">
+                    <tr @click="toggleDetail(index)">
+                      <td class="text-center">{{ order.id }}</td>
+                      <td class="text-center">
+                        {{ formatDateTime(order.createdTime) }}
+                      </td>
+                      <td class="text-center">{{ order.totalPrice }}</td>
+                      <td class="text-center">{{ order.statue }}</td>
+                      <td class="text-center">{{ order.email }}</td>
+                      <td class="text-center">{{ order.recipient }}</td>
+                      <td class="text-center">{{ order.paymentMethod }}</td>
+                    </tr>
+                    <template v-if="order.showDetails">
+                      <tr>
+                        <td colspan="10">
+                          <v-card outlined class="ma-7">
+                            <v-card-title class="headline text-center">
+                              상세 주문 정보
+                            </v-card-title>
+                            <v-card-text>
+                              <v-row no-gutters>
+                                <v-col cols="12" sm="2" class="text-center ma-2"
+                                  >상품 ID</v-col
+                                >
+                                <v-col cols="12" sm="2" class="text-center ma-2"
+                                  >사진</v-col
+                                >
+                                <v-col cols="12" sm="2" class="text-center ma-2"
+                                  >수량</v-col
+                                >
+                                <v-col cols="12" sm="2" class="text-center ma-2"
+                                  >상품명</v-col
+                                >
+                                <v-col cols="12" sm="2" class="text-center ma-2"
+                                  >가격</v-col
+                                >
+                              </v-row>
+                              <v-row
+                                v-for="detail in orderDetailList"
+                                :key="detail.id"
+                              >
+                                <v-col
+                                  cols="12"
+                                  sm="2"
+                                  class="text-center ma-2"
+                                  >{{ detail.itemId }}</v-col
+                                >
+                                <v-col cols="12" sm="2" class="text-center ma-2"
+                                  ><v-img
+                                    :src="detail.itemInfo?.imagePath"
+                                    height="100px"
+                                  ></v-img
+                                ></v-col>
+                                <v-col
+                                  cols="12"
+                                  sm="2"
+                                  class="text-center ma-2"
+                                  >{{ detail.quantity }}</v-col
+                                >
+                                <v-col
+                                  cols="12"
+                                  sm="2"
+                                  class="text-center ma-2"
+                                  >{{ detail.itemInfo?.name }}</v-col
+                                >
+                                <v-col
+                                  cols="12"
+                                  sm="2"
+                                  class="text-center ma-2"
+                                  >{{ detail.itemInfo?.price }}</v-col
+                                >
+                              </v-row>
+                            </v-card-text>
+                          </v-card>
+                        </td>
+                      </tr>
+                    </template>
+                  </template>
                 </tbody>
               </v-table>
             </v-col>
@@ -60,6 +127,7 @@ export default {
   data() {
     return {
       orderList: [],
+      orderDetailList: [],
     };
   },
   methods: {
@@ -75,7 +143,7 @@ export default {
       const email = localStorage.getItem("email");
       try {
         const response = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/order-service/my_order_detail`,
+          `${process.env.VUE_APP_API_BASE_URL}/order-service/all_my_order_detail`,
           {
             headers: {
               myEmail: `${email}`,
@@ -85,12 +153,6 @@ export default {
           }
         );
         this.orderList = response.data.result;
-        console.log("response : ");
-        console.log(response);
-        console.log("response.data : ");
-        console.log(response.data);
-        console.log("orderList : ");
-        console.log(this.orderList);
       } catch (error) {
         console.error("주문 상세조회에 실패했습니다: ", error);
       }
@@ -98,6 +160,40 @@ export default {
     formatDateTime(dateTime) {
       return dateTime.replace("T", " ");
     },
+    async toggleDetail(index) {
+      this.orderList[index].showDetails = !this.orderList[index].showDetails;
+      this.orderDetailList = this.orderList[index].orderDetailResponseDtoList;
+
+      const token = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+      const email = localStorage.getItem("email");
+
+      for (var i = 0; i < this.orderDetailList.length; i++) {
+        try {
+          const response = await axios.get(
+            `${process.env.VUE_APP_API_BASE_URL}/item-service/item/read/${this.orderDetailList[i].itemId}/my_page`,
+            {
+              headers: {
+                myEmail: `${email}`,
+                Authorization: `Bearer ${token}`,
+                "X-Refresh-Token": `${refreshToken}`,
+              },
+            }
+          );
+          this.orderDetailList[i].itemInfo = response.data.result;
+          console.log("this.orderDetailList[i].itemInfo : ");
+          console.log(this.orderDetailList[i].itemInfo);
+        } catch (error) {
+          console.error("주문 상세조회에 실패했습니다: ", error);
+        }
+      }
+    },
   },
 };
 </script>
+
+<style>
+.col-width {
+  width: 25%;
+}
+</style>
