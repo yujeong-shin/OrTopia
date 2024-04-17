@@ -10,11 +10,8 @@ import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
@@ -22,6 +19,7 @@ public class RedisService {
 
     private final StringRedisTemplate redisTemplate;
     private final RedisTemplate redisTemplate2;
+    private final RedisTemplate<Long, Object> redisTemplate3;
 
     public void setValues(String key, ItemResponseDto dto) {
         ZSetOperations<String, String> values = redisTemplate.opsForZSet();
@@ -44,5 +42,10 @@ public class RedisService {
     public List<String> getValues2(Long key) {
         ListOperations<Long, String> values = redisTemplate2.opsForList();
         return values.range(key, 0, 2);
+    }
+
+    public void setItemQuantity(Long key, int quantity){
+        ValueOperations<Long, Object> valueOperations = redisTemplate3.opsForValue();
+        valueOperations.set(key,String.valueOf(quantity));
     }
 }

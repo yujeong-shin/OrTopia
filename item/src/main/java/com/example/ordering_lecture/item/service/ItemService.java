@@ -51,10 +51,11 @@ public class ItemService {
             metadata.setContentLength(itemRequestDto.getImagePath().getSize());
             amazonS3Client.putObject(bucket, fileName, itemRequestDto.getImagePath().getInputStream(), metadata);
             fileUrl = amazonS3Client.getUrl(bucket, fileName).toString();
-
             Long sellerId = memberServiceClient.searchIdByEmail(email);
             Item item = itemRequestDto.toEntity(fileUrl, sellerId);
             itemRepository.save(item);
+            //재고를 레디스에 저장
+            redisService.setItemQuantity(item.getId(),item.getStock());
             return ItemResponseDto.toDto(item);
         } catch (Exception e) {
             throw new OrTopiaException(ErrorCode.S3_SERVER_ERROR);
