@@ -1,5 +1,8 @@
 package com.example.ordering_lecture.payment.service;
 
+import com.example.ordering_lecture.common.ErrorCode;
+import com.example.ordering_lecture.common.OrTopiaException;
+import com.example.ordering_lecture.payment.dto.ItemDto;
 import com.example.ordering_lecture.payment.dto.PayApproveResDto;
 import com.example.ordering_lecture.payment.dto.PayInfoDto;
 import com.example.ordering_lecture.payment.dto.PayReadyResDto;
@@ -32,10 +35,18 @@ public class PaymentService {
      * 어드민 키를 헤더에 담아 파라미터 값들과 함께 POST로 요청합니다.
      * 테스트  가맹점 코드로 'TC0ONETIME'를 사용 */
     @Transactional
-    public PayReadyResDto getRedirectUrl(String email,PayInfoDto payInfoDto)throws Exception{
-//        Member member=memberRepository.findByEmail(name)
-//                .orElseThrow(()-> new Exception("해당 유저가 존재하지 않습니다."));
+    public PayReadyResDto getRedirectUrl(String email,PayInfoDto payInfoDto){
         HttpHeaders headers=new HttpHeaders();
+        //아이템의 재고를 레디스로 확인
+        for(ItemDto itemDto : payInfoDto.getItemDtoList()){
+            int nowStock = redisService.getValuesItemCount(itemDto.getId());
+            if(nowStock-itemDto.getCount()<0){
+                throw new OrTopiaException(ErrorCode.ITEM_QUANTITY_ERROR);
+            }else{
+                // 아이템의 재고를 업데이트;
+                redisService.setItemQuantity(itemDto.getId(),nowStock-itemDto.getCount());
+            }
+        }
         /** 요청 헤더 */
         String auth = "KakaoAK " + adminKey;
         headers.set("Content-type","application/x-www-form-urlencoded;charset=utf-8");

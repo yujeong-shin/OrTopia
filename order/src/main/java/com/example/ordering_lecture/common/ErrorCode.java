@@ -7,7 +7,8 @@ import javax.validation.constraints.NotNull;
 @Getter
 public enum ErrorCode {
     REDIS_ERROR("O1","redis 저장에 실패했습니다."),
-    ACCESS_DENIED("O2","잘못된 접근입니다.");
+    ACCESS_DENIED("O2","잘못된 접근입니다."),
+    ITEM_QUANTITY_ERROR("O3","아이템의 재고가 부족합니다." );
     private final String code;
     private final String message;
 

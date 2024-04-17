@@ -1,5 +1,6 @@
 package com.example.ordering_lecture.payment.controller;
 
+import com.example.ordering_lecture.common.OrTopiaException;
 import com.example.ordering_lecture.common.OrTopiaResponse;
 import com.example.ordering_lecture.payment.dto.PayApproveResDto;
 import com.example.ordering_lecture.payment.dto.PayInfoDto;
@@ -27,17 +28,12 @@ public class PaymentController {
     @PostMapping("/ready")
     public ResponseEntity<Object> getRedirectUrl(@RequestBody PayInfoDto payInfoDto,@RequestHeader("myEmail") String email) {
         try {
-            //TODO : item 수량 체크.
             PayReadyResDto payReadyResDto =  paymentService.getRedirectUrl(email,payInfoDto);
             OrTopiaResponse orTopiaResponse = new OrTopiaResponse("success",payReadyResDto);
             return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
-
         }
-        catch(Exception e){
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(new BaseResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage()));
-            e.printStackTrace();
-            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        catch(OrTopiaException e){
+           throw e;
         }
     }
     /**
@@ -63,17 +59,17 @@ public class PaymentController {
      * 결제 진행 중 취소
      */
     @GetMapping("/cancel")
-    public ResponseEntity<Object> cancel() {
+    public RedirectView cancel() {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("사용자가 결제를 취소했습니다");
-        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+        return new RedirectView("http://localhost:8081/order/kakao/payCanceled");
     }
 
     /**
      * 결제 실패
      */
     @GetMapping("/fail")
-    public ResponseEntity<Object> fail() {
+    public RedirectView fail() {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("결제 실패");
-        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+        return new RedirectView("http://localhost:8081/order/kakao/payFailed");
     }
 }
