@@ -20,12 +20,11 @@ public class RedisConfig {
     @Value("${spring.redis.host}")
     private String host;
 
-    // 최근 본 상품을 저장하기위한 redis
+    // 사용자의 주문 결제 여부를 체크하기 위한 redis
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        return createConnectionFactoryWith(1);
+        return createConnectionFactoryWith(4);
     }
-
     @Bean
     public StringRedisTemplate redisTemplate() {
         StringRedisTemplate redisTemplate = new StringRedisTemplate();
@@ -34,32 +33,17 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }
-
-    //추천 상품에 대한 정보를가지고 있는 redis
+    //재고 관리를 위한 레디스
     @Bean
     public RedisConnectionFactory redisConnectionFactory2() {
-        return createConnectionFactoryWith(2);
+        return createConnectionFactoryWith(5);
     }
     @Bean
-    public RedisTemplate redisTemplate2() {
+    public RedisTemplate<Long,Object> redisTemplate2() {
         RedisTemplate<Long, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory2());
-        return redisTemplate;
-    }
-
-    //재고 관리를 위한 레디스
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory3() {
-        return createConnectionFactoryWith(5);
-    }
-    @Bean
-    public RedisTemplate<Long,Object> redisTemplate3() {
-        RedisTemplate<Long, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setKeySerializer(new GenericJackson2JsonRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
-        redisTemplate.setConnectionFactory(redisConnectionFactory3());
         return redisTemplate;
     }
 
@@ -70,6 +54,5 @@ public class RedisConfig {
         redisStandaloneConfiguration.setDatabase(index);
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
-
 
 }
