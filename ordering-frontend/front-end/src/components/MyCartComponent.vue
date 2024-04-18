@@ -14,7 +14,7 @@
               <v-table>
                 <thead>
                     <tr>
-                    <th class="text-center"></th> <!-- 체크 박스 칼럼 -->
+                    <th class="text-center"></th> 
                     <th class="text-center">상품 사진</th>
                     <th class="text-center">상품 이름</th>
                     <th class="text-center">상품 수량</th>
@@ -23,7 +23,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="item in getCartItems" :key="item.itemId">
-                    <td class="text-center"> <!-- 체크 박스 칼럼 -->
+                    <td class="text-center"> 
                         <v-checkbox
                         class="text-center"
                         v-model="selectedItems[item.id]"

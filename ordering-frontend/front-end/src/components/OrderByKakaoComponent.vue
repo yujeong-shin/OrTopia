@@ -1,8 +1,6 @@
 <template>
     <v-main>
-      <v-container>
-        <v-subheader>주문 완료!</v-subheader>
-      </v-container>
+      
     </v-main>
   </template>
   
@@ -15,6 +13,7 @@
         return{
             buyItems: JSON.parse(localStorage.getItem('buyItem')),
             order : JSON.parse(localStorage.getItem('order')),
+            pgToken : null,
         }
     },
     created(){
@@ -28,9 +27,20 @@
             const token = localStorage.getItem('accessToken');
             const refreshToken = localStorage.getItem('refreshToken');
             const email = localStorage.getItem('email');
+            // 결제 승인 코드를 넣어줌
+            this.pgToken = this.$route.params.pgToken;
+            if(this.pgToken === "payCanceled"){
+                alert("결제를 취소 했습니다.");
+                this.$router.push('/');
+            }
+            if(this.pgToken === "payFailed"){
+                alert("결제에 실패 했습니다.");
+                this.$router.push('/');
+            }
             try {
+              console.log(this.pgToken);
                 const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
-                const body = { totalPrice: this.order.totalPrice, addressId:"1" ,email:email ,paymentMethod:'KAKAO',recipient:this.order.name, orderDetailRequestDtoList: this.buyItems };
+                const body = { pgToken : this.pgToken, totalPrice: this.order.totalPrice, addressId:this.order.addressId ,email:email ,paymentMethod:'KAKAO',recipient:this.order.name, orderDetailRequestDtoList: this.buyItems };
                 const data = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/order-service/create`, body, { headers });
                 console.log(data);
                 let buyItemMap = {};
@@ -44,6 +54,8 @@
                 let filteredCartItem = cartItem.filter(item => !buyItemMap[item.id]).map(item => this.$store.dispatch('addToCart',item));
                 // localStorage.setItem('totalQuantity',filteredCartItem.size());
                 console.log(filteredCartItem);
+                alert("아이템 주문에 성공했습니다.");
+                this.$router.push('/');
             }catch (e) {
                 console.log(e);
             }

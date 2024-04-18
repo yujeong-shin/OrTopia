@@ -73,16 +73,31 @@
             v-model="phoneNumber"
             prepend-icon="mdi-phone"
             ></v-text-field>
+            <v-row align="center">
+              <v-col cols="9">
+                <v-text-field
+                  label="우편번호"
+                  v-model="zipcode"
+                  prepend-icon="mdi-lock"
+                  style="max-width: 400px;"
+                  readonly 
+                ></v-text-field>
+              </v-col>
+              <v-col cols="3">
+                <v-btn @click="openModal">주소 찾기</v-btn>
+              </v-col>
+            </v-row>
             <v-text-field
             label="주소"
             v-model="address"
             prepend-icon="mdi-lock"
+            readonly
             ></v-text-field>
             <v-text-field
             label="주소 상세"
             v-model="addressDetail"
             prepend-icon="mdi-calendar"
-            type="number"
+            readonly
             ></v-text-field>
             <v-text-field
             label="배송 요청 사항"
@@ -158,11 +173,22 @@
     </v-row>
   </v-container>
 </v-main>
+
+<AddressModal
+  v-model="showAddressModal"
+  @update:dialog="updateDialog('showAddressModal', $event)"
+  @address-selected="handleAddressSelected"
+  @close-modal="closeAddressModal"
+></AddressModal>
 </template>
-  
+
   <script>
-  import axios from 'axios';  
+  import axios from 'axios';
+  import AddressModal from "@/components/AddressModalToBuy.vue";
   export default {
+    components: {
+    AddressModal,
+  },
     data() {
       return {
         defaultName: "John Doe", // 디폴트 이름
@@ -170,14 +196,17 @@
         defaultEmail: localStorage.getItem('email'), // 디폴트 이메일
         name: '',
         phoneNumber: '',
+        addressId:'',
         address:'',
         addressDetail:'',
         request:'',
+        zipcode:' ',
         myItems: JSON.parse(localStorage.getItem('buyItem')),// 로컬 스토리지에 저장되어 있는 선택한 아이템 불러오기
         totalPrice:0, // 상품 금액
         deliveryPrice:3000, // 배달 금액
         dicountPrice:5000, // 할인 금액
         price:0, // 결재할 금액
+        showAddressModal:false,
       };
     },
     created(){
@@ -187,6 +216,24 @@
         this.calculateTotalPrice();
     },
     methods: {
+      handleAddressSelected(address) {
+      // 선택한 주소 정보를 처리하는 로직을 구현합니다.
+        this.address = address.roadAddress;
+        this.addressDetail = address.detail;
+        this.zipcode = address.zonecode;
+        this.addressId = address.id;
+        console.log("Selected Address:", address);
+      // 이제 여기서 선택한 주소 정보를 부모 컴포넌트의 데이터에 저장하거나 다른 작업을 수행할 수 있습니다.
+      },
+      updateDialog(key, value) {
+      this[key] = value; // key에 해당하는 데이터를 업데이트
+      },
+      closeAddressModal() {
+        this.showAddressModal = false; // 모달 창 닫기
+      },    
+      openModal() {
+        this.showAddressModal = true; // 모달을 열기 위한 데이터 프로퍼티를 토글합니다.
+      },
       async myInfo(){
       try{
         const token = localStorage.getItem('accessToken');
@@ -227,16 +274,16 @@
           // window.open(reDirectURL, '_blank');// 결제 창을 하나 띄우기
           const order = {
             name: this.name,
-            totalPrice : this.totalPrice,
+            totalPrice : this.price,
             phoneNumber: this.phoneNumber,
-            address: this.address,
-            addressDetail: this.addressDetail,
+            addressId: this.addressId,
             request: this.request
           }
           localStorage.setItem("order",JSON.stringify(order));
           window.location.href = reDirectURL; // 페이지 이동
         } catch (e) {
           console.log(e);
+          alert(e.response.data.message);
         }
       },
     },
