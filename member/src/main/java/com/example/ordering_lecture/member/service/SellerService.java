@@ -102,4 +102,8 @@ public class SellerService {
         }
         return bannedSellerResponseDtos;
     }
+
+    public Seller findByMemberId(Long id) {
+        return sellerRepository.findByMemberId(id).orElseThrow(()->new OrTopiaException(ErrorCode.NOT_FOUND_SELLER));
+    }
 }
