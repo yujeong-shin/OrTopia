@@ -191,4 +191,10 @@ public class ItemService {
         }
         return recommendationRedisDatas;
     }
+
+    public ItemResponseDto readItemForMyPage(Long itemId, String email) {
+        Item item = itemRepository.findImagePathById(itemId).orElseThrow(()->new OrTopiaException(ErrorCode.NOT_FOUND_ITEM));
+        ItemResponseDto itemResponseDto = ItemResponseDto.toDto(item);
+        return itemResponseDto;
+    }
 }
