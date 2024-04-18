@@ -4,6 +4,7 @@ import com.example.ordering_lecture.common.OrTopiaResponse;
 import com.example.ordering_lecture.item.dto.ItemRequestDto;
 import com.example.ordering_lecture.item.dto.ItemResponseDto;
 import com.example.ordering_lecture.item.dto.ItemUpdateDto;
+import com.example.ordering_lecture.item.dto.RecommendedItemDto;
 import com.example.ordering_lecture.item.service.ItemService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,10 +86,12 @@ public class ItemController {
     public String getImagePath(@PathVariable Long id){
         return itemService.getImagePath(id);
     }
-    @GetMapping("read/{id}/my_page")
-    public ResponseEntity<OrTopiaResponse> readItemForMyPage(@PathVariable Long id,@RequestHeader("myEmail") String email){
-        ItemResponseDto itemResponseDto = itemService.readItemForMyPage(id, email);
-        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",itemResponseDto);
+
+    // 추천 아이템의 이미지와 id를 가져오는 api
+    @GetMapping("/recommendItems")
+    public ResponseEntity<OrTopiaResponse> findRecommendItem(@RequestHeader("myEmail") String email){
+        List<RecommendedItemDto> recommendedItemDtos = itemService.findRecommendItem(email);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",recommendedItemDtos);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
 }

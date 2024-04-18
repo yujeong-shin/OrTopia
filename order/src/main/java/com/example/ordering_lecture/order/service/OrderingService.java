@@ -1,16 +1,20 @@
 package com.example.ordering_lecture.order.service;
 
-import com.example.ordering_lecture.order.dto.*;
+import com.example.ordering_lecture.common.ErrorCode;
+import com.example.ordering_lecture.common.OrTopiaException;
+import com.example.ordering_lecture.order.dto.OrderRequestDto;
+import com.example.ordering_lecture.order.dto.OrderResponseDto;
+import com.example.ordering_lecture.order.dto.OrderUpdateDto;
 import com.example.ordering_lecture.order.entity.Ordering;
 import com.example.ordering_lecture.order.repository.OrderRepository;
 import com.example.ordering_lecture.orderdetail.dto.OrderDetailRequestDto;
 import com.example.ordering_lecture.orderdetail.dto.OrderDetailResponseDto;
 import com.example.ordering_lecture.orderdetail.entity.OrderDetail;
 import com.example.ordering_lecture.orderdetail.repository.OrderDetailRepository;
+import com.example.ordering_lecture.redis.RedisService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,38 +23,43 @@ import java.util.stream.Collectors;
 public class OrderingService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
-
-    public OrderingService(OrderRepository orderRepository, OrderDetailRepository orderDetailRepository) {
+    private final RedisService redisService;
+    public OrderingService(OrderRepository orderRepository, OrderDetailRepository orderDetailRepository, RedisService redisService) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
+        this.redisService = redisService;
     }
 
     @Transactional
     // 더티 체킹 설정
-    public Ordering createOrder(OrderRequestDto orderRequestDto) {
-        Ordering ordering = orderRequestDto.toEntity();
-        orderRepository.save(ordering);
-        for(OrderDetailRequestDto orderDetailRequestDto:orderRequestDto.getOrderDetailRequestDtoList()){
-            OrderDetail orderDetail = orderDetailRequestDto.toEntity(ordering);
-            orderDetailRepository.save(orderDetail);
+    public OrderResponseDto createOrder(OrderRequestDto orderRequestDto,String email) {
+        // 정상 주문 진행
+        if(redisService.getValues(email).equals(orderRequestDto.getPgToken())){
+            Ordering ordering = orderRequestDto.toEntity();
+            orderRepository.save(ordering);
+            for(OrderDetailRequestDto orderDetailRequestDto:orderRequestDto.getOrderDetailRequestDtoList()){
+                OrderDetail orderDetail = orderDetailRequestDto.toEntity(ordering);
+                orderDetailRepository.save(orderDetail);
+            }
+            return OrderResponseDto.toDto(ordering);
         }
-        return ordering;
+        throw new OrTopiaException(ErrorCode.ACCESS_DENIED);
     }
 
-    public Object updateOrder(OrderUpdateDto orderUpdateDto) {
+    public OrderResponseDto updateOrder(OrderUpdateDto orderUpdateDto) {
         Ordering ordering = orderRepository.findById(orderUpdateDto.getId()).orElseThrow();
         ordering.updateStatue(orderUpdateDto.getStatue());
-        return ordering;
+        return OrderResponseDto.toDto(ordering);
     }
 
-    public Object showAllOrder() {
+    public List<OrderResponseDto> showAllOrder() {
         List<Ordering> orderings = orderRepository.findAll();
         return orderings.stream()
                 .map(OrderResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 
-    public Object showAllOrdersDetail() {
+    public List<OrderResponseDto> showAllOrdersDetail() {
         List<Ordering> orderings = orderRepository.findAll();
         List<OrderResponseDto> orderResponseDtos = new ArrayList<>();
         for(Ordering ordering : orderings){
@@ -85,21 +94,5 @@ public class OrderingService {
             orderResponseDtos.add(orderResponseDto);
         }
         return orderResponseDtos;
-    }
-
-    public List<BuyerGraphPriceData> getBuyerGraphPriceData(String email) {
-        LocalDateTime endDate = LocalDateTime.now();
-        LocalDateTime startDate = endDate.minusWeeks(2);
-        System.out.println("startDate = " + startDate);
-        System.out.println("endDate = " + endDate);
-        return orderRepository.findSumPriceByDateBetweenAndStatueAndEmail(startDate, endDate, email);
-    }
-
-    public List<BuyerGraphCountData> getBuyerGraphCountData(String email) {
-        LocalDateTime endDate = LocalDateTime.now();
-        LocalDateTime startDate = endDate.minusWeeks(2);
-        System.out.println("startDate = " + startDate);
-        System.out.println("endDate = " + endDate);
-        return orderRepository.findCompletedOrdersByEmailAndDateRange(startDate, endDate, email);
     }
 }
