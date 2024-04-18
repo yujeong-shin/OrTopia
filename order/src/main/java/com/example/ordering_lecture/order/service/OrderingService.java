@@ -1,8 +1,6 @@
 package com.example.ordering_lecture.order.service;
 
-import com.example.ordering_lecture.order.dto.OrderRequestDto;
-import com.example.ordering_lecture.order.dto.OrderResponseDto;
-import com.example.ordering_lecture.order.dto.OrderUpdateDto;
+import com.example.ordering_lecture.order.dto.*;
 import com.example.ordering_lecture.order.entity.Ordering;
 import com.example.ordering_lecture.order.repository.OrderRepository;
 import com.example.ordering_lecture.orderdetail.dto.OrderDetailRequestDto;
@@ -12,6 +10,7 @@ import com.example.ordering_lecture.orderdetail.repository.OrderDetailRepository
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,7 +72,7 @@ public class OrderingService {
                 .collect(Collectors.toList());
     }
 
-    public Object showMyOrdersDetail(String email) {
+    public List<OrderResponseDto> showMyOrdersDetail(String email) {
         List<Ordering> orderings = orderRepository.findAllByEmail(email);
         List<OrderResponseDto> orderResponseDtos = new ArrayList<>();
         for(Ordering ordering : orderings){
@@ -86,5 +85,21 @@ public class OrderingService {
             orderResponseDtos.add(orderResponseDto);
         }
         return orderResponseDtos;
+    }
+
+    public List<BuyerGraphPriceData> getBuyerGraphPriceData(String email) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusWeeks(2);
+        System.out.println("startDate = " + startDate);
+        System.out.println("endDate = " + endDate);
+        return orderRepository.findSumPriceByDateBetweenAndStatueAndEmail(startDate, endDate, email);
+    }
+
+    public List<BuyerGraphCountData> getBuyerGraphCountData(String email) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusWeeks(2);
+        System.out.println("startDate = " + startDate);
+        System.out.println("endDate = " + endDate);
+        return orderRepository.findCompletedOrdersByEmailAndDateRange(startDate, endDate, email);
     }
 }

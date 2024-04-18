@@ -85,4 +85,10 @@ public class ItemController {
     public String getImagePath(@PathVariable Long id){
         return itemService.getImagePath(id);
     }
+    @GetMapping("read/{id}/my_page")
+    public ResponseEntity<OrTopiaResponse> readItemForMyPage(@PathVariable Long id,@RequestHeader("myEmail") String email){
+        ItemResponseDto itemResponseDto = itemService.readItemForMyPage(id, email);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",itemResponseDto);
+        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+    }
 }

@@ -14,13 +14,11 @@ import com.example.ordering_lecture.item.repository.ItemRepository;
 import com.example.ordering_lecture.redis.RedisService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import feign.FeignException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.util.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -171,5 +169,11 @@ public class ItemService {
     public String getImagePath(Long itemId) {
         Item item = itemRepository.findImagePathById(itemId).orElseThrow(()->new OrTopiaException(ErrorCode.NOT_FOUND_ITEM));
         return item.getImagePath();
+    }
+
+    public ItemResponseDto readItemForMyPage(Long itemId, String email) {
+        Item item = itemRepository.findImagePathById(itemId).orElseThrow(()->new OrTopiaException(ErrorCode.NOT_FOUND_ITEM));
+        ItemResponseDto itemResponseDto = ItemResponseDto.toDto(item);
+        return itemResponseDto;
     }
 }
