@@ -100,10 +100,9 @@ public class MemberController {
     }
     // 판매 내역 조회 시 사용되는 API
     // front로 넘어오는 email 값을 이용해 seller ID를 조회
-    @GetMapping("/member/{email}/sellerId")
-    public Long findSellerIdByMemberEmail(@PathVariable("email") String email){
+    @GetMapping("/member/{email}/memberId")
+    public Long findIdByMemberEmail(@PathVariable("email") String email){
         MemberResponseDto memberResponseDto = memberService.findIdByEmail(email);
-        Seller seller = sellerService.findByMemberId(memberResponseDto.getId());
-        return seller.getId();
+        return memberResponseDto.getId();
     }
 }

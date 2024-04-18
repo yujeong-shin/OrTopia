@@ -80,7 +80,7 @@ public class OrderingController {
     }
     @GetMapping("/total_price/seller")
     public ResponseEntity<OrTopiaResponse> totalPriceBySeller(@RequestHeader("myEmail") String email){
-        Long sellerId = feignClient.findSellerIdByMemberEmail(email);
+        Long sellerId = feignClient.findIdByMemberEmail(email);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",sellerId);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
