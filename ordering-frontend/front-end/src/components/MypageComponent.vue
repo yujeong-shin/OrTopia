@@ -10,7 +10,7 @@
                 >이름: {{ member.name }}</v-card-subtitle
               >
               <v-card-subtitle class="mb-1"
-                >아이디: {{ member.email }}</v-card-subtitle
+                >이메일: {{ member.email }}</v-card-subtitle
               >
               <v-card-subtitle class="mb-1"
                 >나이: {{ member.age }}</v-card-subtitle
@@ -99,7 +99,12 @@
     </v-row>
     <v-row>
       <v-col cols="12" md="6">
-        <v-card outlined tile class="pa-3 mb-3">
+        <v-card
+          outlined
+          tile
+          class="pa-3 mb-3"
+          @click="showLikeSellerListModal = true"
+        >
           <v-card-title class="headline">즐겨찾기한 판매자 목록</v-card-title>
         </v-card>
       </v-col>
@@ -171,6 +176,10 @@
       v-model="showManageItemsModal"
       @update:dialog="updateDialog('showManageItemsModal', $event)"
     ></ManageItemsModal>
+    <LikeSellerListModal
+      v-model="showLikeSellerListModal"
+      @update:dialog="updateDialog('showLikeSellerListModal', $event)"
+    ></LikeSellerListModal>
   </v-container>
 </template>
 
@@ -183,6 +192,7 @@ import BuyListModal from "@/components/BuyListModal.vue";
 import SellListModal from "@/components/SellListModal.vue";
 import RegisterSellerModal from "@/components/RegisterSellerModal.vue";
 import ManageItemsModal from "@/components/ManageItemsModal.vue";
+import LikeSellerListModal from "@/components/LikeSellerListModal.vue";
 
 export default {
   components: {
@@ -191,6 +201,7 @@ export default {
     SellListModal,
     RegisterSellerModal,
     ManageItemsModal,
+    LikeSellerListModal,
   },
   mounted() {
     // 컴포넌트가 마운트되면 localStorage에서 role 값을 가져옴
@@ -219,6 +230,7 @@ export default {
       showSellListModal: false,
       showRegisterSellerModal: false,
       showManageItemsModal: false,
+      showLikeSellerListModal: false,
       dailyPurchaseAmountChartInfo: {},
       dailyPurchaseCountChartInfo: {},
       datesForAmount: [],
