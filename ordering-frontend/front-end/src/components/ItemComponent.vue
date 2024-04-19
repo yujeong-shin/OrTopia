@@ -27,7 +27,8 @@
           <v-card>
           <v-card-title>구매 옵션 및 수량 선택</v-card-title>
           <v-card-text>
-          <v-select v-model="selectedOption" :items="options" label="옵션" />
+            <v-select v-for="(option, index) in selectedOptions" :key="index" :items="option.value" :label="option.name">
+          </v-select>
           <v-row align="center">
             <v-col cols="4">
               <p>수량:</p>
@@ -104,8 +105,8 @@ export default {
     return {
       itemId: null,
       item: [],
-      selectedOption: null,
-      options: ["옵션 1", "옵션 2", "옵션 3"],
+      selectedOptions:[],
+      options: [],
       quantity: 0,
       recentProducts: [],
       stickyTop: 0,
@@ -202,7 +203,9 @@ export default {
           }
         );
         this.item = data.data.result;
-        console.log(this.item);
+        this.selectedOptions= [...this.item.itemOptionResponseDtoList];
+        console.log(this.selectedOptions[0]);
+        // console.log(this.options);
       } catch (error) {
         alert(error.response.data.error_message);
         console.log(error);

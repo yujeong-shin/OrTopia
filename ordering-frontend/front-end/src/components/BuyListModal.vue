@@ -153,6 +153,7 @@ export default {
           }
         );
         this.orderList = response.data.result;
+        console.log(this.orderList);
       } catch (error) {
         console.error("주문 상세조회에 실패했습니다: ", error);
       }
