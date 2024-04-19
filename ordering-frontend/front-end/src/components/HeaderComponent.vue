@@ -8,10 +8,12 @@
         contain
         height="40"
         @click="redirectToHome"
-        style="cursor: pointer;"
+        style="cursor: pointer"
       ></v-img>
     </v-hover>
-
+    <template v-if="isSeller">
+      <v-btn text-color="white" @click="goToItemSellComponent"> 판매 </v-btn>
+    </template>
     <v-spacer></v-spacer>
 
     <!-- 로그인 상태에 따라 다른 내용 표시 -->
@@ -23,7 +25,16 @@
 
       <v-btn icon>
         <v-icon color="white" @click="goToMyCart">mdi-cart </v-icon>
-        <span class="v-badge__badge v-theme--dark bg-error" aria-atomic="true" aria-label="Badge" aria-live="polite" role="status" style="bottom: calc(100% - 12px); left: calc(100% - 12px);"> {{totalQuantity}} </span>
+        <span
+          class="v-badge__badge v-theme--dark bg-error"
+          aria-atomic="true"
+          aria-label="Badge"
+          aria-live="polite"
+          role="status"
+          style="bottom: calc(100% - 12px); left: calc(100% - 12px)"
+        >
+          {{ totalQuantity }}
+        </span>
       </v-btn>
 
       <v-btn icon @click="goToMypageComponent">
@@ -31,27 +42,29 @@
       </v-btn>
 
       <v-btn icon @click="logout">
-        <v-icon color="white">mdi-logout</v-icon> <!-- 로그아웃 아이콘 -->
+        <v-icon color="white">mdi-logout</v-icon>
+        <!-- 로그아웃 아이콘 -->
       </v-btn>
     </template>
-    
+
     <template v-else>
       <!-- 로그인하지 않았을 때 보이는 아이콘 버튼들 -->
       <v-btn icon @click="goToLogin">
-        <v-icon color="white">mdi-login</v-icon> <!-- 로그인 아이콘 -->
+        <v-icon color="white">mdi-login</v-icon>
+        <!-- 로그인 아이콘 -->
       </v-btn>
       <v-btn icon @click="goToRegister">
-        <v-icon color="white">mdi-account-plus</v-icon> <!-- 회원가입 아이콘 -->
+        <v-icon color="white">mdi-account-plus</v-icon>
+        <!-- 회원가입 아이콘 -->
       </v-btn>
     </template>
   </v-app-bar>
 </template>
 
-
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useStore } from 'vuex'
+import { ref, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 const router = useRouter();
 const store = useStore();
@@ -60,48 +73,48 @@ const isLoggedIn = ref(false);
 const isSeller = ref(false); // 판매자인지 확인하는 ref 추가
 
 onMounted(() => {
-  const token = localStorage.getItem('accessToken');
-  const role = localStorage.getItem('role'); // localStorage에서 사용자 역할 가져오기
+  const token = localStorage.getItem("accessToken");
+  const role = localStorage.getItem("role"); // localStorage에서 사용자 역할 가져오기
   isLoggedIn.value = !!token;
-  isSeller.value = role === 'SELLER'; // 사용자 역할이 판매자인 경우 true 설정
+  isSeller.value = role === "SELLER"; // 사용자 역할이 판매자인 경우 true 설정
 });
 
 const logout = () => {
   localStorage.clear();
   isLoggedIn.value = false;
   isSeller.value = false; // 로그아웃 시 isSeller도 초기화
-  router.push('/login');
+  router.push("/login");
 };
 
 const redirectToHome = () => {
-  router.push('/');
+  router.push("/");
 };
 
 const goToMypageComponent = () => {
-  router.push('/mypage');
+  router.push("/mypage");
 };
 
 const goToMyCart = () => {
-  router.push('/mycart');
+  router.push("/mycart");
 };
 
 const goToLogin = () => {
-  router.push('/login');
+  router.push("/login");
 };
 
 const goToRegister = () => {
-  router.push('/signup');
+  router.push("/signup");
 };
 
-
+const goToItemSellComponent = () => {
+  router.push("/seller");
+};
 </script>
-
-
 
 <style scoped>
 /* 로고 호버 효과가 적용되지 않는 문제를 해결하기 위해 :deep 선택자를 사용 */
 :deep(.logo-hover) {
-  box-shadow: 0 2px 12px rgba(0,0,0,0.2); /* 그림자 효과 */
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
   transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 

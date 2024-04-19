@@ -20,9 +20,11 @@
               >판매자 이름 : {{ item.sellerId }}</v-btn
             >
             &nbsp;&nbsp;&nbsp;
-            <v-btn color="primary" text style="margin-top: 30px"
-              >즐겨찾기</v-btn
-            >
+             <v-btn icon @click="toggleFavorite(item.sellerId)">
+              <v-icon>
+                {{ item.isFavorited ? 'mdi-heart' : 'mdi-heart-outline' }}
+              </v-icon>
+            </v-btn>
             <p style="font-size: 20px; margin-top: 30px">점수 :</p>
           </div>
           <br>
@@ -83,7 +85,6 @@
       <h1 style="text-align: center">리뷰</h1>
     </v-container>
   </v-main>
-
   <!-- 스티키 사이드바 -->
   <div class="sticky-sidebar" :style="{ top: stickyTop + 'px' }">
     <h5 style="text-align: center">최근본상품</h5>
@@ -98,7 +99,6 @@
     </v-card>
   </div>
 </template>
-
 <script>
 import axios from "axios";
 import { mapActions } from "vuex";
@@ -122,6 +122,31 @@ export default {
   },
   methods: {
     ...mapActions("addToCart"),
+
+    async toggleFavorite(sellerId) {
+  const token = localStorage.getItem("accessToken");
+  const refreshToken = localStorage.getItem("refreshToken");
+  const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
+  
+  const baseApiUrl = `${process.env.VUE_APP_API_BASE_URL}/member-service/member`;
+  const action = this.item.isFavorited ? 'unlikeSeller' : 'likeSeller';
+  const method = this.item.isFavorited ? 'delete' : 'post';
+  const url = `${baseApiUrl}/${action}/${sellerId}`;
+
+  try {
+    await axios({
+      method: method,
+      url: url,
+      headers: headers,
+      data: null // POST 요청의 경우 필요 없으나 axios 요구 사항에 따라 명시할 수 있음
+    });
+    this.item.isFavorited = !this.item.isFavorited;
+    alert(`즐겨찾기가 ${this.item.isFavorited ? '추가' : '삭제'}되었습니다!`);
+  } catch (error) {
+    console.error('즐겨찾기 변경 실패:', error);
+    alert('즐겨찾기 변경에 실패하였습니다.');
+  }
+},
     buyNow() {
       // 바로 구매 동작 구현
       if (this.quantity == 0) {
@@ -200,7 +225,6 @@ export default {
         console.log(error);
       }
       // 최근 본 상품 불러오기
-
       if (token != null) {
         try {
           const data = await axios.get(
@@ -234,7 +258,6 @@ export default {
   },
 };
 </script>
-
 <style scoped>
 .sticky-sidebar {
   position: fixed;
@@ -242,5 +265,9 @@ export default {
   width: 120px;
   max-height: calc(50vh - 50px);
   overflow-y: hi;
+}
+.v-icon {
+  color: red; /* 하트 색상 */
+  font-size: 24px; /* 아이콘 크기 */
 }
 </style>
