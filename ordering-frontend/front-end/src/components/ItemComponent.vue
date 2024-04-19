@@ -20,14 +20,18 @@
               >판매자 이름 : {{ item.sellerId }}</v-btn
             >
             &nbsp;&nbsp;&nbsp;
-            <v-btn color="primary" text @click="addToFavorites(item.sellerId)">즐겨찾기</v-btn>
+             <v-btn icon @click="toggleFavorite(item.sellerId)">
+              <v-icon>
+                {{ item.isFavorited ? 'mdi-heart' : 'mdi-heart-outline' }}
+              </v-icon>
+            </v-btn>
             <p style="font-size: 20px; margin-top: 30px">점수 :</p>
           </div>
           <br>
           <v-card>
           <v-card-title>구매 옵션 및 수량 선택</v-card-title>
           <v-card-text>
-            <v-select v-for="(option, index) in selectedOptions" :key="index" :items="option.value" :label="option.name">
+            <v-select v-for="(option, index) in selectedOptions" :key="index" :items="option.value" :label="option.name" v-model="selectedValues[index].value">
           </v-select>
           <v-row align="center">
             <v-col cols="4">
@@ -81,7 +85,6 @@
       <h1 style="text-align: center">리뷰</h1>
     </v-container>
   </v-main>
-
   <!-- 스티키 사이드바 -->
   <div class="sticky-sidebar" :style="{ top: stickyTop + 'px' }">
     <h5 style="text-align: center">최근본상품</h5>
@@ -96,7 +99,6 @@
     </v-card>
   </div>
 </template>
-
 <script>
 import axios from "axios";
 import { mapActions } from "vuex";
@@ -110,6 +112,7 @@ export default {
       quantity: 0,
       recentProducts: [],
       stickyTop: 0,
+      selectedValues:[],
     };
   },
   created() {
@@ -119,31 +122,40 @@ export default {
   },
   methods: {
     ...mapActions("addToCart"),
-    async addToFavorites() {
-      const sellerId = this.item.sellerId;
-      // const email = localStorage.getItem("email");
-      const token = localStorage.getItem("accessToken");
-      const refreshToken = localStorage.getItem("refreshToken");
-      const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
-      await axios.post(
-          `${process.env.VUE_APP_API_BASE_URL}/member-service/member/likeSeller/${sellerId}`,null,{ headers }
-        )   
-        .then(response => {
-    console.log(response.data);
-    alert('즐겨찾기에 추가되었습니다!');
-  })
-      .catch(error => {
-        console.error('즐겨찾기 추가 실패:', error);
-        alert('즐겨찾기 추가에 실패하였습니다.');
-      });
-    },
+
+    async toggleFavorite(sellerId) {
+  const token = localStorage.getItem("accessToken");
+  const refreshToken = localStorage.getItem("refreshToken");
+  const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
+  
+  const baseApiUrl = `${process.env.VUE_APP_API_BASE_URL}/member-service/member`;
+  const action = this.item.isFavorited ? 'unlikeSeller' : 'likeSeller';
+  const method = this.item.isFavorited ? 'delete' : 'post';
+  const url = `${baseApiUrl}/${action}/${sellerId}`;
+
+  try {
+    await axios({
+      method: method,
+      url: url,
+      headers: headers,
+      data: null // POST 요청의 경우 필요 없으나 axios 요구 사항에 따라 명시할 수 있음
+    });
+    this.item.isFavorited = !this.item.isFavorited;
+    alert(`즐겨찾기가 ${this.item.isFavorited ? '추가' : '삭제'}되었습니다!`);
+  } catch (error) {
+    console.error('즐겨찾기 변경 실패:', error);
+    alert('즐겨찾기 변경에 실패하였습니다.');
+  }
+},
     buyNow() {
       // 바로 구매 동작 구현
       if (this.quantity == 0) {
         alert("0개는 주문 할 수 없습니다.");
       } else {
+        console.log(this.selectedValues);
         let orderItem = this.item;
         orderItem.count = this.quantity;
+        orderItem.options = this.selectedValues;
         if (!Array.isArray(orderItem)) {
             orderItem = [orderItem];
         }
@@ -158,6 +170,7 @@ export default {
       } else {
         if (confirm("장바구니에 담습니까?")) {
           this.item.count = this.quantity;
+          this.item.options = this.selectedValues;
           this.$store.dispatch("addToCart", this.item);
           if (confirm("장바구니로 이동하시겠습니까?")) {
             this.$router.push("/mycart");
@@ -205,13 +218,13 @@ export default {
         this.item = data.data.result;
         this.selectedOptions= [...this.item.itemOptionResponseDtoList];
         console.log(this.selectedOptions[0]);
+        this.selectedValues = this.selectedOptions.map(option => ({ name: option.name, value: null }));
         // console.log(this.options);
       } catch (error) {
         alert(error.response.data.error_message);
         console.log(error);
       }
       // 최근 본 상품 불러오기
-
       if (token != null) {
         try {
           const data = await axios.get(
@@ -244,8 +257,7 @@ export default {
     window.removeEventListener("scroll", this.handleScroll);
   },
 };
-</script> 
-
+</script>
 <style scoped>
 .sticky-sidebar {
   position: fixed;
@@ -253,5 +265,9 @@ export default {
   width: 120px;
   max-height: calc(50vh - 50px);
   overflow-y: hi;
+}
+.v-icon {
+  color: red; /* 하트 색상 */
+  font-size: 24px; /* 아이콘 크기 */
 }
 </style>
