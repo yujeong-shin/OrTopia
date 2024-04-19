@@ -12,7 +12,7 @@
             <v-form ref="form" @submit.prevent="submitSellerForm" v-model="valid">
               <v-text-field
                 label="사업자 번호"
-                v-model="sellerForm.businnessNumber"
+                v-model="sellerForm.businessNumber"
                 :rules="businessNumberRules"
                 required
               ></v-text-field>
@@ -26,7 +26,7 @@
 
               <v-select
                 label="사업 유형"
-                v-model="sellerForm.businnessType"
+                v-model="sellerForm.businessType"
                 :items="['가구', '도서','가전','생활','건강','스포츠','식품','육아','의류','잡화','화장품']"
                 :rules="businessTypeRules"
                 required
@@ -58,9 +58,9 @@ export default {
     return {
       valid: true,
       sellerForm: {
-        businnessNumber: '',
+        businessNumber: '',
         companyName: '',
-        businnessType: ''
+        businessType: ''
       },
       businessNumberRules: [
         v => !!v || '사업자 번호는 필수입니다.',
@@ -86,13 +86,13 @@ export default {
       const token = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
       const email = localStorage.getItem('email');
-      if (this.sellerForm.businnessNumber && this.sellerForm.companyName && this.sellerForm.businnessType) {
+      if (this.sellerForm.businessNumber && this.sellerForm.companyName && this.sellerForm.businessType) {
         try {
           console.log('판매자 등록 요청을 보냅니다...'); // 요청 전송 전에 로그 추가
           const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/member-service/seller/${email}/create`, {
-            businnessNumber: this.sellerForm.businnessNumber,
+            businessNumber: this.sellerForm.businessNumber,
             companyName: this.sellerForm.companyName,
-            businnessType: this.sellerForm.businnessType
+            businessType: this.sellerForm.businessType
           }, {
             headers: {
               Authorization: `Bearer ${token}`,
