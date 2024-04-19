@@ -81,7 +81,15 @@ public class OrderingController {
     @GetMapping("/total_price/seller")
     public ResponseEntity<OrTopiaResponse> totalPriceBySeller(@RequestHeader("myEmail") String email){
         Long sellerId = feignClient.findIdByMemberEmail(email);
-        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",sellerId);
+        List<SellerGraphPriceData> sellerGraphPriceDatas = orderingService.getSellerGraphPriceData(sellerId);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",sellerGraphPriceDatas);
+        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+    }
+    @GetMapping("/total_count/seller")
+    public ResponseEntity<OrTopiaResponse> totalCountBySeller(@RequestHeader("myEmail") String email){
+        Long sellerId = feignClient.findIdByMemberEmail(email);
+        List<SellerGraphCountData> sellerGraphCountDatas = orderingService.getSellerGraphCountData(sellerId);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",sellerGraphCountDatas);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
 }
