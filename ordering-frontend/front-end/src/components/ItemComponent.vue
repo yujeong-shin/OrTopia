@@ -20,9 +20,7 @@
               >판매자 이름 : {{ item.sellerId }}</v-btn
             >
             &nbsp;&nbsp;&nbsp;
-            <v-btn color="primary" text style="margin-top: 30px"
-              >즐겨찾기</v-btn
-            >
+            <v-btn color="primary" text @click="addToFavorites(item.sellerId)">즐겨찾기</v-btn>
             <p style="font-size: 20px; margin-top: 30px">점수 :</p>
           </div>
           <br>
@@ -120,6 +118,24 @@ export default {
   },
   methods: {
     ...mapActions("addToCart"),
+    async addToFavorites() {
+      const sellerId = this.item.sellerId;
+      // const email = localStorage.getItem("email");
+      const token = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+      const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
+      await axios.post(
+          `${process.env.VUE_APP_API_BASE_URL}/member-service/member/likeSeller/${sellerId}`,null,{ headers }
+        )   
+        .then(response => {
+    console.log(response.data);
+    alert('즐겨찾기에 추가되었습니다!');
+  })
+      .catch(error => {
+        console.error('즐겨찾기 추가 실패:', error);
+        alert('즐겨찾기 추가에 실패하였습니다.');
+      });
+    },
     buyNow() {
       // 바로 구매 동작 구현
       if (this.quantity == 0) {
@@ -225,7 +241,7 @@ export default {
     window.removeEventListener("scroll", this.handleScroll);
   },
 };
-</script>
+</script> 
 
 <style scoped>
 .sticky-sidebar {
