@@ -19,7 +19,12 @@
         <td style="padding: 30px;">
           <img :src="item.imagePath" alt="대체_텍스트" height="200px" width="200px">
         </td>
-        <td class="text-center" style="font-size: 25px; padding: 30px;">{{ item.name }}</td>
+        <td class="text-center" >
+          <div style="font-size: 25px; padding: 30px;">{{ item.name }}</div>
+            <template v-for="(option, index) in item.options" :key="index">
+              <div style="font-size: 15px;">{{ option.name }}: {{ option.value }}</div>
+           </template>
+        </td>
         <td class="text-center" style="font-size: 25px; padding: 30px;">{{ item.count }}</td>
         <td class="text-center" style="font-size: 25px; padding: 30px;">{{ item.price * item.count }} 원 </td>
       </tr>
@@ -265,7 +270,7 @@
         const token = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
         try {
-          const itemList = this.myItems.map(item => ({ id: item.id, count: item.count, name : item.name }));
+          const itemList = this.myItems.map(item => ({ id: item.id, count: item.count, name : item.name, options:item.options }));
           const body = { price: this.price, itemDtoList: itemList }; // itemList을 itemDtoList로 변경
           const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
           const data = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/order-service/payment/ready`, body, { headers });
