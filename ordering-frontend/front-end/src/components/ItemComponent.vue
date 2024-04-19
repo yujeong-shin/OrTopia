@@ -29,7 +29,7 @@
           <v-card>
           <v-card-title>구매 옵션 및 수량 선택</v-card-title>
           <v-card-text>
-            <v-select v-for="(option, index) in selectedOptions" :key="index" :items="option.values" :label="option.name">
+            <v-select v-for="(option, index) in selectedOptions" :key="index" :items="option.value" :label="option.name">
           </v-select>
           <v-row align="center">
             <v-col cols="4">
