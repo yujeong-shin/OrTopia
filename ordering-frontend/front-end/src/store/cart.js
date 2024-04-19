@@ -30,14 +30,23 @@ export default createStore({
     mutations:{
         // addToCart함수는 외부컴포넌트 또는 액션에서 호출
         addToCart(state,item){
+            let isSame = true;
             const existItem = state.cartItem.find(i => i.id == item.id);
             if(existItem){
-                console.log(state.cartItem);
-                existItem.count += item.count;
-            }else{
-                state.cartItem.push(item);
-                state.totalQuantity = parseInt(state.totalQuantity) + 1;
+                for(let i = 0; i < existItem.options.length; i++){
+                    if (item.options[i].value !== existItem.options[i].value) {
+                        isSame =  false;
+                      }
+                }
+                if(isSame){
+                    console.log(state.cartItem);
+                    existItem.count += item.count;
+                    updateLocalStorage(state.cartItem, state.totalQuantity);
+                    return;
+                }
             }
+            state.cartItem.push(item);
+            state.totalQuantity = parseInt(state.totalQuantity) + 1;
             // totalCount
             updateLocalStorage(state.cartItem, state.totalQuantity);
         },

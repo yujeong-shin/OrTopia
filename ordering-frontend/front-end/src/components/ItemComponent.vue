@@ -29,7 +29,7 @@
           <v-card>
           <v-card-title>구매 옵션 및 수량 선택</v-card-title>
           <v-card-text>
-            <v-select v-for="(option, index) in selectedOptions" :key="index" :items="option.value" :label="option.name">
+            <v-select v-for="(option, index) in selectedOptions" :key="index" :items="option.value" :label="option.name" v-model="selectedValues[index].value">
           </v-select>
           <v-row align="center">
             <v-col cols="4">
@@ -112,6 +112,7 @@ export default {
       quantity: 0,
       recentProducts: [],
       stickyTop: 0,
+      selectedValues:[],
     };
   },
   created() {
@@ -126,8 +127,10 @@ export default {
       if (this.quantity == 0) {
         alert("0개는 주문 할 수 없습니다.");
       } else {
+        console.log(this.selectedValues);
         let orderItem = this.item;
         orderItem.count = this.quantity;
+        orderItem.options = this.selectedValues;
         if (!Array.isArray(orderItem)) {
             orderItem = [orderItem];
         }
@@ -142,6 +145,7 @@ export default {
       } else {
         if (confirm("장바구니에 담습니까?")) {
           this.item.count = this.quantity;
+          this.item.options = this.selectedValues;
           this.$store.dispatch("addToCart", this.item);
           if (confirm("장바구니로 이동하시겠습니까?")) {
             this.$router.push("/mycart");
@@ -189,6 +193,7 @@ export default {
         this.item = data.data.result;
         this.selectedOptions= [...this.item.itemOptionResponseDtoList];
         console.log(this.selectedOptions[0]);
+        this.selectedValues = this.selectedOptions.map(option => ({ name: option.name, value: null }));
         // console.log(this.options);
       } catch (error) {
         alert(error.response.data.error_message);
