@@ -134,16 +134,6 @@
           </div>
         </v-col>
       </v-row>
-      <v-col cols="12" md="6">
-        <v-card
-          outlined
-          tile
-          class="pa-3 mb-3"
-          @click="showSellListModal = true"
-        >
-          <v-card-title class="headline">판매내역</v-card-title>
-        </v-card>
-      </v-col>
     </v-row>
 
     <AddressModal
@@ -154,10 +144,6 @@
       v-model="showBuyListModal"
       @update:dialog="updateDialog('showBuyListModal', $event)"
     ></BuyListModal>
-    <SellListModal
-      v-model="showSellListModal"
-      @update:dialog="updateDialog('showSellListModal', $event)"
-    ></SellListModal>
     <registerSellerModal
       v-model="showRegisterSellerModal"
       @update:dialog="updateDialog('showRegisterSellerModal', $event)"
@@ -175,7 +161,6 @@ import axios from "axios";
 import Chart from "chart.js/auto";
 import AddressModal from "@/components/AddressModal.vue";
 import BuyListModal from "@/components/BuyListModal.vue";
-import SellListModal from "@/components/SellListModal.vue";
 import RegisterSellerModal from "@/components/RegisterSellerModal.vue";
 import LikeSellerListModal from "@/components/LikeSellerListModal.vue";
 
@@ -183,7 +168,6 @@ export default {
   components: {
     AddressModal,
     BuyListModal,
-    SellListModal,
     RegisterSellerModal,
     LikeSellerListModal,
   },
@@ -212,7 +196,6 @@ export default {
       member: [],
       showAddressModal: false,
       showBuyListModal: false,
-      showSellListModal: false,
       showRegisterSellerModal: false,
       showLikeSellerListModal: false,
       // 구매 그래프 시각화
@@ -224,11 +207,11 @@ export default {
       purchaseCount: [],
       // 판매 그래프 시각화
       dailySalesAmountChartInfo: {},
-      // dailySalesCountChartInfo: {},
+      dailySalesCountChartInfo: {},
       datesForSalesAmount: [],
-      // datesForSalesCount: [],
+      datesForSalesCount: [],
       salesAmount: [],
-      // salesCount: [],
+      salesCount: [],
     };
   },
   created() {
@@ -476,28 +459,28 @@ export default {
 
         this.dailySalesAmountChart();
 
-        // const response2 = await axios.get(
-        //   `${process.env.VUE_APP_API_BASE_URL}/order-service/total_count`,
-        //   {
-        //     headers: {
-        //       myEmail: `${email}`,
-        //       Authorization: `Bearer ${token}`,
-        //       "X-Refresh-Token": `${refreshToken}`,
-        //     },
-        //   }
-        // );
-        // this.dailyPurchaseCountChartInfo = response2.data.result;
-        // console.log("dailyPurchaseCountChartInfo : ");
-        // console.log(this.dailyPurchaseCountChartInfo);
+        const response2 = await axios.get(
+          `${process.env.VUE_APP_API_BASE_URL}/order-service/total_count/seller`,
+          {
+            headers: {
+              myEmail: `${email}`,
+              Authorization: `Bearer ${token}`,
+              "X-Refresh-Token": `${refreshToken}`,
+            },
+          }
+        );
+        this.dailySalesCountChartInfo = response2.data.result;
+        console.log("dailySalesCountChartInfo : ");
+        console.log(this.dailySalesCountChartInfo);
 
-        // for (var j = 0; j < this.dailyPurchaseCountChartInfo.length; j++) {
-        //   this.datesForPurchaseCount.push(
-        //     this.dailyPurchaseCountChartInfo[j].createdTime
-        //   );
-        //   this.purchaseCount.push(this.dailyPurchaseCountChartInfo[j].count);
-        // }
+        for (var j = 0; j < this.dailySalesCountChartInfo.length; j++) {
+          this.datesForSalesCount.push(
+            this.dailySalesCountChartInfo[j].createdTime
+          );
+          this.salesCount.push(this.dailySalesCountChartInfo[j].count);
+        }
 
-        // this.dailyPurchaseCountChart();
+        this.dailySalesCountChart();
       } catch (error) {
         console.log(error);
       }
@@ -514,8 +497,6 @@ export default {
             {
               data: this.salesAmount,
               backgroundColor: [
-                "rgba(153, 102, 255, 0.2)",
-                "rgba(0, 0, 128, 0.2)",
                 "rgba(54, 162, 235, 0.2)",
                 "rgba(75, 192, 192, 0.2)",
                 "rgba(255, 206, 86, 0.2)",
@@ -523,8 +504,60 @@ export default {
                 "rgba(255, 99, 132, 0.2)",
               ],
               borderColor: [
-                "rgba(153, 102, 255, 1)",
-                "rgba(0, 0, 128, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(245, 124, 0, 1)",
+                "rgba(255, 99, 132, 1)",
+              ],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: false,
+          aspectRatio: 1,
+          scales: {
+            x: {
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              grid: {
+                display: false,
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: false,
+            },
+          },
+        },
+      });
+    },
+    dailySalesCountChart() {
+      const ctx = document
+        .getElementById("dailySalesCountChart")
+        .getContext("2d");
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: this.datesForSalesCount,
+          datasets: [
+            {
+              data: this.salesCount,
+              backgroundColor: [
+                // "rgba(0, 0, 128, 0.2)",
+                "rgba(54, 162, 235, 0.2)",
+                "rgba(75, 192, 192, 0.2)",
+                "rgba(255, 206, 86, 0.2)",
+                "rgba(245, 124, 0, 0.2)",
+                "rgba(255, 99, 132, 0.2)",
+              ],
+              borderColor: [
+                // "rgba(0, 0, 128, 1)",
                 "rgba(54, 162, 235, 1)",
                 "rgba(75, 192, 192, 1)",
                 "rgba(255, 206, 86, 1)",
