@@ -32,7 +32,10 @@
           >전화번호: {{ member.phoneNumber }}</v-card-subtitle
         >
         <v-col cols="12" class="text-right">
-          <v-btn color="gray" class="mr-2" small @click="editUserInfo"
+          <v-btn
+            color="gray"
+            class="mr-2"
+            @click="showUpdateUserInfoModal = true"
             >회원정보 수정</v-btn
           >
           <v-btn color="gray" class="mr-2" small @click="viewCoupons"
@@ -160,6 +163,10 @@
       v-model="showLikeSellerListModal"
       @update:dialog="updateDialog('showLikeSellerListModal', $event)"
     ></LikeSellerListModal>
+    <UpdateUserInfoModal
+      v-model="showUpdateUserInfoModal"
+      @update:dialog="updateDialog('showUpdateUserInfoModal', $event)"
+    ></UpdateUserInfoModal>
   </v-container>
 </template>
 
@@ -171,6 +178,7 @@ import AddressModal from "@/components/AddressModal.vue";
 import BuyListModal from "@/components/BuyListModal.vue";
 import RegisterSellerModal from "@/components/RegisterSellerModal.vue";
 import LikeSellerListModal from "@/components/LikeSellerListModal.vue";
+import UpdateUserInfoModal from "@/components/UpdateUserInfoModal.vue";
 
 export default {
   components: {
@@ -178,6 +186,7 @@ export default {
     BuyListModal,
     RegisterSellerModal,
     LikeSellerListModal,
+    UpdateUserInfoModal,
   },
   mounted() {
     // 컴포넌트가 마운트되면 localStorage에서 role 값을 가져옴
@@ -206,6 +215,7 @@ export default {
       showBuyListModal: false,
       showRegisterSellerModal: false,
       showLikeSellerListModal: false,
+      showUpdateUserInfoModal: false,
       // 구매 그래프 시각화
       dailyPurchaseAmountChartInfo: {},
       dailyPurchaseCountChartInfo: {},
@@ -602,9 +612,7 @@ export default {
     updateDialog(modalName, newVal) {
       this[modalName] = newVal;
     },
-    editUserInfo() {
-      // 로직 구현
-    },
+    editUserInfo() {},
     viewCoupons() {
       // 로직 구현
     },
