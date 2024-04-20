@@ -66,9 +66,9 @@ public class MemberController {
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
     // 사용자 정보수정
-    @PatchMapping("/member/{id}")
-    public ResponseEntity<OrTopiaResponse> updateMember(@PathVariable Long id, @RequestBody MemberUpdateDto memberUpdateDto){
-        MemberResponseDto memberResponseDto=memberService.updateMember(id, memberUpdateDto);
+    @PatchMapping("/member")
+    public ResponseEntity<OrTopiaResponse> updateMember(@RequestHeader("myEmail") String email, @RequestBody MemberUpdateDto memberUpdateDto){
+        MemberResponseDto memberResponseDto=memberService.updateMember(email, memberUpdateDto);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("update success",memberResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
