@@ -1,49 +1,52 @@
 <template>
   <v-container fluid style="max-width: 55vw">
     <div style="height: 50px"></div>
-    <v-row>
-      <v-col cols="12" md="4">
-        <v-img
-          v-if="member.gender === 'FEMALE'"
-          src="@/assets/female.jpg"
-          class="mb-3"
-          style="height: 200px; width: 200px; object-fit: contain"
-        ></v-img>
-        <v-img
-          v-else
-          src="@/assets/male.jpg"
-          class="mb-3"
-          style="height: 200px; width: 200px; object-fit: contain"
-        ></v-img>
-      </v-col>
-      <v-col cols="12" md="8">
-        <v-card-title class="headline mb-1">회원정보</v-card-title>
-        <v-card-subtitle class="mb-1">이름: {{ member.name }}</v-card-subtitle>
-        <v-card-subtitle class="mb-1"
-          >이메일: {{ member.email }}</v-card-subtitle
-        >
-        <v-card-subtitle class="mb-1">나이: {{ member.age }}</v-card-subtitle>
-        <v-card-subtitle class="mb-1">
-          성별:
-          <template v-if="member.gender === 'FEMALE'">여자</template>
-          <template v-else>남자</template>
-        </v-card-subtitle>
-        <v-card-subtitle class="mb-1"
-          >전화번호: {{ member.phoneNumber }}</v-card-subtitle
-        >
-        <v-col cols="12" class="text-right">
-          <v-btn
-            color="gray"
-            class="mr-2"
-            @click="showUpdateUserInfoModal = true"
-            >회원정보 수정</v-btn
-          >
-          <v-btn color="gray" class="mr-2" small @click="viewCoupons"
-            >쿠폰 확인</v-btn
-          >
+    <v-card outlined tile class="pa-3 mb-3">
+      <v-row>
+        <v-col cols="12" md="4">
+          <v-img
+            v-if="member.gender === 'FEMALE'"
+            src="@/assets/female.jpg"
+            class="mb-3"
+            style="height: 200px; width: 200px; object-fit: contain"
+          ></v-img>
+          <v-img
+            v-else
+            src="@/assets/male.jpg"
+            class="mb-3"
+            style="height: 200px; width: 200px; object-fit: contain"
+          ></v-img>
         </v-col>
-      </v-col>
-    </v-row>
+        <v-col cols="12" md="8">
+          <v-card-title class="headline mb-1">
+            {{ member.name }} 님</v-card-title
+          >
+          <v-card-subtitle class="mb-1"
+            >이메일: {{ member.email }}</v-card-subtitle
+          >
+          <v-card-subtitle class="mb-1">나이: {{ member.age }}</v-card-subtitle>
+          <v-card-subtitle class="mb-1">
+            성별:
+            <template v-if="member.gender === 'FEMALE'">여자</template>
+            <template v-else>남자</template>
+          </v-card-subtitle>
+          <v-card-subtitle class="mb-1"
+            >전화번호: {{ member.phoneNumber }}</v-card-subtitle
+          >
+          <v-col cols="12" class="text-right">
+            <v-btn
+              color="gray"
+              class="mr-2"
+              @click="showUpdateUserInfoModal = true"
+              >회원정보 수정</v-btn
+            >
+            <v-btn color="gray" class="mr-2" small @click="viewCoupons"
+              >쿠폰 확인</v-btn
+            >
+          </v-col>
+        </v-col>
+      </v-row>
+    </v-card>
 
     <v-row>
       <v-col cols="12">
