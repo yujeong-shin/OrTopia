@@ -19,5 +19,4 @@ public interface OrderRepository extends JpaRepository<Ordering,Long> {
 
     @Query("SELECT new com.example.ordering_lecture.order.dto.BuyerGraphCountData(DATE(o.createdTime) as createdTime, COUNT(*) as count) FROM Ordering o WHERE o.createdTime BETWEEN :startDate AND :endDate AND o.statue = 'COMPLETE_DELIVERY' AND o.email = :email GROUP BY DATE(o.createdTime)")
     List<BuyerGraphCountData> findCompletedOrdersByEmailAndDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, @Param("email") String email);
-
 }

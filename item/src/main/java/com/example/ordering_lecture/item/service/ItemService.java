@@ -262,6 +262,11 @@ public class ItemService {
         return recommendationRedisDatas;
     }
 
+    public ItemResponseDto readItemForMyPage(Long itemId, String email) {
+        Item item = itemRepository.findImagePathById(itemId).orElseThrow(()->new OrTopiaException(ErrorCode.NOT_FOUND_ITEM));
+        ItemResponseDto itemResponseDto = ItemResponseDto.toDto(item);
+        return itemResponseDto;
+
     public Long searchIdByOptionDetail(Long itemId, List<String> values) {
         String value1 = "NONE";
         String value2 = "NONE";

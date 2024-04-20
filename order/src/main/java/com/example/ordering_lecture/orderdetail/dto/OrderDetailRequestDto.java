@@ -13,11 +13,12 @@ public class OrderDetailRequestDto {
     private Ordering ordering;
     private Long id;
     private int count;
-
+    private Long sellerId;
     public OrderDetail toEntity(Ordering ordering){
         return OrderDetail.builder()
                 .ordering(ordering)
                 .itemId(this.id)
+                .sellerId(this.sellerId)
                 .quantity(this.count)
                 .build();
     }
