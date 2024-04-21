@@ -23,10 +23,13 @@
                 required
               ></v-text-field>
               <v-row>
-                <v-col cols="6">
+                <v-col cols="4">
                   <v-btn color="green" @click="showFindIdModal" block>아이디 찾기</v-btn>
                 </v-col>
-                <v-col cols="6">
+                <v-col cols="4">
+                  <v-btn color="red" @click="showResetPasswordModal" block>비밀번호 찾기</v-btn>
+                </v-col>
+                <v-col cols="4">
                   <v-btn type="submit" color="primary" :disabled="!valid" block>로그인</v-btn>
                 </v-col>
               </v-row>
@@ -35,35 +38,40 @@
         </v-card>
       </v-col>
     </v-row>
-    <!-- FindIdModal 컴포넌트에 v-model로 findIdDialog 바인딩하고, @update:dialog 이벤트를 통해 상태 업데이트 -->
     <FindIdModal
       v-model="findIdDialog"
       @update:dialog="findIdDialog = $event"
     ></FindIdModal>
+    <ResetPasswordModal
+      v-model="resetPasswordDialog"
+      @update:dialog="resetPasswordDialog = $event"
+    ></ResetPasswordModal>
   </v-container>
 </template>
-
 
 <script>
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import FindIdModal from '@/components/FindIdModal.vue';
+import ResetPasswordModal from '@/components/ResetPasswordModal.vue';
 
 export default {
   components: {
-    FindIdModal
+    FindIdModal,
+    ResetPasswordModal
   },
   data() {
     return {
       email: '',
       password: '',
       findIdDialog: false,
+      resetPasswordDialog: false,
       emailRules: [
         v => !!v || '이메일은 필수입니다',
-        v => /.+@.+\..+/.test(v) || '유효한 이메일 주소를 입력해주세요.',
+        v => /.+@.+\..+/.test(v) || '유효한 이메일 주소를 입력해주세요.'
       ],
       passwordRules: [
-        v => !!v || '비밀번호는 필수입니다',
+        v => !!v || '비밀번호는 필수입니다'
       ],
     };
   },
@@ -78,7 +86,7 @@ export default {
         const loginData = { email: this.email, password: this.password };
         const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/member-service/doLogin`, loginData);
         const accessToken = response.data.result.accessToken;
-        const refreshToken = response.data.result.refreshToken; // refreshToken 추가
+        const refreshToken = response.data.result.refreshToken;
 
         console.log(accessToken);
 
@@ -89,8 +97,8 @@ export default {
           localStorage.setItem('email', email);
           localStorage.setItem('accessToken', accessToken);
           localStorage.setItem('role', role);
-          localStorage.setItem('refreshToken', refreshToken); // refreshToken을 localStorage에 저장
-          window.location.href =  "/";
+          localStorage.setItem('refreshToken', refreshToken);
+          window.location.href = "/";
         } else {
           console.log('200 OK, but no token');
           alert('Login failed');
@@ -101,9 +109,11 @@ export default {
         alert(errorMessage);
       }
     },
-    // FindIdModal을 열기 위한 메소드
     showFindIdModal() {
       this.findIdDialog = true;
+    },
+    showResetPasswordModal() {
+      this.resetPasswordDialog = true;
     },
   }
 };

@@ -8,7 +8,7 @@ import SignupComponent from '@/components/SignupComponent.vue'; // 회원가입 
 import ItemBuyComponent from '@/components/ItemBuyComponent';
 import MyCartComponent from '@/components/MyCartComponent.vue';
 import OrderByKakaoComponent from '@/components/OrderByKakaoComponent.vue';
-import NoticeDetail from '@/components/NoticeDetail.vue'
+import NoticeDetail from '@/components/NoticeDetail.vue';
 
 const routes = [
   {
@@ -62,6 +62,12 @@ const routes = [
     component: NoticeDetail,
     props: true
   },
+  {
+    path: '/NewPasswordComponent',
+    name: 'NewPasswordComponent',
+    component: () => import('@/components/NewPasswordComponent.vue')
+  }
+  
 ];
 
 const router = createRouter({
