@@ -34,6 +34,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE' // 버전은 프로젝트 요구사항에 맞게 조정
+
 }
 
 tasks.named('test') {

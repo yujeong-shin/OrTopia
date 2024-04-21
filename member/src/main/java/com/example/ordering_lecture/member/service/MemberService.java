@@ -132,4 +132,5 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("이메일을 찾지 못했습니다. " + email));
         return MemberResponseDto.toDto(member);
     }
+
 }
