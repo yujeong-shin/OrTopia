@@ -4,10 +4,12 @@ package com.example.ordering_lecture.member.controller;
 import com.example.ordering_lecture.common.MemberLoginReqDto;
 import com.example.ordering_lecture.common.MemberLoginResDto;
 import com.example.ordering_lecture.common.OrTopiaResponse;
+import com.example.ordering_lecture.member.domain.Seller;
 import com.example.ordering_lecture.member.dto.Buyer.*;
 import com.example.ordering_lecture.member.dto.Seller.SellerResponseDto;
 import com.example.ordering_lecture.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
+import com.example.ordering_lecture.member.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +23,11 @@ import java.util.List;
 public class MemberController {
     @Autowired
     private final MemberService memberService;
+    private final SellerService sellerService;
 
-    public MemberController(MemberService memberService){
+    public MemberController(MemberService memberService, SellerService sellerService){
         this.memberService = memberService;
+        this.sellerService = sellerService;
     }
     /*
     BUYER 관련 API
@@ -64,9 +68,9 @@ public class MemberController {
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
     // 사용자 정보수정
-    @PatchMapping("/member/{id}")
-    public ResponseEntity<OrTopiaResponse> updateMember(@PathVariable Long id, @RequestBody MemberUpdateDto memberUpdateDto){
-        MemberResponseDto memberResponseDto=memberService.updateMember(id, memberUpdateDto);
+    @PatchMapping("/member")
+    public ResponseEntity<OrTopiaResponse> updateMember(@RequestHeader("myEmail") String email, @RequestBody MemberUpdateDto memberUpdateDto){
+        MemberResponseDto memberResponseDto=memberService.updateMember(email, memberUpdateDto);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("update success",memberResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
@@ -115,5 +119,11 @@ public class MemberController {
         memberService.unlikeSeller(buyerEmail, sellerId);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("delete success", null);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
+    // 판매 내역 조회 시 사용되는 API
+    // front로 넘어오는 email 값을 이용해 seller ID를 조회
+    @GetMapping("/member/{email}/memberId")
+    public Long findIdByMemberEmail(@PathVariable("email") String email){
+        MemberResponseDto memberResponseDto = memberService.findIdByEmail(email);
+        return memberResponseDto.getId();
     }
 }
