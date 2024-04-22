@@ -86,6 +86,7 @@ public class MemberService {
                 );
         seller.deleteSeller();
     }
+    // 즐겨찾기 추가
     @Transactional
     public MemberLikeSellerResponseDto likeSeller(String email, Long sellerId) throws OrTopiaException {
         Member buyer = memberRepository.findByEmail(email).orElseThrow(
@@ -104,10 +105,11 @@ public class MemberService {
                 .seller(seller)
                 .build();
         System.out.println(likedSeller.getBuyer().getEmail());
+        System.out.println(likedSeller.getSeller().getId());
         likedSellerRepository.save(likedSeller);
         return MemberLikeSellerResponseDto.toDto(likedSeller);
     }
-
+    //구매자가 즐겨찾기한 판매자 목록
     public List<SellerResponseDto> likeSellers(String email) throws OrTopiaException {
         Member member = memberRepository.findByEmail(email).orElseThrow(
                 () -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
@@ -121,20 +123,20 @@ public class MemberService {
         }
         return sellerResponseDtos;
     }
+    //즐겨찾기 삭제
     @Transactional
     public void unlikeSeller(String buyerEmail, Long sellerId) throws OrTopiaException {
         Member buyer = memberRepository.findByEmail(buyerEmail)
                 .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER));
         Seller seller = sellerRepository.findByMemberId(sellerId)
                 .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER));
-
         List<LikedSeller> likedSellers = likedSellerRepository.findByBuyerAndSeller(buyer, seller);
         if (likedSellers.isEmpty()) {
             throw new OrTopiaException(ErrorCode.NOT_FOUND_LIKED_SELLER); // 오류 코드 확인
         }
-
         likedSellerRepository.deleteAll(likedSellers);
     }
+    //판매자를 즐겨찾기한 구매자 목록
     public List<MemberResponseDto> findBuyersByLikedSeller(Long sellerId) throws OrTopiaException {
         Seller seller = sellerRepository.findById(sellerId).orElseThrow(
                 () -> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER)
@@ -147,6 +149,7 @@ public class MemberService {
                 .map(likedSeller -> MemberResponseDto.toDto(likedSeller.getBuyer()))
                 .collect(Collectors.toList());
     }
+    //즐겨찾기 했는지 안했는지 검증
     public boolean isSellerLikedByBuyer(String email, Long sellerId) throws OrTopiaException {
         Member buyer = memberRepository.findByEmail(email).orElseThrow(
                 () -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)

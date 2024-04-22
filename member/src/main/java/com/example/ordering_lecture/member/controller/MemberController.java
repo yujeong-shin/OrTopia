@@ -7,6 +7,7 @@ import com.example.ordering_lecture.common.OrTopiaResponse;
 import com.example.ordering_lecture.member.dto.Buyer.*;
 import com.example.ordering_lecture.member.dto.Seller.SellerResponseDto;
 import com.example.ordering_lecture.member.service.MemberService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@Slf4j
 public class MemberController {
     @Autowired
     private final MemberService memberService;
@@ -99,6 +101,7 @@ public class MemberController {
     @GetMapping("/member/checkLiked/{sellerId}")
     public ResponseEntity<OrTopiaResponse> checkIfLikedBySeller(@RequestHeader("myEmail") String buyerEmail, @PathVariable Long sellerId) {
         boolean isLiked = memberService.isSellerLikedByBuyer(buyerEmail, sellerId);
+        log.info("Checking if sellerId {} is liked by {}", sellerId, buyerEmail);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("check success", isLiked);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }

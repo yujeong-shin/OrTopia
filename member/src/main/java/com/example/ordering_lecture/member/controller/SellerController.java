@@ -36,7 +36,6 @@ public class SellerController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", sellerResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
-
     // 판매자 전체조회
     @GetMapping("/seller/All")
     public ResponseEntity<OrTopiaResponse> findAllSellers(){
