@@ -3,25 +3,26 @@
     <v-container>
       <v-row>
         <v-col cols="12">
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="상품을 검색해보세요"
-            single-line
-            hide-details
-          ></v-text-field>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="12">
-          <v-carousel cycle hide-delimiters height="200">
+          <v-carousel
+            cycle
+            hide-delimiters
+            height="300px"
+            class="v-carousel__controls__item"
+          >
             <v-carousel-item
               v-for="notice in noticeList"
               :key="notice.id"
-              :src="notice.imagePath"
-              @click="goToNotice(notice)"
-            ></v-carousel-item>
+              class="v-carousel__item"
+            >
+              <v-img
+                :src="notice.imagePath"
+                contain
+                height="100%"
+                width="100%"
+                @click="goToNotice(notice)"
+                class="v-carousel__item img"
+              ></v-img>
+            </v-carousel-item>
           </v-carousel>
         </v-col>
       </v-row>
@@ -82,15 +83,13 @@ export default {
   data() {
     return {
       userRole: null,
+      // selectedCategory: null,
       itemList: [],
       noticeList: [],
     };
   },
   methods: {
     async getItems() {
-      // const token = localStorage.getItem('token');
-      // const refreshToken = localStorage.getItem('refreshToken');
-      // const headers = token ? { Authorization: `Bearer ${token}`, "X-Refresh-Token": `${refreshToken}` } : {};
       try {
         const data = await axios.get(
           `${process.env.VUE_APP_API_BASE_URL}/item-service/item/items`
@@ -117,3 +116,18 @@ export default {
   },
 };
 </script>
+<style scoped>
+.v-carousel__controls__item {
+  width: 900px !important;
+  height: 300px !important;
+}
+.v-carousel__item {
+  width: 100% !important;
+  height: 300px !important;
+}
+.v-carousel__item img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+</style>
