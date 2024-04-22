@@ -1,64 +1,114 @@
 <template>
-  <v-app-bar app color="orange" dark>
-    <!-- 로고 이미지 -->
-    <v-hover v-slot:default="{ hover }">
-      <v-img
-        :class="['my-3', { 'logo-hover': hover }]"
-        src="@/assets/logo.svg"
-        contain
-        height="40"
-        @click="redirectToHome"
-        style="cursor: pointer"
-      ></v-img>
-    </v-hover>
-    <template v-if="isSeller">
-      <v-btn text-color="white" @click="goToItemSellComponent"> 판매 </v-btn>
-    </template>
-    <v-spacer></v-spacer>
+  <v-app-bar app color="white" dark elevation="0">
+    <!-- 로고 이미지 대신 "로고" 텍스트 표시 -->
+    <v-img
+      src="@/assets/logo.png"
+      contain
+      height="30"
+      class="logo-margin top-margin"
+      @click="redirectToHome"
+    ></v-img>
 
-    <!-- 로그인 상태에 따라 다른 내용 표시 -->
-    <template v-if="isLoggedIn">
-      <!-- 로그인했을 때 보이는 아이콘들 -->
-      <v-btn icon>
-        <v-icon color="white">mdi-bell</v-icon>
-      </v-btn>
+    <!-- 판매자일 경우 판매 텍스트 표시 -->
+    <v-btn
+      text-color="white"
+      class="top-margin"
+      @click="goToItemSellComponent"
+      v-if="isSeller"
+    >
+      판매
+    </v-btn>
 
-      <v-btn icon>
-        <v-icon color="white" @click="goToMyCart">mdi-cart </v-icon>
-        <span
-          class="v-badge__badge v-theme--dark bg-error"
-          aria-atomic="true"
-          aria-label="Badge"
-          aria-live="polite"
-          role="status"
-          style="bottom: calc(100% - 12px); left: calc(100% - 12px)"
+    <v-row>
+      <v-col cols="12">
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="상품을 검색해보세요"
+          class="search-margin"
+          single-line
+          hide-details
+          outlined
+          color="black"
+          bg-color="transparent"
+          label-color="black"
+        ></v-text-field>
+      </v-col>
+    </v-row>
+
+    <div class="d-flex align-center justify-end">
+      <!-- 로그인 상태에 따라 다른 내용 표시 -->
+      <template v-if="isLoggedIn">
+        <!-- 로그인했을 때 보이는 텍스트들 -->
+        <v-btn icon class="alarm-margin top-margin">
+          <v-icon color="black" @click="goToNotifications">mdi-bell</v-icon>
+        </v-btn>
+
+        <v-btn icon class="top-margin">
+          <v-icon color="black" @click="goToMyCart">mdi-cart</v-icon>
+          <span
+            class="v-badge__badge v-theme--dark bg-error"
+            aria-atomic="true"
+            aria-label="Badge"
+            aria-live="polite"
+            role="status"
+          >
+            {{ totalQuantity }}
+          </span>
+        </v-btn>
+
+        <v-btn
+          text-color="white"
+          class="top-margin"
+          @click="goToMypageComponent"
         >
-          {{ totalQuantity }}
-        </span>
-      </v-btn>
+          마이페이지
+        </v-btn>
 
-      <v-btn icon @click="goToMypageComponent">
-        <v-icon color="white">mdi-account-circle</v-icon>
-      </v-btn>
+        <v-btn
+          text-color="white"
+          class="right-margin top-margin"
+          @click="logout"
+        >
+          로그아웃
+        </v-btn>
+      </template>
 
-      <v-btn icon @click="logout">
-        <v-icon color="white">mdi-logout</v-icon>
-        <!-- 로그아웃 아이콘 -->
-      </v-btn>
-    </template>
-
-    <template v-else>
-      <!-- 로그인하지 않았을 때 보이는 아이콘 버튼들 -->
-      <v-btn icon @click="goToLogin">
-        <v-icon color="white">mdi-login</v-icon>
-        <!-- 로그인 아이콘 -->
-      </v-btn>
-      <v-btn icon @click="goToRegister">
-        <v-icon color="white">mdi-account-plus</v-icon>
-        <!-- 회원가입 아이콘 -->
-      </v-btn>
-    </template>
+      <template v-else>
+        <!-- 로그인하지 않았을 때 보이는 텍스트 버튼들 -->
+        <v-btn text-color="white" class="top-margin" @click="goToLogin">
+          로그인
+        </v-btn>
+        <v-btn
+          text-color="white"
+          class="right-margin top-margin"
+          @click="goToRegister"
+        >
+          회원가입
+        </v-btn>
+      </template>
+    </div>
   </v-app-bar>
+  <br />
+  <div class="header-bottom-line"></div>
+
+  <v-btn-toggle v-model="selectedCategory" mandatory class="category-buttons">
+    <div class="d-flex">
+      <v-btn value="furniture" class="mx-2">가구</v-btn>
+      <v-btn value="books" class="mx-2">도서</v-btn>
+      <v-btn value="electronics" class="mx-2">가전</v-btn>
+      <v-btn value="living" class="mx-2">생활</v-btn>
+      <v-btn value="health" class="mx-2">건강</v-btn>
+      <v-btn value="sports" class="mx-2">스포츠</v-btn>
+      <v-btn value="food" class="mx-2">식품</v-btn>
+      <v-btn value="baby" class="mx-2">육아</v-btn>
+      <v-btn value="clothing" class="mx-2">의류</v-btn>
+      <v-btn value="accessories" class="mx-2">잡화</v-btn>
+      <v-btn value="cosmetics" class="mx-2">화장품</v-btn>
+    </div>
+  </v-btn-toggle>
+
+  <div class="header-bottom-line"></div>
 </template>
 
 <script setup>
@@ -98,6 +148,10 @@ const goToMyCart = () => {
   router.push("/mycart");
 };
 
+const goToNotifications = () => {
+  router.push("/notifications");
+};
+
 const goToLogin = () => {
   router.push("/login");
 };
@@ -112,13 +166,27 @@ const goToItemSellComponent = () => {
 </script>
 
 <style scoped>
-/* 로고 호버 효과가 적용되지 않는 문제를 해결하기 위해 :deep 선택자를 사용 */
-:deep(.logo-hover) {
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
-  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+.logo-margin {
+  margin-left: 160px;
 }
-
-:deep(.logo-hover:hover) {
-  transform: scale(1.05); /* 호버 시 이미지 확대 */
+.right-margin {
+  margin-right: 180px;
+}
+.search-margin {
+  margin-left: 100px;
+}
+.v-text-field {
+  width: 500px !important;
+}
+.header-bottom-line {
+  border-bottom: 1px solid #e0e0e0;
+}
+.category-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+}
+.top-margin {
+  margin-top: 15px;
 }
 </style>
