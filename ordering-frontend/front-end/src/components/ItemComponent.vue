@@ -17,10 +17,10 @@
                 카테고리: {{ item.category }}
               </p>
             <v-btn text style="margin-top: 30px"
-              >판매자 이름 : {{ item.sellerId }}</v-btn
+              >판매자 이름 : {{ seller.companyName }}</v-btn
             >
             &nbsp;&nbsp;&nbsp;
-             <v-btn icon @click="toggleFavorite(item.sellerId)">
+            <v-btn icon @click="toggleFavorite(item.sellerId)">
               <v-icon>
                 {{ item.isFavorited ? 'mdi-heart' : 'mdi-heart-outline' }}
               </v-icon>
@@ -108,6 +108,7 @@ export default {
       itemId: null,
       item: [],
       selectedOptions:[],
+      seller: {},
       options: [],
       quantity: 0,
       recentProducts: [],
@@ -117,12 +118,31 @@ export default {
   },
   created() {
     this.itemId = this.$route.params.id;
-    this.getItemInfo();
+    this.getItemInfo(); 
     this.getRecommend();
-  },
+},
   methods: {
     ...mapActions("addToCart"),
+    async checkFavoriteStatus(sellerId) {
+      const token = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+      const email = localStorage.getItem("email");
+      const url = `${process.env.VUE_APP_API_BASE_URL}/member-service/member/checkLiked/${sellerId}`;
 
+      try {
+        const response = await axios.get(url, {
+          headers: {
+            myEmail: email,
+            Authorization: `Bearer ${token}`,
+            "X-Refresh-Token": `${refreshToken}`,
+          }
+        });
+        this.item.isFavorited = response.data.result;
+      } catch (error) {
+        console.error("즐겨찾기 상태 확인 실패:", error);
+      }
+    },
+    
     async toggleFavorite(sellerId) {
   const token = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
@@ -138,7 +158,7 @@ export default {
       method: method,
       url: url,
       headers: headers,
-      data: null // POST 요청의 경우 필요 없으나 axios 요구 사항에 따라 명시할 수 있음
+      data: null
     });
     this.item.isFavorited = !this.item.isFavorited;
     alert(`즐겨찾기가 ${this.item.isFavorited ? '추가' : '삭제'}되었습니다!`);
@@ -203,27 +223,31 @@ export default {
       }
     },
     async getItemInfo() {
-      const token = localStorage.getItem("accessToken");
-      const refreshToken = localStorage.getItem("refreshToken");
-      const email = localStorage.getItem("email");
-      try {
-        const data = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/read/${this.itemId}`,
-          {
-            headers: {
-              myEmail: `${email}`,
-            },
-          }
-        );
-        this.item = data.data.result;
-        this.selectedOptions= [...this.item.itemOptionResponseDtoList];
-        console.log(this.selectedOptions[0]);
-        this.selectedValues = this.selectedOptions.map(option => ({ name: option.name, value: null }));
-        // console.log(this.options);
-      } catch (error) {
-        alert(error.response.data.error_message);
-        console.log(error);
-      }
+  const token = localStorage.getItem("accessToken");
+  const refreshToken = localStorage.getItem("refreshToken");
+  const email = localStorage.getItem("email");
+  try {
+    const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/item-service/item/read/${this.itemId}`, {
+      headers: {
+        myEmail: email,
+        Authorization: `Bearer ${token}`,
+        "X-Refresh-Token": `${refreshToken}`,
+      },
+    });
+    this.item = response.data.result;
+    if (this.item && this.item.sellerId) {
+      this.getSellerInfo(this.item.sellerId);
+      this.checkFavoriteStatus(this.item.sellerId);
+    } else {
+      console.log("응답 데이터에 sellerId 또는 아이템이 누락되었습니다:", response.data);
+    }
+    this.selectedOptions = [...this.item.itemOptionResponseDtoList];
+    this.selectedValues = this.selectedOptions.map(option => ({ name: option.name, value: null }));
+  } catch (error) {
+    alert(error.response.data.error_message);
+    console.error(error);
+  }
+
       // 최근 본 상품 불러오기
       if (token != null) {
         try {
@@ -244,6 +268,21 @@ export default {
         }
       }
     },
+    async getSellerInfo(sellerId) {
+  const token = localStorage.getItem("accessToken");
+  const refreshToken = localStorage.getItem("refreshToken");
+  try {
+    const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/member-service/seller/${sellerId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "X-Refresh-Token": `${refreshToken}`,
+      }
+    });
+    this.seller = response.data.result;
+  } catch (error) {
+    console.error("판매자 정보 가져오기 실패:", error);
+  }
+},
     // 최근 본 상품 사진을 클릭시 리다이렉트
     goToDetailPage(Id) {
       window.location.href = `/item/${Id}`;
@@ -258,6 +297,19 @@ export default {
   },
 };
 </script>
+<style scoped>
+.sticky-sidebar {
+  position: fixed;
+  right: 20px;
+  width: 120px;
+  max-height: calc(50vh - 50px);
+  overflow-y: hi;
+}
+.v-icon {
+  color: red; /* 하트 색상 */
+  font-size: 24px; /* 아이콘 크기 */
+}
+</style>
 <style scoped>
 .sticky-sidebar {
   position: fixed;
