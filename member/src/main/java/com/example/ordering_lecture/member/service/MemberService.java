@@ -17,9 +17,8 @@ import com.example.ordering_lecture.securities.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,23 +86,35 @@ public class MemberService {
                 );
         seller.deleteSeller();
     }
+    // 즐겨찾기 추가
     @Transactional
-    public MemberLikeSellerResponseDto likeSeller(MemberLikeSellerRequestDto memberLikeSellerRequestDto)  throws OrTopiaException  {
-        //TODO : 에러 코드 추후 수정
-        // memberID와 sellerID가 같다면 에러 처리
-        Member buyer = memberRepository.findById(memberLikeSellerRequestDto.getBuyerID()).orElseThrow(
-                ()-> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
-                );
-        Seller seller = sellerRepository.findById(memberLikeSellerRequestDto.getSellerID()).orElseThrow(
-                ()-> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER)
-                );
-        LikedSeller likedSeller = memberLikeSellerRequestDto.toEntity(buyer, seller);
+    public MemberLikeSellerResponseDto likeSeller(String email, Long sellerId) throws OrTopiaException {
+        Member buyer = memberRepository.findByEmail(email).orElseThrow(
+                () -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
+        );
+        Seller seller = sellerRepository.findByMemberId(sellerId).orElseThrow(
+                () -> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER)
+        );
+        List<LikedSeller> existingLikes = likedSellerRepository.findByBuyerAndSeller(buyer, seller);
+        if (!existingLikes.isEmpty()) {
+            throw new OrTopiaException(ErrorCode.ALREADY_LIKED_SELLER);
+        }
+
+        LikedSeller likedSeller = LikedSeller.builder()
+                .buyer(buyer)
+                .seller(seller)
+                .build();
+        System.out.println(likedSeller.getBuyer().getEmail());
+        System.out.println(likedSeller.getSeller().getId());
         likedSellerRepository.save(likedSeller);
         return MemberLikeSellerResponseDto.toDto(likedSeller);
     }
-
-    public List<SellerResponseDto> likeSellers(Long id) throws OrTopiaException {
-        List<SellerResponseDto> sellerResponseDtos = likedSellerRepository.findAllByBuyerId(id)
+    //구매자가 즐겨찾기한 판매자 목록
+    public List<SellerResponseDto> likeSellers(String email) throws OrTopiaException {
+        Member member = memberRepository.findByEmail(email).orElseThrow(
+                () -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
+        );
+        List<SellerResponseDto> sellerResponseDtos = likedSellerRepository.findAllByBuyer(member)
                 .stream()
                 .map(likedSeller -> SellerResponseDto.toDto(likedSeller.getSeller()))
                 .collect(Collectors.toList());
@@ -111,6 +122,43 @@ public class MemberService {
             throw new OrTopiaException(ErrorCode.NOT_FOUND_SELLERS);
         }
         return sellerResponseDtos;
+    }
+    //즐겨찾기 삭제
+    @Transactional
+    public void unlikeSeller(String buyerEmail, Long sellerId) throws OrTopiaException {
+        Member buyer = memberRepository.findByEmail(buyerEmail)
+                .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER));
+        Seller seller = sellerRepository.findByMemberId(sellerId)
+                .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER));
+        List<LikedSeller> likedSellers = likedSellerRepository.findByBuyerAndSeller(buyer, seller);
+        if (likedSellers.isEmpty()) {
+            throw new OrTopiaException(ErrorCode.NOT_FOUND_LIKED_SELLER); // 오류 코드 확인
+        }
+        likedSellerRepository.deleteAll(likedSellers);
+    }
+    //판매자를 즐겨찾기한 구매자 목록
+    public List<MemberResponseDto> findBuyersByLikedSeller(Long sellerId) throws OrTopiaException {
+        Seller seller = sellerRepository.findById(sellerId).orElseThrow(
+                () -> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER)
+        );
+        List<LikedSeller> likedSellers = likedSellerRepository.findBySeller(seller);
+        if (likedSellers.isEmpty()) {
+            throw new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER);
+        }
+        return likedSellers.stream()
+                .map(likedSeller -> MemberResponseDto.toDto(likedSeller.getBuyer()))
+                .collect(Collectors.toList());
+    }
+    //즐겨찾기 했는지 안했는지 검증
+    public boolean isSellerLikedByBuyer(String email, Long sellerId) throws OrTopiaException {
+        Member buyer = memberRepository.findByEmail(email).orElseThrow(
+                () -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
+        );
+        Seller seller = sellerRepository.findByMemberId(sellerId).orElseThrow(
+                () -> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER)
+        );
+        List<LikedSeller> existingLikes = likedSellerRepository.findByBuyerAndSeller(buyer, seller);
+        return !existingLikes.isEmpty();
     }
 
     public MemberLoginResDto loginService(MemberLoginReqDto memberLoginReqDto) {

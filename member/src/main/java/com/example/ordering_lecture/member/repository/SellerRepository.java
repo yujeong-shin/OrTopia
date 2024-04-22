@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface SellerRepository extends JpaRepository<Seller, Long> {
     List<Seller> findByDelYNFalse();
+
+    Optional<Seller> findByMemberId(Long sellerId);
 }
