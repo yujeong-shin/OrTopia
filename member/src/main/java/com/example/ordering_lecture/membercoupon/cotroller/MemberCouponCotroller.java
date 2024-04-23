@@ -1,17 +1,22 @@
 package com.example.ordering_lecture.membercoupon.cotroller;
 
+import com.example.ordering_lecture.address.dto.AddressRequestDto;
+import com.example.ordering_lecture.address.dto.AddressResponseDto;
+import com.example.ordering_lecture.common.OrTopiaResponse;
 import com.example.ordering_lecture.coupon.dto.CouponRequestDto;
 import com.example.ordering_lecture.coupondetail.domain.CouponDetail;
 import com.example.ordering_lecture.coupondetail.dto.CouponDetailResponseDto;
+import com.example.ordering_lecture.member.dto.Buyer.MemberResponseDto;
 import com.example.ordering_lecture.membercoupon.dto.MemberCouponRequestDto;
+import com.example.ordering_lecture.membercoupon.dto.MemberCouponResponseDto;
 import com.example.ordering_lecture.membercoupon.service.MemberCouponService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("member_server")
 public class MemberCouponCotroller {
     public final MemberCouponService memberCouponService;
 
@@ -19,18 +24,21 @@ public class MemberCouponCotroller {
         this.memberCouponService = memberCouponService;
     }
 
-    @PostMapping("/membercoupon/create")
-    public Object createMemberCoupon(@RequestBody MemberCouponRequestDto memberCouponRequestDto){
-        return memberCouponService.createMemberCoupon(memberCouponRequestDto);
+    @PostMapping("/assign")
+    public ResponseEntity<OrTopiaResponse> assignCoupon(@RequestBody MemberCouponRequestDto memberCouponRequestDto) {
+        MemberCouponResponseDto memberCouponResponseDto = memberCouponService.assignCoupon(memberCouponRequestDto);
+        OrTopiaResponse response = new OrTopiaResponse("쿠폰 할당 성공", memberCouponResponseDto);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-    @GetMapping("/member-coupons/{memberId}/coupon-details")
-    public ResponseEntity<List<CouponDetailResponseDto>> getCouponDetailsByMemberId(@PathVariable Long memberId) {
-        List<CouponDetailResponseDto> couponDetails = memberCouponService.findCouponDetailsByMemberId(memberId);
-        return ResponseEntity.ok(couponDetails);
+    @GetMapping("/mycoupons")
+    public ResponseEntity<OrTopiaResponse> getMyCoupons(@RequestHeader("myEmail") String email) {
+        List<MemberCouponResponseDto> coupons = memberCouponService.findMyCoupons(email);
+        OrTopiaResponse response = new OrTopiaResponse("쿠폰 조회 완료", coupons);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    @DeleteMapping("/usecoupon/{memberId}/{couponDetailId}")
-    public String useCoupon(@PathVariable Long memberId, @PathVariable Long couponDetailId){
-        memberCouponService.useCoupon(memberId, couponDetailId);
-        return "ok";
+    @DeleteMapping("/use/{id}")
+    public ResponseEntity<OrTopiaResponse> useCoupon(@PathVariable Long id) {
+        memberCouponService.useCoupon(id);
+        return new ResponseEntity<>(new OrTopiaResponse("쿠폰 사용 성공"), HttpStatus.OK);
     }
 }

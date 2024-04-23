@@ -1,6 +1,7 @@
 package com.example.ordering_lecture.coupondetail.domain;
 
 import com.example.ordering_lecture.coupon.domain.Coupon;
+import com.example.ordering_lecture.member.domain.Member;
 import com.example.ordering_lecture.membercoupon.domain.MemberCoupon;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,8 +30,9 @@ public class CouponDetail {
     private int rateDiscount;
     @Column
     private int fixDiscount;
-    @Column(nullable = false)
-    private Long sellerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @OneToMany(mappedBy = "couponDetail",fetch = FetchType.LAZY, orphanRemoval = true,cascade = CascadeType.ALL)
     private List<Coupon> coupons;
@@ -55,9 +57,5 @@ public class CouponDetail {
 
     public void updateFixDiscount(int fixDiscount) {
         this.fixDiscount = fixDiscount;
-    }
-
-    public void updateSellerId(Long sellerId) {
-        this.sellerId = sellerId;
     }
 }

@@ -12,4 +12,5 @@ public interface SellerRepository extends JpaRepository<Seller, Long> {
     List<Seller> findByDelYNFalse();
 
     Optional<Seller> findByMemberId(Long sellerId);
+    Optional<Seller> findByMemberEmail(String email);
 }

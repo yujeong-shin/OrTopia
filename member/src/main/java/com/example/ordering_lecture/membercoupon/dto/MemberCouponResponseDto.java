@@ -1,5 +1,6 @@
 package com.example.ordering_lecture.membercoupon.dto;
 
+import com.example.ordering_lecture.coupondetail.dto.CouponDetailResponseDto;
 import com.example.ordering_lecture.membercoupon.domain.MemberCoupon;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,14 +13,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MemberCouponResponseDto {
     private Long id;
-    private Long memberId;
-    private Long couponDetailId;
-
-    public static MemberCouponResponseDto toDto(MemberCoupon memberCoupon){
-        return MemberCouponResponseDto.builder()
-                .id(memberCoupon.getId())
-                .memberId(memberCoupon.getMemberId())
-                .couponDetailId(memberCoupon.getCouponDetail().getId())
-                .build();
-    }
+    private CouponDetailResponseDto couponDetail;
 }

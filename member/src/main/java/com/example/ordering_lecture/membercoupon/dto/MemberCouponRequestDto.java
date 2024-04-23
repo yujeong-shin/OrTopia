@@ -14,6 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberCouponRequestDto {
-    private List<Long> memberIdList;
+    private Long memberId;
     private Long couponDetailId;
     }

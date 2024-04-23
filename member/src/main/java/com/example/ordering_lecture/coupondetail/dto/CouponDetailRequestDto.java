@@ -2,6 +2,7 @@ package com.example.ordering_lecture.coupondetail.dto;
 
 import com.example.ordering_lecture.coupon.domain.Coupon;
 import com.example.ordering_lecture.coupondetail.domain.CouponDetail;
+import com.example.ordering_lecture.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,17 +21,15 @@ public class CouponDetailRequestDto {
     private String endDate;
     private int rateDiscount;
     private int fixDiscount;
-    private Long sellerId;
 
-    public CouponDetail toEntity(){
-        CouponDetail couponDetail  = CouponDetail.builder()
-                .name(this.getName())
-                .startDate(this.getStartDate())
-                .endDate(this.getEndDate())
-                .rateDiscount(this.getRateDiscount())
-                .fixDiscount(this.getFixDiscount())
-                .sellerId(this.getSellerId())
+    public CouponDetail toEntity(Member member){
+        return CouponDetail.builder()
+                .name(this.name)
+                .startDate(this.startDate)
+                .endDate(this.endDate)
+                .rateDiscount(this.rateDiscount)
+                .fixDiscount(this.fixDiscount)
+                .member(member)
                 .build();
-        return couponDetail;
     }
 }
