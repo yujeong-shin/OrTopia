@@ -1,8 +1,9 @@
 package com.example.ordering_lecture.payment.service;
 
-import com.example.ordering_lecture.payment.dto.PayApproveResDto;
-import com.example.ordering_lecture.payment.dto.PayInfoDto;
-import com.example.ordering_lecture.payment.dto.PayReadyResDto;
+import com.example.ordering_lecture.common.ErrorCode;
+import com.example.ordering_lecture.common.OrTopiaException;
+import com.example.ordering_lecture.payment.controller.ItemServiceClient;
+import com.example.ordering_lecture.payment.dto.*;
 import com.example.ordering_lecture.payment.request.MakePayRequest;
 import com.example.ordering_lecture.payment.request.PayRequest;
 import com.example.ordering_lecture.redis.RedisService;
@@ -17,6 +18,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +27,7 @@ public class PaymentService {
 
     private final MakePayRequest makePayRequest;
     private final RedisService redisService;
+    private final ItemServiceClient itemServiceClient;
 
     @Value("${pay.admin-key}")
     private String adminKey;
@@ -32,10 +36,31 @@ public class PaymentService {
      * 어드민 키를 헤더에 담아 파라미터 값들과 함께 POST로 요청합니다.
      * 테스트  가맹점 코드로 'TC0ONETIME'를 사용 */
     @Transactional
-    public PayReadyResDto getRedirectUrl(String email,PayInfoDto payInfoDto)throws Exception{
-//        Member member=memberRepository.findByEmail(name)
-//                .orElseThrow(()-> new Exception("해당 유저가 존재하지 않습니다."));
+    public PayReadyResDto getRedirectUrl(String email,PayInfoDto payInfoDto){
         HttpHeaders headers=new HttpHeaders();
+        //아이템의 재고를 레디스로 확인
+        for(ItemDto itemDto:payInfoDto.getItemDtoList()){
+            Long id = null;
+            //옵션이 없는 경우 체킹
+            if(!itemDto.getOptions().isEmpty()) {
+                List<String> values = new ArrayList<>();
+                for (ItemOptionDto itemOptionDto : itemDto.getOptions()) {
+                    values.add(itemOptionDto.getValue());
+                }
+                //value와 Item 아이디를 가지고 ItemOptionDetailQuantity 를 찾아와야해.
+                id = itemServiceClient.searchIdByOptionDetail(itemDto.getId(), values);
+            }else{
+                List<String> values = new ArrayList<>();
+                id = itemServiceClient.searchIdByOptionDetail(itemDto.getId(), values);
+            }
+            //찾아온 ItemOptionDetailQuantity의 id를 가지고 redis에서 재고를 조회
+            int nowStock = redisService.getValuesItemCount(id);
+            if (nowStock - itemDto.getCount() < 0) {
+                throw new OrTopiaException(ErrorCode.ITEM_QUANTITY_ERROR);
+            }
+            // redis내 재고를 업데이트
+            redisService.setItemQuantity(id, nowStock - itemDto.getCount());
+        }
         /** 요청 헤더 */
         String auth = "KakaoAK " + adminKey;
         headers.set("Content-type","application/x-www-form-urlencoded;charset=utf-8");

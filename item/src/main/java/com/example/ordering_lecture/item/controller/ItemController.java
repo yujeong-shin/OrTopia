@@ -1,9 +1,7 @@
 package com.example.ordering_lecture.item.controller;
 
 import com.example.ordering_lecture.common.OrTopiaResponse;
-import com.example.ordering_lecture.item.dto.ItemRequestDto;
-import com.example.ordering_lecture.item.dto.ItemResponseDto;
-import com.example.ordering_lecture.item.dto.ItemUpdateDto;
+import com.example.ordering_lecture.item.dto.*;
 import com.example.ordering_lecture.item.service.ItemService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +20,8 @@ public class ItemController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<OrTopiaResponse> createItem(@Valid @ModelAttribute ItemRequestDto itemRequestDto, @RequestHeader("myEmail") String email){
-        ItemResponseDto itemResponseDto = itemService.createItem(itemRequestDto,email);
+    public ResponseEntity<OrTopiaResponse> createItem(@Valid @ModelAttribute ItemRequestDto itemRequestDto, @RequestPart(name="optionList")List<OptionRequestDto> optionRequestDtos, @RequestHeader("myEmail") String email){
+        ItemResponseDto itemResponseDto = itemService.createItem(itemRequestDto,optionRequestDtos,email);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success",itemResponseDto);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.CREATED);
     }
@@ -84,5 +82,25 @@ public class ItemController {
     @GetMapping("/{id}/imagePath")
     public String getImagePath(@PathVariable Long id){
         return itemService.getImagePath(id);
+    }
+
+    // 추천 아이템의 이미지와 id를 가져오는 api
+    @GetMapping("/recommendItems")
+    public ResponseEntity<OrTopiaResponse> findRecommendItem(@RequestHeader("myEmail") String email){
+        List<RecommendedItemDto> recommendedItemDtos = itemService.findRecommendItem(email);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",recommendedItemDtos);
+        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+    }
+
+    @GetMapping("read/{id}/my_page")
+    public ResponseEntity<OrTopiaResponse> readItemForMyPage(@PathVariable Long id,@RequestHeader("myEmail") String email){
+        ItemResponseDto itemResponseDto = itemService.readItemForMyPage(id, email);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",itemResponseDto);
+        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+
+    // 조건에 맞는 item의 itemOptionQuantityId를 찾아오는 api
+    @PostMapping("/search/optionDetailId/{itemId}")
+    Long searchIdByOptionDetail(@PathVariable Long itemId,@RequestBody List<String> values){
+       return itemService.searchIdByOptionDetail(itemId,values);
     }
 }

@@ -68,8 +68,8 @@ public class MemberService {
         return memberResponseDtos;
     }
     @Transactional
-    public MemberResponseDto updateMember(Long id, MemberUpdateDto memberUpdateDto) throws OrTopiaException{
-        Member member = memberRepository.findById(id).orElseThrow(
+    public MemberResponseDto updateMember(String email, MemberUpdateDto memberUpdateDto) throws OrTopiaException{
+        Member member = memberRepository.findByEmail(email).orElseThrow(
                 ()-> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
                 );
         member.updateMember(memberUpdateDto);

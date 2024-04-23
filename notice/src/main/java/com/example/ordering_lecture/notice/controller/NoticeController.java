@@ -21,7 +21,7 @@ public class NoticeController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<OrTopiaResponse> createNotice(@RequestBody NoticeRequestDto noticeRequestDto) {
+    public ResponseEntity<OrTopiaResponse> createNotice(@ModelAttribute NoticeRequestDto noticeRequestDto) {
         NoticeResponseDto noticeResponseDto = noticeService.createNotice(noticeRequestDto);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success",noticeResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);
