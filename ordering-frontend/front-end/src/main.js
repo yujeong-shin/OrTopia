@@ -9,8 +9,9 @@ import axios from 'axios';
 loadFonts()
 
 axios.interceptors.response.use(response => response,error =>{
-  if(error.response && error.response.status === 102){
-      console.log("success");
+  if(error.response && error.response.status === 402){
+      alert(error.response.data.message);
+      window.location.href ="/";
   }
   // 나머지 에러는 무시하겠다.
   return Promise.reject(error);

@@ -1,19 +1,19 @@
 <template>
-  <v-app>
+  <v-app style="font-size: 16px">
     <v-main>
-      <HeaderComponent/>
-      <router-view></router-view> <!-- 라우터 뷰 추가 -->
-      <FooterComponent/>
+      <HeaderComponent />
+      <router-view></router-view>
+      <FooterComponent />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HeaderComponent from './components/HeaderComponent.vue'
-import FooterComponent from './components/FooterComponent.vue'
+import HeaderComponent from "./components/HeaderComponent.vue";
+import FooterComponent from "./components/FooterComponent.vue";
 
 export default {
-  name: 'App',
+  name: "App",
 
   components: {
     HeaderComponent,
@@ -23,6 +23,16 @@ export default {
   data: () => ({
     //
   }),
+};
+</script>
+<style>
+@font-face {
+  font-family: "jua";
+  src: url(../public/font/BMJUA_ttf.ttf);
 }
 
-</script>
+* {
+  font-family: "jua";
+  font-size: 17px; /* 전체 글꼴 크기 설정 */
+}
+</style>

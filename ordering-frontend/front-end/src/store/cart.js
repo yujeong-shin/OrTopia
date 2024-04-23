@@ -12,7 +12,8 @@ function initState(){
     return{
         // 담는 부분
         cartItem: JSON.parse(localStorage.getItem('cartItems')) || [],
-        totalQuantity: localStorage.getItem('totalQuantity') || 0    
+        totalQuantity: localStorage.getItem('totalQuantity') || 0,
+        buyerId: null
     }
 }
 function updateLocalStorage(cartItems,totalQuantity){
@@ -30,14 +31,23 @@ export default createStore({
     mutations:{
         // addToCart함수는 외부컴포넌트 또는 액션에서 호출
         addToCart(state,item){
+            let isSame = true;
             const existItem = state.cartItem.find(i => i.id == item.id);
             if(existItem){
-                console.log(state.cartItem);
-                existItem.count += item.count;
-            }else{
-                state.cartItem.push(item);
-                state.totalQuantity = parseInt(state.totalQuantity) + 1;
+                for(let i = 0; i < existItem.options.length; i++){
+                    if (item.options[i].value !== existItem.options[i].value) {
+                        isSame =  false;
+                      }
+                }
+                if(isSame){
+                    console.log(state.cartItem);
+                    existItem.count += item.count;
+                    updateLocalStorage(state.cartItem, state.totalQuantity);
+                    return;
+                }
             }
+            state.cartItem.push(item);
+            state.totalQuantity = parseInt(state.totalQuantity) + 1;
             // totalCount
             updateLocalStorage(state.cartItem, state.totalQuantity);
         },
@@ -48,6 +58,9 @@ export default createStore({
             //localStorage.removeItem("cartItems");
             //localStorage.removeItem("totalQuantity");
             //window.location.reload();
+        },
+        setBuyerId(state, buyerId) {
+            state.buyerId = buyerId;  // buyerId 상태 업데이트
         }
     },
     // actions를 통해 여러 mutationa을 커밋하거나, 비동기 작업을 진행, 일반적으로 component에서 actions의 method를 호출하고
@@ -59,11 +72,15 @@ export default createStore({
         },
         clearCart(context){
             context.commit('clearCart');
+        },
+        setBuyerId(context, buyerId) {
+            context.commit('setBuyerId', buyerId);
         }
     },
     // getter : 상태를 반환하는 함수들의 집합
     getters:{
         getCartItems : state=> state.cartItem,
-        getTotalQuantity : state=> state.totalQuantity
+        getTotalQuantity : state=> state.totalQuantity,
+        getBuyerId: state => state.buyerId
     },
 });

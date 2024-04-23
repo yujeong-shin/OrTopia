@@ -85,12 +85,8 @@ export default {
           }
         );
         this.orderList = response.data.result;
-        console.log("response : ");
-        console.log(response);
-        console.log("response.data : ");
-        console.log(response.data);
-        console.log("orderList : ");
-        console.log(this.orderList);
+        // console.log("orderList : ");
+        // console.log(this.orderList);
       } catch (error) {
         console.error("주문 상세조회에 실패했습니다: ", error);
       }

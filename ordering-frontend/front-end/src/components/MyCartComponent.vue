@@ -14,7 +14,7 @@
               <v-table>
                 <thead>
                     <tr>
-                    <th class="text-center"></th> <!-- 체크 박스 칼럼 -->
+                    <th class="text-center"></th> 
                     <th class="text-center">상품 사진</th>
                     <th class="text-center">상품 이름</th>
                     <th class="text-center">상품 수량</th>
@@ -22,15 +22,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in getCartItems" :key="item.itemId">
-                    <td class="text-center"> <!-- 체크 박스 칼럼 -->
+                    <tr v-for="(item, index) in getCartItems" :key="item.itemId">
+                    <td class="text-center"> 
                         <v-checkbox
                         class="text-center"
-                        v-model="selectedItems[item.id]"
+                        v-model="selectedItems[index]"
                         ></v-checkbox>
                     </td>
                     <td><v-img :src="item.imagePath" height="200px"></v-img></td>
-                    <td class="text-center">{{ item.name }}</td>
+                    <td class="text-center" >
+                    <div style="font-size: 25px; padding: 30px;">{{ item.name }}</div>
+                      <template v-for="(option, index) in item.options" :key="index">
+                        <div style="font-size: 15px;">{{ option.name }}: {{ option.value }}</div>
+                      </template>
+                    </td>
                     <td class="text-center">{{ item.count }}</td>
                     <td class="text-center">{{ item.price * item.count }} 원 </td>
                     </tr>
@@ -67,7 +72,7 @@ export default {
             const orderItems = Object.keys(this.selectedItems)
                                 .filter(key=>this.selectedItems[key]==true)
                                 .map(key=> {
-                                    const item =  this.itemList.find(item => item.id == key)
+                                    const item =  this.itemList[key];
                                     return item;
                                 });
             if(orderItems.length<1){
