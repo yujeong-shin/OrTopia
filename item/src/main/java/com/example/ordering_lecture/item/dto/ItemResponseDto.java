@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -26,7 +28,9 @@ public class ItemResponseDto {
     private boolean delYN;
     private boolean isBaned;
     private Long sellerId;
-    private LocalDateTime createdTime;
+    private List<ItemOptionResponseDto> itemOptionResponseDtoList;
+    private String createdTime;
+
 
     public static ItemResponseDto toDto(Item item){
         return ItemResponseDto.builder()
@@ -41,7 +45,8 @@ public class ItemResponseDto {
                 .delYN(item.isDelYN())
                 .isBaned(item.isBaned())
                 .stock(item.getStock())
-                .createdTime(item.getCreatedTime())
+                .createdTime(item.getCreatedTime().toString())
+                .itemOptionResponseDtoList(new ArrayList<>())
                 .build();
     }
 }

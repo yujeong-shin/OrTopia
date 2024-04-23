@@ -25,7 +25,10 @@ public class OrderDetail {
     @Column(nullable = false)
     private Long itemId;
     @Column(nullable = false)
+    private Long sellerId;
+    @Column(nullable = false)
     private int quantity;
+    private int discountPrice;
     @Column(nullable = false)
     @Builder.Default
     private boolean isReviewed = false;
