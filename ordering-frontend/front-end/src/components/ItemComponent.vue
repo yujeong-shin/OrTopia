@@ -223,15 +223,13 @@ export default {
       }
     },
     async getItemInfo() {
-  const token = localStorage.getItem("accessToken");
-  const refreshToken = localStorage.getItem("refreshToken");
-  const email = localStorage.getItem("email");
+      const token = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+      const email = localStorage.getItem("email");
   try {
     const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/item-service/item/read/${this.itemId}`, {
       headers: {
         myEmail: email,
-        Authorization: `Bearer ${token}`,
-        "X-Refresh-Token": `${refreshToken}`,
       },
     });
     this.item = response.data.result;
@@ -243,6 +241,7 @@ export default {
     }
     this.selectedOptions = [...this.item.itemOptionResponseDtoList];
     this.selectedValues = this.selectedOptions.map(option => ({ name: option.name, value: null }));
+    // console.log(this.options);
   } catch (error) {
     alert(error.response.data.error_message);
     console.error(error);
