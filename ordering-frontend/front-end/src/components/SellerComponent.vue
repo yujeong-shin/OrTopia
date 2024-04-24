@@ -5,20 +5,15 @@
       <v-col cols="12" md="4"> </v-col>
       <v-col cols="12" md="8">
         <v-col cols="12" class="text-right">
-          <v-btn color="gray" class="mr-2" @click="showManageItemsModal = true"
-            >판매물품 등록</v-btn
-          >
+          <v-btn color="gray" class="mr-2" @click="showManageItemsModal = true">판매물품 등록</v-btn>
+          <v-btn color="gray" class="mr-2" @click="goToCouponPage">쿠폰 등록</v-btn>
         </v-col>
       </v-col>
       <v-row>
         <v-col cols="6">
           <div class="text-center text-2xl font-bold">일별 판매 금액</div>
           <div class="p-4 border-2">
-            <canvas
-              id="dailySalesAmountChart"
-              width="400"
-              height="200"
-            ></canvas>
+            <canvas id="dailySalesAmountChart" width="400" height="200"></canvas>
           </div>
         </v-col>
         <v-col cols="6">
@@ -89,6 +84,9 @@ export default {
     };
   },
   methods: {
+    goToCouponPage() {
+      this.$router.push({ name: 'CouponComponent' });
+    },
     async fetchSalesInfo() {
       const token = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
