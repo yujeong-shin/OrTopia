@@ -30,10 +30,76 @@
       <br />
       <br />
       <div class="header-bottom-line"></div>
-      <v-row>
-        <v-col cols="12" class="top-plus-margin">
-          <v-subheader>판매중인 상품들</v-subheader>
-        </v-col>
+      <div class="text-center">
+        <!-- <v-select
+          v-model="location"
+          :items="locations"
+          label="Location"
+        ></v-select> -->
+        <v-menu :location="location">
+          <template v-slot:activator="{ props }">
+            <v-row justify="end">
+              <v-col cols="auto">
+                <v-btn
+                  color="primary"
+                  dark
+                  flat
+                  v-bind="props"
+                  class="my-custom-button"
+                >
+                  <span style="color: #000000">{{ buttonText }}</span>
+                  <v-icon class="rotate-180" style="color: #000000"
+                    >mdi-chevron-down</v-icon
+                  >
+                </v-btn>
+              </v-col>
+            </v-row>
+          </template>
+          <v-list>
+            <v-list-item
+              @click="
+                sortItems('price-asc');
+                updateButtonText('낮은 가격순');
+              "
+            >
+              <v-list-item-title>낮은 가격순</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="
+                sortItems('price-desc');
+                updateButtonText('높은 가격순');
+              "
+            >
+              <v-list-item-title>높은 가격순</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="
+                sortItems('newest');
+                updateButtonText('최신순');
+              "
+            >
+              <v-list-item-title>최신순</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="
+                sortItems('review-count');
+                updateButtonText('리뷰 많은순');
+              "
+            >
+              <v-list-item-title>리뷰 많은순</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="
+                sortItems('rating-desc');
+                updateButtonText('별점 높은순');
+              "
+            >
+              <v-list-item-title>별점 높은순</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
+      <div>
         <v-col
           v-for="item in this.itemList"
           :key="item.id"
@@ -48,7 +114,7 @@
             <v-card-subtitle>{{ item.price }}원</v-card-subtitle>
           </v-card>
         </v-col>
-      </v-row>
+      </div>
     </v-container>
   </v-main>
 </template>
@@ -62,6 +128,7 @@ export default {
   created() {
     this.getItems();
     this.getNotice();
+    this.sortItems("rating-desc"); // 초기 정렬 기준: 별점 높은순
   },
   setup() {
     const search = ref("");
@@ -86,12 +153,49 @@ export default {
   data() {
     return {
       userRole: null,
-      // selectedCategory: null,
       itemList: [],
       noticeList: [],
+      sortedItemList: [],
+      buttonText: "정렬 옵션",
     };
   },
   methods: {
+    updateButtonText(text) {
+      this.buttonText = text;
+    },
+    sortItems(sortBy) {
+      this.sortBy = sortBy;
+      switch (sortBy) {
+        case "price-asc":
+          this.sortedItemList = [...this.itemList].sort(
+            (a, b) => a.price - b.price
+          );
+          break;
+        case "price-desc":
+          this.sortedItemList = [...this.itemList].sort(
+            (a, b) => b.price - a.price
+          );
+          break;
+        case "newest":
+          this.sortedItemList = [...this.itemList].sort(
+            (a, b) => b.createdAt - a.createdAt
+          );
+          break;
+        case "review-count":
+          this.sortedItemList = [...this.itemList].sort(
+            (a, b) => b.reviewCount - a.reviewCount
+          );
+          break;
+        case "rating-desc":
+          this.sortedItemList = [...this.itemList].sort(
+            (a, b) => b.rating - a.rating
+          );
+          break;
+        default:
+          this.sortedItemList = this.itemList;
+          break;
+      }
+    },
     async getItems() {
       try {
         const data = await axios.get(
@@ -142,5 +246,9 @@ export default {
 }
 .header-bottom-line {
   border-bottom: 1px solid #e0e0e0;
+}
+.my-custom-button {
+  background-color: #ffffff !important;
+  margin-top: 10px;
 }
 </style>
