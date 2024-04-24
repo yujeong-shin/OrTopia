@@ -5,12 +5,32 @@
         판매물품관리
       </v-card-title>
       <v-container>
-    <v-form ref="form" @submit.prevent="submitItem" enctype="multipart/form-data">
-      <v-text-field v-model="item.name" label="아이템 이름" required></v-text-field>
-      <v-text-field v-model="item.stock" label="재고" type="number" required></v-text-field>
-      <v-text-field v-model="item.price" label="가격" type="number" required></v-text-field>
-      <v-select v-model="item.category" :items="categories" label="카테고리" required></v-select>
-      <v-text-field
+        <v-form ref="form" @submit.prevent="submitItem" enctype="multipart/form-data">
+          <v-text-field v-model="item.name" label="아이템 이름" required></v-text-field>
+          <v-text-field v-model="item.stock" label="재고" type="number" required></v-text-field>
+          <v-text-field v-model="item.price" label="가격" type="number" required></v-text-field>
+          <v-select v-model="item.category" :items="categories" label="카테고리" required></v-select>
+          <v-container v-for="(option, index) in optionList" :key="index">
+             <v-row>
+              <v-col cols="12" md="6">
+                <v-text-field v-model="option.optionName" label="옵션 이름" required></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-btn @click="addOptionDetail(index)" color="primary">옵션 내용 추가하기</v-btn>
+                <v-btn @click="removeOption(index)" color="error">옵션 삭제하기</v-btn>
+              </v-col>
+            </v-row>
+            <v-row v-for="(detail, detailIndex) in option.details" :key="detailIndex">
+              <v-col cols="12" md="6">
+                <v-text-field v-model="option.details[detailIndex]" label="옵션 내용" required></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-btn @click="removeOptionDetail(index, detailIndex)" color="error">옵션 내용 삭제하기</v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+          <v-btn @click="addOption" color="primary">옵션 추가하기</v-btn>
+          <v-text-field
         readonly
         v-model="item.detail"
         @click="showModal = true"
@@ -18,17 +38,17 @@
         required
         append-icon="mdi-pencil"
       ></v-text-field>
-      <v-file-input v-model="item.imagePath" label="이미지 파일" accept="image/*"></v-file-input>
-      <v-text-field v-model="item.minimumStock" label="최소 재고" type="number" required></v-text-field>
-      <v-btn type="submit" color="success">등록하기</v-btn>
-    </v-form>
-    <item-create-modal
-      :value="showModal"
-      :detail="item.detail"
-      @update:value="showModal = $event"
-      @update:detail="item.detail = $event"
-    />
-  </v-container>
+          <v-file-input v-model="item.imagePath" label="이미지 파일" accept="image/*"></v-file-input>
+          <v-text-field v-model="item.minimumStock" label="최소 재고" type="number" required></v-text-field>
+          <v-btn type="submit" color="success">등록하기</v-btn>
+        </v-form>
+        <item-create-modal
+          :value="showModal"
+          :detail="item.detail"
+          @update:value="showModal = $event"
+          @update:detail="item.detail = $event"
+        />
+      </v-container>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="primary" @click="close">닫기</v-btn>
@@ -40,6 +60,7 @@
 <script>
 import axios from 'axios';
 import ItemCreateModal from "@/components/ItemCreateModal.vue";
+
 export default {
   components: {
     ItemCreateModal
@@ -56,6 +77,8 @@ export default {
         stock: 0,
         price: 0,
         category: '',
+        size: '',
+        color: '',
         detail: '',
         imagePath: null,
         minimumStock: 0,
@@ -63,6 +86,7 @@ export default {
         isBaned: false,
       },
       categories: ['FOOD', 'LAPTOP', 'MOBILE'],
+      optionList: [],
       showModal: false,
     };
   },
@@ -76,13 +100,28 @@ export default {
     async submitItem() {
       try {
         const formData = new FormData();
-        Object.keys(this.item).forEach(key => {
-          if (key !== 'imagePath') {
-            formData.append(key, this.item[key]);
-          } else if (this.item.imagePath && this.item.imagePath.length > 0) {
-            formData.append('imagePath', this.item.imagePath[0], this.item.imagePath[0].name);
-          }
-        });
+            // Add item data
+        formData.append('name', this.item.name);
+        formData.append('stock', this.item.stock);
+        formData.append('price', this.item.price);
+        formData.append('category', this.item.category);
+        formData.append('size', this.item.size);
+        formData.append('color', this.item.color);
+        formData.append('detail', this.item.detail);
+        formData.append('minimumStock', this.item.minimumStock);
+        formData.append('delYN', this.item.delYN);
+        formData.append('isBaned', this.item.isBaned);
+
+        // Add optionList as JSON string
+        const blob = new Blob([JSON.stringify(this.optionList)], {
+        type: 'application/json',
+      });
+        formData.append('optionList', blob);
+
+        // Add image file
+        if (this.item.imagePath) {
+          formData.append('imagePath', this.item.imagePath[0], this.item.imagePath[0].name);
+        }
         const email = localStorage.getItem('email');
         const response = await axios.post(
           `${process.env.VUE_APP_API_BASE_URL}/item-service/item/create`, 
@@ -104,6 +143,27 @@ export default {
         console.error('Error registering the item', error);
         alert('Error registering the item');
       }
+    },
+    addOption() {
+      if (this.optionList.length < 3) {
+        this.optionList.push({ optionName: '', details: [''] });
+      } else {
+        alert('옵션을 최대 3개까지만 추가할 수 있습니다.');
+      }
+    },
+    removeOption(index) {
+      this.optionList.splice(index, 1);
+    },
+    addOptionDetail(index) {
+  // 옵션 내용이 5개 이하일 때만 추가
+      if (this.optionList[index].details.length < 5) {
+        this.optionList[index].details.push('');
+      } else {
+        alert('옵션 내용을 최대 5개까지만 추가할 수 있습니다.');
+      }
+    },
+    removeOptionDetail(optionIndex, detailIndex) {
+      this.optionList[optionIndex].details.splice(detailIndex, 1);
     },
   },
 };

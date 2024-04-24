@@ -43,13 +43,13 @@
                             <v-card-text>
                               <v-row no-gutters>
                                 <v-col cols="12" sm="2" class="text-center ma-2"
-                                  >상품 ID</v-col
-                                >
-                                <v-col cols="12" sm="2" class="text-center ma-2"
                                   >사진</v-col
                                 >
                                 <v-col cols="12" sm="2" class="text-center ma-2"
                                   >수량</v-col
+                                >
+                                <v-col cols="12" sm="2" class="text-center ma-2"
+                                  >옵션</v-col
                                 >
                                 <v-col cols="12" sm="2" class="text-center ma-2"
                                   >상품명</v-col
@@ -62,12 +62,6 @@
                                 v-for="detail in orderDetailList"
                                 :key="detail.id"
                               >
-                                <v-col
-                                  cols="12"
-                                  sm="2"
-                                  class="text-center ma-2"
-                                  >{{ detail.itemId }}</v-col
-                                >
                                 <v-col cols="12" sm="2" class="text-center ma-2"
                                   ><v-img
                                     :src="detail.itemInfo?.imagePath"
@@ -79,6 +73,12 @@
                                   sm="2"
                                   class="text-center ma-2"
                                   >{{ detail.quantity }}</v-col
+                                >
+                                <v-col
+                                  cols="12"
+                                  sm="2"
+                                  class="text-center ma-2"
+                                  >{{ detail.options }}</v-col
                                 >
                                 <v-col
                                   cols="12"
@@ -182,6 +182,7 @@ export default {
             }
           );
           this.orderDetailList[i].itemInfo = response.data.result;
+          console.log(this.orderDetailList);
           console.log("this.orderDetailList[i].itemInfo : ");
           console.log(this.orderDetailList[i].itemInfo);
         } catch (error) {

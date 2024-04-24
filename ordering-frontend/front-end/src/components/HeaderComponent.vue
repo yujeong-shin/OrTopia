@@ -32,6 +32,8 @@
           color="black"
           bg-color="transparent"
           label-color="black"
+          @keyup.enter="searchAndNavigate"
+          @click:append="searchAndNavigate"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -121,7 +123,14 @@ const store = useStore();
 const totalQuantity = computed(() => store.getters.getTotalQuantity);
 const isLoggedIn = ref(false);
 const isSeller = ref(false); // 판매자인지 확인하는 ref 추가
-
+const search = ref(''); // ref로 search 변수를 생성합니다.
+const searchAndNavigate = () => {
+  if (search.value.trim() !== '') { // 검색어가 비어있지 않은 경우에만 실행
+    // 여기서 검색한 내용을 가지고 URL을 만들어서 router.push()를 호출하여 이동합니다.
+    const url = `/search/${search.value}`;
+    window.location.href = url;
+  }
+};
 onMounted(() => {
   const token = localStorage.getItem("accessToken");
   const role = localStorage.getItem("role"); // localStorage에서 사용자 역할 가져오기
