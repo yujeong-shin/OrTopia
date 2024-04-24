@@ -16,51 +16,16 @@
         <!-- 썸내일 올리기 -->
         <v-file-input label="썸네일 업로드" v-model="selectedFile" @change="handleFileUpload"></v-file-input>
 
-          <!-- 시작 날짜 선택 -->
-          <v-menu
-          v-model="startMenu"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          transition="scale-transition"
-          offset-y
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-              v-model="notice.startDate"
-              label="시작 날짜"
-              prepend-icon="mdi-calendar"
-              v-bind="attrs"
-              v-on="on"
-              outlined
-              dense
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="notice.startDate" @input="startMenu = false"></v-date-picker>
-        </v-menu>
+        <!-- 시작 날짜 입력 -->
+        <v-col cols="12">
+          <input type="date" v-model="notice.startDate" class="date-input">
+        </v-col>
 
-        <!-- 종료 날짜 선택 -->
-        <v-menu
-          v-model="endMenu"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          transition="scale-transition"
-          offset-y
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-              v-model="notice.endDate"
-              label="종료 날짜"
-              prepend-icon="mdi-calendar"
-              v-bind="attrs"
-              v-on="on"
-              outlined
-              dense
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="notice.endDate" @input="endMenu = false"></v-date-picker>
-        </v-menu>
+        <!-- 종료 날짜 입력 -->
+        <v-col cols="12">
+          <input type="date" v-model="notice.endDate" class="date-input">
+        </v-col>
+
         <!-- 텍스트 에디터 -->
         <text-editor v-model="contents" />
       </v-card-text>
@@ -72,7 +37,6 @@
     </v-card>
   </v-dialog>
 </template>
-
 <script>
 import TextEditor from "@/components/TextEditor.vue";
 import axios from "axios";
@@ -94,8 +58,8 @@ export default {
         endDate: '',
         contents: '',
       },
-      selectedFile: null, // 선택된 파일을 저장하는 변수
-      contents: '', 
+      selectedFile: null,
+      contents: '',
     };
   },
   watch: {
@@ -114,19 +78,16 @@ export default {
         this.selectedFile = event.target.files[0];
     },
     saveContent() {
-      // FormData 생성
       const formData = new FormData();
-      // 파일을 formData에 추가
       formData.append('imagePath', this.selectedFile);
-      // 나머지 데이터를 JSON 형식으로 추가
       formData.append('name', this.notice.name);
       formData.append('startDate', this.notice.startDate);
       formData.append('endDate', this.notice.endDate);
       formData.append('contents', this.contents);
-      console.log(formData);
+
       const config = {
         headers: {
-          'Content-Type': 'multipart/form-data', // 파일 업로드를 위해 필수적으로 설정해야 함
+          'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
           "X-Refresh-Token": localStorage.getItem('refreshToken'),
         },
@@ -144,3 +105,13 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.date-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+</style>
