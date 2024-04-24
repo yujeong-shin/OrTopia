@@ -9,6 +9,7 @@ import com.example.ordering_lecture.orderdetail.dto.OrderDetailRequestDto;
 import com.example.ordering_lecture.orderdetail.dto.OrderDetailResponseDto;
 import com.example.ordering_lecture.orderdetail.entity.OrderDetail;
 import com.example.ordering_lecture.orderdetail.repository.OrderDetailRepository;
+import com.example.ordering_lecture.payment.dto.ItemOptionDto;
 import com.example.ordering_lecture.redis.RedisService;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +38,14 @@ public class OrderingService {
             Ordering ordering = orderRequestDto.toEntity();
             orderRepository.save(ordering);
             for(OrderDetailRequestDto orderDetailRequestDto:orderRequestDto.getOrderDetailRequestDtoList()){
-                OrderDetail orderDetail = orderDetailRequestDto.toEntity(ordering);
-                System.out.println(orderDetailRequestDto.getSellerId());
+                StringBuilder sb = new StringBuilder();
+                for(ItemOptionDto itemOptionDto :orderDetailRequestDto.getOptions()){
+                    String optionName =  itemOptionDto.getName();
+                    String optionValue = itemOptionDto.getValue();
+                    sb.append(optionName);
+                    sb.append(" : "+optionValue+" ");
+                }
+                OrderDetail orderDetail = orderDetailRequestDto.toEntity(ordering,sb.toString());
                 orderDetailRepository.save(orderDetail);
             }
             return OrderResponseDto.toDto(ordering);

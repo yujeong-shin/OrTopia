@@ -29,9 +29,15 @@ public class OrderDetail {
     @Column(nullable = false)
     private int quantity;
     private int discountPrice;
+    @Column
+    private String options;
     @Column(nullable = false)
     @Builder.Default
     private boolean isReviewed = false;
     @CreationTimestamp
     private LocalDateTime createdTime;
+
+    public void updateReview() {
+        isReviewed = true;
+    }
 }

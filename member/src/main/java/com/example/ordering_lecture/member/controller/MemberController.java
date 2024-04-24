@@ -117,11 +117,17 @@ public class MemberController {
         memberService.unlikeSeller(buyerEmail, sellerId);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("delete success", null);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
+    }
     // 판매 내역 조회 시 사용되는 API
     // front로 넘어오는 email 값을 이용해 seller ID를 조회
     @GetMapping("/member/{email}/memberId")
     public Long findIdByMemberEmail(@PathVariable("email") String email){
         MemberResponseDto memberResponseDto = memberService.findIdByEmail(email);
         return memberResponseDto.getId();
+    }
+    // 이메일을 통해서 이름을 찾는 API
+    @GetMapping("/member/search/name/{email}")
+    public String searchNameByEmail(@PathVariable("email") String email){
+        return memberService.searchNameByEmail(email);
     }
 }
