@@ -25,7 +25,18 @@
                 {{ item.isFavorited ? 'mdi-heart' : 'mdi-heart-outline' }}
               </v-icon>
             </v-btn>
-            <p style="font-size: 20px; margin-top: 30px">점수 :</p>
+            <br>
+          <div style="display: flex; align-items: center; margin-top: 10px;">
+          <p style="font-size: 20px;">평점 :</p>
+          <v-rating
+            v-model="totalScore" 
+            :half-increments="true"
+            :color="'red'"
+            :background-color="'grey darken-3'"
+            :size="'large'"
+            readonly
+          ></v-rating> ({{this.reviews.length}})
+        </div>
           </div>
           <br>
           <v-card>
@@ -94,7 +105,7 @@
             </v-col>
             <v-col cols="100px">
               <!-- 점수(별표) 표시 -->
-              점수:
+              평점 :
               <v-icon
                 v-for="(icon, i) in 5"
                 :key="i"
@@ -162,6 +173,7 @@ export default {
       stickyTop: 0,
       selectedValues:[],
       reviews:[],
+      totalScore:0,
     };
   },
   created() {
@@ -276,6 +288,11 @@ export default {
         const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/item-service/review/show_item/${this.itemId}`);
         console.log(response);
         this.reviews = response.data.result;
+        if(this.reviews.length != 0){
+          this.totalScore = this.reviews.reduce((total, review) => total + review.score, 0);
+          this.totalScore /= this.reviews.length;
+        }
+        console.log(this.totalScore);
       }catch(e){
         console.log(e);
       }

@@ -26,7 +26,7 @@
     <v-btn
       text-color="white"
       class="top-margin"
-      @click="goToItemSellComponent"
+      @click="redirectToHome"
       v-if="!isSeller"
     >
       구매
@@ -69,16 +69,9 @@
         </v-btn>
 
         <v-btn icon class="top-margin">
-          <v-icon color="black" @click="goToMyCart">mdi-cart</v-icon>
-          <span
-            class="v-badge__badge v-theme--dark bg-error"
-            aria-atomic="true"
-            aria-label="Badge"
-            aria-live="polite"
-            role="status"
-          >
-            {{ totalQuantity }}
-          </span>
+          <v-badge color="error" :content="totalQuantity">
+            <v-icon color="black" @click="goToMyCart">mdi-cart</v-icon>
+          </v-badge>
         </v-btn>
 
         <v-btn
@@ -162,6 +155,7 @@ onMounted(() => {
   const role = localStorage.getItem("role"); // localStorage에서 사용자 역할 가져오기
   isLoggedIn.value = !!token;
   isSeller.value = role === "SELLER"; // 사용자 역할이 판매자인 경우 true 설정
+  
 });
 
 const logout = () => {

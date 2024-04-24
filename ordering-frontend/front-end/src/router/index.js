@@ -11,6 +11,7 @@ import OrderByKakaoComponent from "@/components/OrderByKakaoComponent.vue";
 import NoticeDetail from "@/components/NoticeDetail.vue";
 import SellerComponent from "@/components/SellerComponent.vue";
 import CouponComponent from "@/components/CouponComponent.vue";
+import SearchItemComponent from "@/components/SearchItemComponent.vue";
 
 const routes = [
   {
@@ -68,6 +69,12 @@ const routes = [
     path: "/coupon",
     name: "CouponComponent",
     component: CouponComponent,
+    props: true,
+  },
+  {
+    path: "/search/:value",
+    name: "SearchItemComponent",
+    component: SearchItemComponent,
     props: true,
   },
   {
