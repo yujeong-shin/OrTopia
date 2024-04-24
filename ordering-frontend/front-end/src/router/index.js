@@ -13,6 +13,7 @@ import SellerComponent from "@/components/SellerComponent.vue";
 import CouponComponent from "@/components/CouponComponent.vue";
 import SearchItemComponent from "@/components/SearchItemComponent.vue";
 
+
 const routes = [
   {
     path: "/",
@@ -83,6 +84,12 @@ const routes = [
     component: SellerComponent,
     props: true,
   },
+  {
+    path: '/NewPasswordComponent',
+    name: 'NewPasswordComponent',
+    component: () => import('@/components/NewPasswordComponent.vue')
+  }
+  ,
 ];
 
 const router = createRouter({

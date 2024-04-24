@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app color="white" dark elevation="0">
+  <v-app-bar app color="white" dark elevation="0" class="sticky-header">
     <v-img
       src="@/assets/logo.png"
       contain
@@ -229,5 +229,11 @@ const goToItemSellComponent = () => {
 .custom-outlined {
   border: 1px solid #c6c6c6;
   border-radius: 4px;
+}
+.sticky-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 </style>
