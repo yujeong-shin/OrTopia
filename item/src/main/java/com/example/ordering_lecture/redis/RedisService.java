@@ -35,7 +35,7 @@ public class RedisService {
     @Transactional(readOnly = true)
     public Set<String> getValues(String key) {
         ZSetOperations<String, String> values = redisTemplate.opsForZSet();
-        return values.range(key,0,2);
+        return values.range(key,0,4);
     }
 
     @Transactional(readOnly = true)
