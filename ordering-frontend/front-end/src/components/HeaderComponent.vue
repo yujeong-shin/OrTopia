@@ -1,14 +1,12 @@
 <template>
   <v-app-bar app color="white" dark elevation="0">
-    <v-btn
-      text-color="white"
-      class="top-margin"
-      :style="{ 'margin-left': '150px', 'font-size': '2rem' }"
+    <v-img
+      src="@/assets/logo.png"
+      contain
+      height="30"
+      class="logo-margin top-margin"
       @click="redirectToHome"
-    >
-      오토피아
-    </v-btn>
-
+    ></v-img>
     <v-btn
       text-color="white"
       class="top-margin"
@@ -24,6 +22,14 @@
       v-if="isSeller"
     >
       판매
+    </v-btn>
+    <v-btn
+      text-color="white"
+      class="top-margin"
+      @click="goToItemSellComponent"
+      v-if="!isSeller"
+    >
+      구매
     </v-btn>
 
     <v-row>
@@ -85,7 +91,7 @@
 
         <v-btn
           text-color="white"
-          class="right-margin top-margin"
+          class="right-margin top-margin end-margin"
           @click="logout"
         >
           로그아웃
@@ -94,12 +100,16 @@
 
       <template v-else>
         <!-- 로그인하지 않았을 때 보이는 텍스트 버튼들 -->
-        <v-btn text-color="white" class="top-margin" @click="goToLogin">
+        <v-btn
+          text-color="white"
+          class="top-margin end-margin"
+          @click="goToLogin"
+        >
           로그인
         </v-btn>
         <v-btn
           text-color="white"
-          class="right-margin top-margin"
+          class="right-margin top-margin end-margin"
           @click="goToRegister"
         >
           회원가입
@@ -125,7 +135,6 @@
       <v-btn value="cosmetics" class="mx-2">화장품</v-btn>
     </div>
   </v-btn-toggle>
-
   <div class="header-bottom-line"></div>
 </template>
 
@@ -193,20 +202,21 @@ const goToItemSellComponent = () => {
 
 <style scoped>
 .logo-margin {
-  margin-left: 100px;
+  margin-left: 20px;
 }
 .right-margin {
   margin-right: 180px;
 }
 .search-margin {
-  margin-left: 80px;
+  margin-left: 50px;
+  margin-right: -100px;
   margin-top: 30px;
 }
 .alarm-margin {
   margin-left: 70px;
 }
 .v-text-field {
-  width: 500px !important;
+  width: 600px !important;
 }
 .header-bottom-line {
   border-bottom: 1px solid #e0e0e0;
@@ -218,6 +228,9 @@ const goToItemSellComponent = () => {
 }
 .top-margin {
   margin-top: 30px;
+}
+.end-margin {
+  margin-right: 30px;
 }
 .custom-outlined {
   border: 1px solid #c6c6c6;

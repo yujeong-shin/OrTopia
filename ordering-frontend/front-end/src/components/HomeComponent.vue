@@ -1,13 +1,13 @@
 <template>
   <v-main>
     <v-container>
-      <v-row align="start">
-        <v-col cols="6">
-          <v-carousel cycle hide-delimiters class="v-carousel__controls__item">
+      <v-row align="start" class="top-margin">
+        <v-col cols="5" style="height: 500px">
+          <v-carousel cycle hide-delimiters v-if="noticeList.length > 0">
             <v-carousel-item
-              v-for="notice in noticeList"
+              v-for="(notice, index) in noticeList"
               :key="notice.id"
-              class="v-carousel__item"
+              :v-show="index === 0"
               contain
             >
               <v-img
@@ -15,15 +15,14 @@
                 height="100%"
                 width="100%"
                 @click="goToNotice(notice)"
-                class="v-carousel__item__img"
               ></v-img>
             </v-carousel-item>
           </v-carousel>
         </v-col>
-        <v-col cols="6" style="height: 550px">
+        <v-col cols="5" style="height: 510px">
           <img
             src="/mainCommunityImage.png"
-            style="width: 150%; height: 200%; object-fit: contain"
+            style="width: 150%; height: 103%"
           />
         </v-col>
       </v-row>
@@ -133,5 +132,8 @@ export default {
   width: 100% !important;
   height: 100% !important;
   object-fit: contain !important;
+}
+.top-margin {
+  margin-top: -60px;
 }
 </style>
