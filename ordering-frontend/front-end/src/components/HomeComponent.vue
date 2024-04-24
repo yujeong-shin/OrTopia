@@ -1,32 +1,35 @@
 <template>
   <v-main>
     <v-container>
-      <v-row>
-        <v-col cols="12">
-          <v-carousel
-            cycle
-            hide-delimiters
-            height="300px"
-            class="v-carousel__controls__item"
-          >
+      <v-row align="start">
+        <v-col cols="6">
+          <v-carousel cycle hide-delimiters class="v-carousel__controls__item">
             <v-carousel-item
               v-for="notice in noticeList"
               :key="notice.id"
               class="v-carousel__item"
+              contain
             >
               <v-img
                 :src="notice.imagePath"
-                contain
                 height="100%"
                 width="100%"
                 @click="goToNotice(notice)"
-                class="v-carousel__item img"
+                class="v-carousel__item__img"
               ></v-img>
             </v-carousel-item>
           </v-carousel>
         </v-col>
+        <v-col cols="6" style="height: 550px">
+          <img
+            src="/mainCommunityImage.png"
+            style="width: 150%; height: 200%; object-fit: contain"
+          />
+        </v-col>
       </v-row>
-
+      <br />
+      <br />
+      <br />
       <v-row>
         <v-col cols="12">
           <v-subheader>판매중인 상품들</v-subheader>
@@ -118,14 +121,15 @@ export default {
 </script>
 <style scoped>
 .v-carousel__controls__item {
-  width: 900px !important;
-  height: 300px !important;
+  margin-top: -50px;
+  width: 500px !important;
+  height: 500px !important;
 }
 .v-carousel__item {
   width: 100% !important;
   height: 300px !important;
 }
-.v-carousel__item img {
+.v-carousel__item__img {
   width: 100% !important;
   height: 100% !important;
   object-fit: contain !important;

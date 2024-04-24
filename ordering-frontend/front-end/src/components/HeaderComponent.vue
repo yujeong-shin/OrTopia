@@ -1,14 +1,21 @@
 <template>
   <v-app-bar app color="white" dark elevation="0">
-    <!-- 로고 이미지 대신 "로고" 텍스트 표시 -->
-    <v-img
-      src="@/assets/logo.png"
-      contain
-      height="30"
-      class="logo-margin top-margin"
+    <v-btn
+      text-color="white"
+      class="top-margin"
+      :style="{ 'margin-left': '150px', 'font-size': '2rem' }"
       @click="redirectToHome"
-    ></v-img>
+    >
+      오토피아
+    </v-btn>
 
+    <v-btn
+      text-color="white"
+      class="top-margin"
+      :style="{ 'margin-left': '50px' }"
+    >
+      커뮤니티
+    </v-btn>
     <!-- 판매자일 경우 판매 텍스트 표시 -->
     <v-btn
       text-color="white"
@@ -20,18 +27,27 @@
     </v-btn>
 
     <v-row>
-      <v-col cols="12">
+      <v-col cols="12" class="search-margin">
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
           label="상품을 검색해보세요"
-          class="search-margin"
           single-line
-          hide-details
-          outlined
           color="black"
           bg-color="transparent"
           label-color="black"
+          :style="{
+            'border-bottom': '1px solid #c6c6c6',
+            'border-bottom-width': '1px',
+            'border-bottom-style': 'solid',
+            'border-bottom-color': '#c6c6c6',
+          }"
+          :append-icon-style="{
+            'border-bottom': '1px solid #c6c6c6',
+            'border-bottom-width': '1px',
+            'border-bottom-style': 'solid',
+            'border-bottom-color': '#c6c6c6',
+          }"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -167,13 +183,17 @@ const goToItemSellComponent = () => {
 
 <style scoped>
 .logo-margin {
-  margin-left: 160px;
+  margin-left: 100px;
 }
 .right-margin {
   margin-right: 180px;
 }
 .search-margin {
-  margin-left: 100px;
+  margin-left: 80px;
+  margin-top: 30px;
+}
+.alarm-margin {
+  margin-left: 70px;
 }
 .v-text-field {
   width: 500px !important;
@@ -187,6 +207,10 @@ const goToItemSellComponent = () => {
   margin-top: 5px;
 }
 .top-margin {
-  margin-top: 15px;
+  margin-top: 30px;
+}
+.custom-outlined {
+  border: 1px solid #c6c6c6;
+  border-radius: 4px;
 }
 </style>
