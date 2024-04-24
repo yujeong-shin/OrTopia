@@ -99,7 +99,7 @@
           </v-list>
         </v-menu>
       </div>
-      <div>
+      <div class="d-flex flex-wrap">
         <v-col
           v-for="item in this.itemList"
           :key="item.id"
@@ -112,16 +112,17 @@
             <v-img :src="item.imagePath" height="200px"></v-img>
             <v-card-title>{{ item.name }}</v-card-title>
             <v-card-subtitle>
-            <v-rating
-            v-model="item.totalScore"
-            :half-increments="true"
-            :color="'red'"
-            :background-color="'grey darken-3'"
-            :size="'tiny'"
-            readonly
-            ></v-rating> <span style="vertical-align: top; margin-top: 2px;">
-            ({{ item.reviewNumber }})
-            </span>
+              <v-rating
+                v-model="item.totalScore"
+                :half-increments="true"
+                :color="'red'"
+                :background-color="'grey darken-3'"
+                :size="'tiny'"
+                readonly
+              ></v-rating>
+              <span style="vertical-align: top; margin-top: 2px">
+                ({{ item.reviewNumber }})
+              </span>
             </v-card-subtitle>
             <v-card-subtitle>{{ item.price }}원</v-card-subtitle>
           </v-card>
@@ -214,7 +215,7 @@ export default {
           `${process.env.VUE_APP_API_BASE_URL}/item-service/item/items`
         );
         this.itemList = data.data.result;
-        this.itemList.forEach(item => {
+        this.itemList.forEach((item) => {
           // 각 아이템의 score와 reviewNumber를 이용하여 totalScore 계산
           item.totalScore = item.score / item.reviewNumber;
         });
