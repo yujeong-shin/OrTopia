@@ -65,6 +65,12 @@ const routes = [
     props: true,
   },
   {
+    path: "/coupon",
+    name: "CouponComponent",
+    component: CouponComponent,
+    props: true,
+  },
+  {
     path: "/seller",
     name: "SellerComponent",
     component: SellerComponent,
