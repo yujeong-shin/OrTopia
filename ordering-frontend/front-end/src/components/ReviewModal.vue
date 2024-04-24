@@ -88,6 +88,7 @@
         );
         console.log(response);
         alert("리뷰 작성 성공!");
+        this.$router.push(`/item/${detail.itemId}`);
         }catch(e){
           console.log(e);
         }

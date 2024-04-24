@@ -144,7 +144,7 @@
 </v-container>
   </v-main>
   <!-- 스티키 사이드바 -->
-  <div class="sticky-sidebar" :style="{ top: stickyTop + 'px' }">
+  <div class="sticky-sidebar" :style="{ top: stickyTop + 'px', 'z-index': 9999 }">
     <h5 style="text-align: center">최근본상품</h5>
     <v-card
       v-for="product in recentProducts"
@@ -391,6 +391,7 @@ export default {
   width: 120px;
   max-height: calc(50vh - 50px);
   overflow-y: hi;
+  margin-top: 100px;
 }
 .v-icon {
   color: red; /* 하트 색상 */
