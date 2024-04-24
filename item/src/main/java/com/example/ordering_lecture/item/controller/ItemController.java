@@ -93,14 +93,14 @@ public class ItemController {
     }
 
     @GetMapping("read/{id}/my_page")
-    public ResponseEntity<OrTopiaResponse> readItemForMyPage(@PathVariable Long id,@RequestHeader("myEmail") String email){
+    public ResponseEntity<OrTopiaResponse> readItemForMyPage(@PathVariable Long id,@RequestHeader("myEmail") String email) {
         ItemResponseDto itemResponseDto = itemService.readItemForMyPage(id, email);
-        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",itemResponseDto);
-        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
-
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", itemResponseDto);
+        return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
+    }
     // 조건에 맞는 item의 itemOptionQuantityId를 찾아오는 api
     @PostMapping("/search/optionDetailId/{itemId}")
-    Long searchIdByOptionDetail(@PathVariable Long itemId,@RequestBody List<String> values){
+    public Long searchIdByOptionDetail(@PathVariable Long itemId,@RequestBody List<String> values){
        return itemService.searchIdByOptionDetail(itemId,values);
     }
 }

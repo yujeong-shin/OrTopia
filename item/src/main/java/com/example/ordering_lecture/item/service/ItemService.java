@@ -120,6 +120,7 @@ public class ItemService {
     }
 
     public List<ItemResponseDto> showAllItem(){
+
         return itemRepository.findAll().stream()
                 .map(ItemResponseDto::toDto)
                 .collect(Collectors.toList());

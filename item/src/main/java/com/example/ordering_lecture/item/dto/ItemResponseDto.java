@@ -30,10 +30,14 @@ public class ItemResponseDto {
     private Long sellerId;
     private List<ItemOptionResponseDto> itemOptionResponseDtoList;
     private String createdTime;
+    private Long reviewNumber;
+    private Long score;
 
 
     public static ItemResponseDto toDto(Item item){
         return ItemResponseDto.builder()
+                .reviewNumber(item.getReviewNumber())
+                .score(item.getScore())
                 .name(item.getName())
                 .imagePath(item.getImagePath())
                 .price(item.getPrice())
