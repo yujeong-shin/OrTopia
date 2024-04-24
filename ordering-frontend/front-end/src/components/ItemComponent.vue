@@ -82,8 +82,55 @@
       <div v-html="item.detail" style="margin-top: 20px; text-align: center;"></div>
     </v-container>
     <v-container>
-      <h1 style="text-align: center">리뷰</h1>
-    </v-container>
+  <h1 style="text-align: center">리뷰</h1>
+  <v-row>
+    <v-col cols="12" v-for="(review, index) in reviews" :key="index">
+      <!-- 리뷰 정보 -->
+      <v-card>
+        <v-card-title>
+          <v-row align="center">
+            <v-col cols="auto">
+              <p>회원 이름: {{ review.name }}</p>
+            </v-col>
+            <v-col cols="100px">
+              <!-- 점수(별표) 표시 -->
+              점수:
+              <v-icon
+                v-for="(icon, i) in 5"
+                :key="i"
+                :color="i < review.score ? 'yellow' : 'grey'"
+              >
+                mdi-star
+              </v-icon>
+            </v-col>
+            <v-col cols="auto">
+              <p>리뷰 날짜: {{ review.date }}</p>
+            </v-col>
+          </v-row>
+        </v-card-title>
+        <v-card-text>
+        <v-row>
+          <v-col cols="auto" align="center">
+            <!-- 리뷰 사진 -->
+            <img :src="review.imagePath" alt="리뷰 사진" style="max-width: 100%; height: auto;">
+          </v-col>
+          
+          <v-card-text >
+            <v-head>내용</v-head>
+          <v-col cols="auto" class="gray-background" style="height: 140px; border-radius: 10px;" >
+            <!-- 리뷰 내용 -->
+          <div class="gray-background" style="padding: 20px;">
+            <!-- 리뷰 내용 -->
+            <p>{{ review.content }}</p>
+          </div>
+          </v-col>
+          </v-card-text>
+        </v-row>
+      </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
+</v-container>
   </v-main>
   <!-- 스티키 사이드바 -->
   <div class="sticky-sidebar" :style="{ top: stickyTop + 'px' }">
@@ -114,12 +161,14 @@ export default {
       recentProducts: [],
       stickyTop: 0,
       selectedValues:[],
+      reviews:[],
     };
   },
   created() {
     this.itemId = this.$route.params.id;
     this.getItemInfo(); 
     this.getRecommend();
+    this.getReview();
 },
   methods: {
     ...mapActions("addToCart"),
@@ -144,14 +193,14 @@ export default {
     },
     
     async toggleFavorite(sellerId) {
-  const token = localStorage.getItem("accessToken");
-  const refreshToken = localStorage.getItem("refreshToken");
-  const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
-  
-  const baseApiUrl = `${process.env.VUE_APP_API_BASE_URL}/member-service/member`;
-  const action = this.item.isFavorited ? 'unlikeSeller' : 'likeSeller';
-  const method = this.item.isFavorited ? 'delete' : 'post';
-  const url = `${baseApiUrl}/${action}/${sellerId}`;
+    const token = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+    const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
+    
+    const baseApiUrl = `${process.env.VUE_APP_API_BASE_URL}/member-service/member`;
+    const action = this.item.isFavorited ? 'unlikeSeller' : 'likeSeller';
+    const method = this.item.isFavorited ? 'delete' : 'post';
+    const url = `${baseApiUrl}/${action}/${sellerId}`;
 
   try {
     await axios({
@@ -218,6 +267,15 @@ export default {
             }
         );
         console.log(data);
+      }catch(e){
+        console.log(e);
+      }
+    },
+    async getReview(){
+      try{
+        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/item-service/review/show_item/${this.itemId}`);
+        console.log(response);
+        this.reviews = response.data.result;
       }catch(e){
         console.log(e);
       }
@@ -321,4 +379,8 @@ export default {
   color: red; /* 하트 색상 */
   font-size: 24px; /* 아이콘 크기 */
 }
+.gray-background {
+  background-color: rgb(239, 232, 219);
+}
+
 </style>

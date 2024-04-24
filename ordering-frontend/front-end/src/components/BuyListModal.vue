@@ -1,5 +1,5 @@
 <template>
-  <v-dialog :value="dialog" @input="updateDialog" max-width="1000px">
+  <v-dialog :value="dialog" @input="updateDialog" max-width="1500px">
     <v-card>
       <v-card-title class="headline grey lighten-2 text-center">
         구매내역
@@ -57,6 +57,8 @@
                                 <v-col cols="12" sm="2" class="text-center ma-2"
                                   >가격</v-col
                                 >
+                                <v-col cols="12" sm="auto" class="text-center ma-2"
+                                ></v-col> <!-- 리뷰 쓰기 버튼 추가 -->
                               </v-row>
                               <v-row
                                 v-for="detail in orderDetailList"
@@ -92,6 +94,12 @@
                                   class="text-center ma-2"
                                   >{{ detail.itemInfo?.price }}</v-col
                                 >
+                                <v-col cols="12" sm="auto" class="text-center ma-2">
+                                  <!-- 리뷰 쓰기 버튼 -->
+                                  <v-btn v-if=!detail.reviewed color="primary" @click="openNestedModal(detail)">리뷰 작성</v-btn>
+                                  <v-btn v-if=detail.reviewed @click="openNestedModal()">리뷰 수정하기</v-btn>
+                                  <ReviewModal v-model="nestedModalOpen" :dialog="nestedModalOpen" :detail="selectedDetail"  @update:dialog="nestedModalOpen = $event" />
+                              </v-col>
                               </v-row>
                             </v-card-text>
                           </v-card>
@@ -115,8 +123,11 @@
 
 <script>
 import axios from "axios";
-
+import ReviewModal from "@/components/ReviewModal.vue"
 export default {
+  components:{
+    ReviewModal,
+  },
   created() {
     this.getOrderList();
   },
@@ -128,9 +139,15 @@ export default {
     return {
       orderList: [],
       orderDetailList: [],
+      nestedModalOpen: false, // 하위 모달 창 상태
     };
   },
   methods: {
+    openNestedModal(detail) {
+      this.selectedDetail = detail;
+      console.log(this.selectedDetail);
+      this.nestedModalOpen = true; // 하위 모달 창 열기
+    },
     updateDialog(value) {
       this.$emit("update:dialog", value);
     },
