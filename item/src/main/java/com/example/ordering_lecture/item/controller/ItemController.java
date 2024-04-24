@@ -87,10 +87,11 @@ public class ItemController {
     // 추천 아이템의 이미지와 id를 가져오는 api
     @GetMapping("/recommendItems")
     public ResponseEntity<OrTopiaResponse> findRecommendItem(@RequestHeader("myEmail") String email){
-        List<RecommendedItemDto> recommendedItemDtos = itemService.findRecommendItem(email);
-        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",recommendedItemDtos);
+        List<RecommendationRedisData> recommendationRedisDatas = itemService.findRecommendItem(email);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",recommendationRedisDatas);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
+
 
     @GetMapping("read/{id}/my_page")
     public ResponseEntity<OrTopiaResponse> readItemForMyPage(@PathVariable Long id,@RequestHeader("myEmail") String email) {
