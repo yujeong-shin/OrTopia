@@ -76,6 +76,12 @@ const routes = [
     component: searchComponent,
     props: true,
   },
+  {
+    path: '/NewPasswordComponent',
+    name: 'NewPasswordComponent',
+    component: () => import('@/components/NewPasswordComponent.vue')
+  }
+  
 ];
 
 const router = createRouter({
