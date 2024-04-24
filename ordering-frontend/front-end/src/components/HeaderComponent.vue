@@ -26,7 +26,7 @@
     <v-btn
       text-color="white"
       class="top-margin"
-      @click="goToItemSellComponent"
+      @click="redirectToHome"
       v-if="!isSeller"
     >
       구매
