@@ -1,7 +1,7 @@
 <template>
   <v-main>
     <v-container>
-      <v-row align="start" class="top-margin">
+      <v-row align="start" class="top-minus-margin">
         <v-col cols="5" style="height: 500px">
           <v-carousel cycle hide-delimiters v-if="noticeList.length > 0">
             <v-carousel-item
@@ -29,8 +29,9 @@
       <br />
       <br />
       <br />
+      <div class="header-bottom-line"></div>
       <v-row>
-        <v-col cols="12">
+        <v-col cols="12" class="top-plus-margin">
           <v-subheader>판매중인 상품들</v-subheader>
         </v-col>
         <v-col
@@ -133,7 +134,13 @@ export default {
   height: 100% !important;
   object-fit: contain !important;
 }
-.top-margin {
+.top-minus-margin {
   margin-top: -60px;
+}
+.top-plus-margin {
+  margin-top: 30px;
+}
+.header-bottom-line {
+  border-bottom: 1px solid #e0e0e0;
 }
 </style>
