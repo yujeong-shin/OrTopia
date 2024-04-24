@@ -16,8 +16,8 @@
               >
                 <v-text-field
                   label="사업자 번호"
-                  v-model="sellerForm.businnessNumber"
-                  :rules="businnessNumberRules"
+                  v-model="sellerForm.businessNumber"
+                  :rules="businessNumberRules"
                   required
                 ></v-text-field>
 
@@ -30,7 +30,7 @@
 
                 <v-select
                   label="사업 유형"
-                  v-model="sellerForm.businnessType"
+                  v-model="sellerForm.businessType"
                   :items="[
                     '가구',
                     '도서',
@@ -44,7 +44,7 @@
                     '잡화',
                     '화장품',
                   ]"
-                  :rules="businnessTypeRules"
+                  :rules="businessTypeRules"
                   required
                 ></v-select>
 
@@ -76,16 +76,16 @@ export default {
     return {
       valid: true,
       sellerForm: {
-        businnessNumber: "",
+        businessNumber: "",
         companyName: "",
-        businnessType: "",
+        businessType: "",
       },
-      businnessNumberRules: [
+      businessNumberRules: [
         (v) => !!v || "사업자 번호는 필수입니다.",
         (v) => /^\d{10}$/.test(v) || "사업자 번호는 10자리 숫자여야 합니다.",
       ],
       companyNameRules: [(v) => !!v || "회사명은 필수입니다."],
-      businnessTypeRules: [(v) => !!v || "사업 유형은 필수입니다."],
+      businessTypeRules: [(v) => !!v || "사업 유형은 필수입니다."],
     };
   },
   methods: {
@@ -101,18 +101,18 @@ export default {
       const refreshToken = localStorage.getItem("refreshToken");
       const email = localStorage.getItem("email");
       if (
-        this.sellerForm.businnessNumber &&
+        this.sellerForm.businessNumber &&
         this.sellerForm.companyName &&
-        this.sellerForm.businnessType
+        this.sellerForm.businessType
       ) {
         try {
           console.log("판매자 등록 요청을 보냅니다..."); // 요청 전송 전에 로그 추가
           const response = await axios.post(
             `${process.env.VUE_APP_API_BASE_URL}/member-service/seller/${email}/create`,
             {
-              businnessNumber: this.sellerForm.businnessNumber,
+              businessNumber: this.sellerForm.businessNumber,
               companyName: this.sellerForm.companyName,
-              businnessType: this.sellerForm.businnessType,
+              businessType: this.sellerForm.businessType,
             },
             {
               headers: {

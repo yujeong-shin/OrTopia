@@ -40,8 +40,11 @@
               @click="showUpdateUserInfoModal = true"
               >회원정보 수정</v-btn
             >
-            <v-btn color="gray" class="mr-2" small @click="viewCoupons"
-              >쿠폰 확인</v-btn
+            <v-btn
+              color="gray"
+              class="mr-2"
+              @click="showCouponModal = true"
+              >쿠폰확인</v-btn
             >
           </v-col>
         </v-col>
@@ -190,6 +193,10 @@
       v-model="showUpdateUserInfoModal"
       @update:dialog="updateDialog('showUpdateUserInfoModal', $event)"
     ></UpdateUserInfoModal>
+    <CouponModal
+      v-model="showCouponModal"
+      @update:dialog="updateDialog('showCouponModal', $event)"
+    ></CouponModal>
   </v-container>
 </template>
 
@@ -202,6 +209,7 @@ import BuyListModal from "@/components/BuyListModal.vue";
 import RegisterSellerModal from "@/components/RegisterSellerModal.vue";
 import LikeSellerListModal from "@/components/LikeSellerListModal.vue";
 import UpdateUserInfoModal from "@/components/UpdateUserInfoModal.vue";
+import CouponModal from "./CouponModal.vue";
 
 export default {
   components: {
@@ -210,6 +218,7 @@ export default {
     RegisterSellerModal,
     LikeSellerListModal,
     UpdateUserInfoModal,
+    CouponModal,
   },
   mounted() {
     // 컴포넌트가 마운트되면 localStorage에서 role 값을 가져옴
@@ -238,6 +247,7 @@ export default {
       showRegisterSellerModal: false,
       showLikeSellerListModal: false,
       showUpdateUserInfoModal: false,
+      showCouponModal: false,
       // 구매 그래프 시각화
       dailyPurchaseAmountChartInfo: {},
       dailyPurchaseCountChartInfo: {},

@@ -10,6 +10,7 @@ import MyCartComponent from "@/components/MyCartComponent.vue";
 import OrderByKakaoComponent from "@/components/OrderByKakaoComponent.vue";
 import NoticeDetail from "@/components/NoticeDetail.vue";
 import SellerComponent from "@/components/SellerComponent.vue";
+import CouponComponent from "@/components/CouponComponent.vue";
 
 const routes = [
   {
@@ -61,6 +62,12 @@ const routes = [
     path: "/notice/:id",
     name: "NoticeDetail",
     component: NoticeDetail,
+    props: true,
+  },
+  {
+    path: "/coupon",
+    name: "CouponComponent",
+    component: CouponComponent,
     props: true,
   },
   {
