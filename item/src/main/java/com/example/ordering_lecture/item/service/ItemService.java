@@ -120,6 +120,7 @@ public class ItemService {
     }
 
     public List<ItemResponseDto> showAllItem(){
+
         return itemRepository.findAll().stream()
                 .map(ItemResponseDto::toDto)
                 .collect(Collectors.toList());
@@ -263,9 +264,10 @@ public class ItemService {
     }
 
     public ItemResponseDto readItemForMyPage(Long itemId, String email) {
-        Item item = itemRepository.findImagePathById(itemId).orElseThrow(()->new OrTopiaException(ErrorCode.NOT_FOUND_ITEM));
+        Item item = itemRepository.findImagePathById(itemId).orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_ITEM));
         ItemResponseDto itemResponseDto = ItemResponseDto.toDto(item);
         return itemResponseDto;
+    }
 
     public Long searchIdByOptionDetail(Long itemId, List<String> values) {
         String value1 = "NONE";

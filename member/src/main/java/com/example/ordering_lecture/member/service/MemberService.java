@@ -181,4 +181,10 @@ public class MemberService {
         return MemberResponseDto.toDto(member);
     }
 
+    public String searchNameByEmail(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(
+                ()-> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
+                );
+        return member.getName();
+    }
 }
