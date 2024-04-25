@@ -95,8 +95,7 @@ export default {
         delYN: false,
         isBaned: false,
       },
-      itemDetailHtml: '',
-      categories: ['FOOD', 'LAPTOP', 'MOBILE'],
+      categories: ['가구', '도서', '가전', '생활','건강','스포츠','식품','육아','의류','잡화','화장품'],
       optionList: [],
       showModal: false,
     };
