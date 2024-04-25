@@ -177,31 +177,32 @@ export default {
       this.buttonText = text;
     },
     sortItems(sortBy) {
+      console.log(this.itemList);
       this.sortBy = sortBy;
       switch (sortBy) {
         case "price-asc":
-          this.sortedItemList = [...this.itemList].sort(
+          this.itemList.sort(
             (a, b) => a.price - b.price
           );
           break;
         case "price-desc":
-          this.sortedItemList = [...this.itemList].sort(
+          this.itemList.sort(
             (a, b) => b.price - a.price
           );
           break;
         case "newest":
-          this.sortedItemList = [...this.itemList].sort(
-            (a, b) => b.createdAt - a.createdAt
+          this.itemList.sort(
+            (a, b) => new Date(b.createdTime) - new Date(a.createdTime)
           );
           break;
         case "review-count":
-          this.sortedItemList = [...this.itemList].sort(
-            (a, b) => b.reviewCount - a.reviewCount
+          this.itemList.sort(
+            (a, b) => b.reviewNumber - a.reviewNumber
           );
           break;
         case "rating-desc":
-          this.sortedItemList = [...this.itemList].sort(
-            (a, b) => b.rating - a.rating
+          this.itemList.sort(
+            (a, b) => (b.score/b.reviewNumber) - (a.score/a.reviewNumber)
           );
           break;
         default:
