@@ -36,7 +36,10 @@ public class RedisService {
         return values.range(key, 0, 2);
     }
 
-    public void flushAll(){
-        redisTemplate.getConnectionFactory().getConnection().serverCommands().flushAll();
-    }
+//    public void flushAll(){
+////        redisTemplate.getConnectionFactory().getConnection().serverCommands().flushAll();
+//        connectionFactory.setDatabase(2); // 2번 DB 선택
+//        redisTemplate.setConnectionFactory(connectionFactory);
+//        redisTemplate.getConnectionFactory().getConnection().serverCommands().flushDb(); // 2번 DB 삭제
+//    }
 }

@@ -41,8 +41,8 @@ public class RecommendationService {
     }
 
     public void getRecommendations() {
-        // 기존 값들 비우기
-        redisService.flushAll();
+//        // 기존 값들 비우기
+//        redisService.flushAll();
 
         // jwt 토큰 발행 후 Redis 3번 채널에 저장
         jwtTokenProvider.createRecommandToken();
@@ -124,21 +124,5 @@ public class RecommendationService {
             redisService.setValues(id, recommendationRedisDatas);
             System.out.println(id + "번 사용자에게 아이템 추천 완료");
         }
-    }
-
-    public List<RecommendationRedisData> readRecommendationItems(Long id) {
-        List<String> list = redisService.getValues(id);
-        List<RecommendationRedisData> recommendationRedisDatas = new ArrayList<>();
-        ObjectMapper objectMapper = new ObjectMapper();
-        for(String str: list){
-            RecommendationRedisData  recommendationRedisData = null;
-            try {
-                recommendationRedisData = objectMapper.readValue(str, RecommendationRedisData.class);
-            } catch (JsonProcessingException e) {
-                throw new OrTopiaException(ErrorCode.JSON_PARSE_ERROR);
-            }
-            recommendationRedisDatas.add(recommendationRedisData);
-        }
-        return recommendationRedisDatas;
     }
 }
