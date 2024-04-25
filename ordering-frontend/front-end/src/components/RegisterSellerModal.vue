@@ -49,7 +49,7 @@
                   required
                 ></v-select>
 
-                <v-btn type="submit" color="success" :disabled="!valid"
+                <v-btn type="submit" color="success" :disabled="!valid || !validBusinessNumber"
                   >등록하기</v-btn
                 >
               </v-form>
@@ -90,6 +90,13 @@ export default {
       businessTypeRules: [(v) => !!v || "사업 유형은 필수입니다."],
     };
   },
+  watch: {
+    'sellerForm.businessNumber': function (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.validBusinessNumber = false;
+      }
+    }
+  },
   methods: {
     updateDialog(value) {
       this.$emit("update:dialog", value);
@@ -98,76 +105,67 @@ export default {
       this.$emit("update:dialog", false);
     },
     async submitSellerForm() {
-      console.log("판매자 등록 시도:", this.sellerForm); // 현재 입력된 데이터 확인
+      if (!this.validBusinessNumber) {
+        alert('사업자 번호를 검증하세요.');
+        return;
+      }
+      console.log("판매자 등록 시도:", this.sellerForm);
       const token = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
       const email = localStorage.getItem("email");
-      if (
-        this.sellerForm.businessNumber &&
-        this.sellerForm.companyName &&
-        this.sellerForm.businessType
-      ) {
-        try {
-          console.log("판매자 등록 요청을 보냅니다..."); // 요청 전송 전에 로그 추가
-          const response = await axios.post(
-            `${process.env.VUE_APP_API_BASE_URL}/member-service/seller/${email}/create`,
-            {
-              businessNumber: this.sellerForm.businessNumber,
-              companyName: this.sellerForm.companyName,
-              businessType: this.sellerForm.businessType,
+      try {
+        console.log("판매자 등록 요청을 보냅니다...");
+        const response = await axios.post(
+          `${process.env.VUE_APP_API_BASE_URL}/member-service/seller/${email}/create`,
+          {
+            businessNumber: this.sellerForm.businessNumber,
+            companyName: this.sellerForm.companyName,
+            businessType: this.sellerForm.businessType,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "X-Refresh-Token": `${refreshToken}`,
+              "Content-Type": "application/json",
+              myEmail: `${email}`,
             },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "X-Refresh-Token": `${refreshToken}`,
-                "Content-Type": "application/json",
-                myEmail: `${email}`,
-              },
-            }
-          );
-          console.log("Seller registered successfully", response.data);
-          localStorage.setItem("role", "SELLER");
-          alert("판매자 등록 성공!");
-          window.location.href = "/";
-          // this.$router.push('/sell');
-          //  새로고침을 하지 않으면 제대로 반영이 안되서 사용자 등록이 남네요... ㅜㅜ 추후 보완필요
-        } catch (error) {
-          console.error("판매자 등록 오류:", error); // 오류 로그 추가
-          alert(`등록 실패: ${error.response.data.message}`);
-        }
-      } else {
-        alert("모든 필드를 채워주세요");
+          }
+        );
+        console.log("Seller registered successfully", response.data);
+        localStorage.setItem("role", "SELLER");
+        alert("판매자 등록 성공!");
+        window.location.href = "/";
+      } catch (error) {
+        console.error("판매자 등록 오류:", error);
+        alert(`등록 실패: ${error.response.data.message}`);
       }
     },
     async checkBusinessNumber() {
-  const data = { "b_no": [this.sellerForm.businessNumber] };
-  try {
-    const response = await axios.post(
-      `https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=crGL2N15kbZz5KnajRhQC4Pur3KT5XFRX%2BBLM6DB4XNqet1Kp54PUOYMS2UrNAfdMkvD%2FXKV7FOTrcoRhvdtQQ%3D%3D`,
-      JSON.stringify(data),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+      const data = { "b_no": [this.sellerForm.businessNumber] };
+      try {
+        const response = await axios.post(
+          `https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=crGL2N15kbZz5KnajRhQC4Pur3KT5XFRX%2BBLM6DB4XNqet1Kp54PUOYMS2UrNAfdMkvD%2FXKV7FOTrcoRhvdtQQ%3D%3D`,
+          JSON.stringify(data),
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          }
+        );
+        console.log("API 응답:", response);
+        if (response.data.data[0].b_stt_cd === '01') {
+          this.validBusinessNumber = true;
+          alert('사업자 번호가 유효합니다.');
+        } else {
+          this.validBusinessNumber = false;
+          alert('사업자 번호가 유효하지 않습니다. 관리자에게 문의하세요.');
         }
+      } catch (error) {
+        console.error('API 호출 오류:', error);
+        alert('사업자 번호 검증 중 오류가 발생했습니다: ' + (error.response ? error.response.data.message : error.message));
       }
-    );
-    // 전체 응답 로깅을 통한 확인
-    console.log("API 응답:", response);
-
-    // 'b_stt_cd'를 통한 상태 코드 확인, '01'이 계속사업자라고 가정
-    if (response.data.data[0].b_stt_cd === '01') {
-      this.validBusinessNumber = true;
-      alert('사업자 번호가 유효합니다.');
-    } else {
-      this.validBusinessNumber = false;
-      alert('사업자 번호가 유효하지 않습니다.');
-    }
-  } catch (error) {
-    console.error('API 호출 오류:', error);
-    alert('사업자 번호 검증 중 오류가 발생했습니다: ' + (error.response ? error.response.data.message : error.message));
-  }
-},
+    },
   },
 };
 </script>
