@@ -246,15 +246,15 @@ public class ItemService {
         return item.getImagePath();
     }
 
-    public List<RecommendedItemDto> findRecommendItem(String email) {
+    public List<RecommendationRedisData> findRecommendItem(String email) {
         Long id = memberServiceClient.searchIdByEmail(email);
         List<String> list = redisService.getValues2(id);
-        List<RecommendedItemDto> recommendationRedisDatas = new ArrayList<>();
+        List<RecommendationRedisData> recommendationRedisDatas = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         for(String str: list){
-            RecommendedItemDto  recommendationRedisData = null;
+            RecommendationRedisData  recommendationRedisData = null;
             try {
-                recommendationRedisData = objectMapper.readValue(str, RecommendedItemDto.class);
+                recommendationRedisData = objectMapper.readValue(str, RecommendationRedisData.class);
             } catch (JsonProcessingException e) {
                 throw new OrTopiaException(ErrorCode.JSON_PARSE_ERROR);
             }

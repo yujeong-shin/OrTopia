@@ -1,7 +1,9 @@
 package com.example.ordering_lecture.member.controller;
 
 import com.example.ordering_lecture.common.OrTopiaResponse;
+import com.example.ordering_lecture.member.dto.Buyer.MemberResponseDto;
 import com.example.ordering_lecture.member.dto.Seller.*;
+import com.example.ordering_lecture.member.service.MemberService;
 import com.example.ordering_lecture.member.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,9 +16,11 @@ import java.util.List;
 public class SellerController {
     @Autowired
     private final SellerService sellerService;
+    private final MemberService memberService;
 
-    public SellerController(SellerService sellerService) {
+    public SellerController(SellerService sellerService, MemberService memberService) {
         this.sellerService = sellerService;
+        this.memberService = memberService;
     }
 
     /*
@@ -30,9 +34,10 @@ public class SellerController {
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);
     }
     // 판매자 상세조회
-    @GetMapping("/seller/{id}")
-    public ResponseEntity<OrTopiaResponse> findSeller(@PathVariable Long id){
-        SellerResponseDto sellerResponseDto = sellerService.findById(id);
+    @GetMapping("/seller")
+    public ResponseEntity<OrTopiaResponse> findSeller(@RequestHeader("myEmail") String email){
+        MemberResponseDto memberResponseDto = memberService.findIdByEmail(email);
+        SellerResponseDto sellerResponseDto = sellerService.findByMemberId(memberResponseDto.getId());
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", sellerResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
