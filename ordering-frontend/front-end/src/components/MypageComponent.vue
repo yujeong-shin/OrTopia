@@ -40,10 +40,7 @@
               @click="showUpdateUserInfoModal = true"
               >회원정보 수정</v-btn
             >
-            <v-btn
-              color="gray"
-              class="mr-2"
-              @click="showCouponModal = true"
+            <v-btn color="gray" class="mr-2" @click="showCouponModal = true"
               >쿠폰확인</v-btn
             >
           </v-col>
@@ -101,7 +98,7 @@
           style="height: 170px"
           @click="showBuyListModal = true"
         >
-          <v-card-title class="headline">Address</v-card-title>
+          <v-card-title class="headline">Order</v-card-title>
           <v-card-subtitle class="grey--text">주문내역 조회</v-card-subtitle>
           <v-card-subtitle class="mt-3" style="height: 20px"></v-card-subtitle>
           <v-card-subtitle class="grey--text small-text"
@@ -268,7 +265,7 @@ export default {
       const email = localStorage.getItem("email");
       try {
         const response = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/member-service/member/${email}`,
+          `${process.env.VUE_APP_API_BASE_URL}/member-service/member`,
           {
             headers: {
               myEmail: `${email}`,
