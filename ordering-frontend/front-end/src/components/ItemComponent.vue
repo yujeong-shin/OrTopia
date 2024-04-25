@@ -74,17 +74,14 @@
       </v-col>
       </v-row>
       <v-row>
-      <v-col cols="4">
-        <!-- 첫 번째 이미지 -->
-        <img src="이미지_주소_또는_경로" alt="이미지_설명">
-      </v-col>
-      <v-col cols="4">
-        <!-- 두 번째 이미지 -->
-        <img src="이미지_주소_또는_경로" alt="이미지_설명">
-      </v-col>
-      <v-col cols="4">
-        <!-- 세 번째 이미지 -->
-        <img src="이미지_주소_또는_경로" alt="이미지_설명">
+      <v-col v-for="(product, index) in recommendProducts" :key="index" cols="4">
+        <img 
+        :src="product.imagePath" 
+        :alt="product.description" 
+        style="max-width: 80%; max-height: 80%;" 
+        @click="handleImageClick(product.itemId)"
+        class="clickable-image"
+        >
       </v-col>
     </v-row>
     </v-container>
@@ -174,6 +171,7 @@ export default {
       selectedValues:[],
       reviews:[],
       totalScore:0,
+      recommendProducts: [],
     };
   },
   created() {
@@ -228,6 +226,11 @@ export default {
     alert('즐겨찾기 변경에 실패하였습니다.');
   }
 },
+  // 추천 아이템 클릭 시 해당 상품으로 이동
+  handleImageClick(itemId) {
+    // 여기서 다른 함수를 호출하거나 필요한 작업을 수행할 수 있습니다.
+    window.location.href = `/item/${itemId}`;
+  },
     buyNow() {
       // 바로 구매 동작 구현
       if (this.quantity == 0) {
@@ -278,7 +281,8 @@ export default {
               },
             }
         );
-        console.log(data);
+        console.log(data.data.result);
+        this.recommendProducts = data.data.result;
       }catch(e){
         console.log(e);
       }
@@ -300,7 +304,10 @@ export default {
     async getItemInfo() {
       const token = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
-      const email = localStorage.getItem("email");
+      let email = localStorage.getItem("email");
+      if(email == null){
+        email = "noLogin";
+      }
   try {
     const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/item-service/item/read/${this.itemId}`, {
       headers: {
@@ -399,6 +406,14 @@ export default {
 }
 .gray-background {
   background-color: rgb(239, 232, 219);
+}
+.clickable-image {
+  transition: filter 0.3s;
+}
+
+.clickable-image:hover {
+  cursor: pointer;
+  filter: brightness(85%);
 }
 
 </style>
