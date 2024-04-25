@@ -71,7 +71,7 @@ export default {
           `${process.env.VUE_APP_API_BASE_URL}/item-service/item/items`
         );
         const key = this.$route.params.value;
-        this.itemList = data.data.result.filter(item => item.name.includes(key));
+        this.itemList = data.data.result.filter(item => item.name.includes(key) || item.category.includes(key));
         console.log(this.itemList);
       } catch (error) {
         alert(error.response.data.error_message);
