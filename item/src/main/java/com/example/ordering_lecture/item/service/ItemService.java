@@ -208,7 +208,9 @@ public class ItemService {
                 );
         ItemResponseDto itemResponseDto = ItemResponseDto.toDto(item);
         // 최근본 상품을 저장하기 위함
-        redisService.setValues(email,itemResponseDto);
+        if(!email.equals("noLogin")) {
+            redisService.setValues(email,itemResponseDto);
+        }
         // 옵션을 불러옴
         List<ItemOption> itemOptions = itemOptionRepository.findAllByItemId(id);
         if(!itemOptions.isEmpty()){

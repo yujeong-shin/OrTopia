@@ -32,7 +32,7 @@ public class ItemController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",itemResponseDtos);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
-    @GetMapping("read/{id}")
+    @GetMapping("/read/{id}")
     public ResponseEntity<OrTopiaResponse> readItem(@PathVariable Long id,@RequestHeader("myEmail") String email){
         ItemResponseDto itemResponseDto = itemService.readItem(id,email);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",itemResponseDto);

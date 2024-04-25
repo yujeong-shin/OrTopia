@@ -18,7 +18,7 @@ import java.util.Set;
 public class RedisService {
 
     private final StringRedisTemplate redisTemplate;
-    private final RedisTemplate redisTemplate2;
+    private final RedisTemplate<Long,String> redisTemplate2;
     private final RedisTemplate<Long, Object> redisTemplate3;
 
     public void setValues(String key, ItemResponseDto dto) {
