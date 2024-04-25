@@ -118,9 +118,9 @@
         </v-card-title>
         <v-card-text>
         <v-row>
-          <v-col cols="auto" align="center">
+          <v-col cols="4" align="center">
             <!-- 리뷰 사진 -->
-            <img :src="review.imagePath" alt="리뷰 사진" style="max-width: 100%; height: auto;">
+            <img :src="review.imagePath" alt="리뷰 사진"  style="max-width: 400px; max-height: 200px;">
           </v-col>
           
           <v-card-text >

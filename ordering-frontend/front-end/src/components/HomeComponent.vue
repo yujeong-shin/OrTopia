@@ -201,9 +201,15 @@ export default {
           );
           break;
         case "rating-desc":
-          this.itemList.sort(
-            (a, b) => (b.score/b.reviewNumber) - (a.score/a.reviewNumber)
-          );
+        this.itemList.sort((a, b) => {
+            if (a.reviewNumber == 0) {
+                return 1;
+            } else if (b.reviewNumber == 0) {
+                return -1;
+            } else {
+                return (b.score / b.reviewNumber) - (a.score / a.reviewNumber);
+            }
+        });
           break;
         default:
           this.sortedItemList = this.itemList;
