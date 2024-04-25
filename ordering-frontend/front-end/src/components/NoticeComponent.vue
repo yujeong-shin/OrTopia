@@ -1,21 +1,38 @@
 <template>
   <v-container>
-    <v-row>
       <v-col cols="12">
-        <h1>공지사항</h1>
-        <v-list>
-          <v-list-item v-for="(notice, index) in paginatedNotices" :key="index" @click="goToNoticeDetail(notice.id)">
-            <v-list-item-content>
-              <v-list-item-title>{{ notice.name }} {{ notice.start_date }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-btn @click="showModal = true">글쓰기</v-btn>
-          <EditorModal v-model="showModal" />
-        </v-list>
+        <v-card-text>
+          <v-container>
+            <v-row justify="center">
+              <v-col cols="12">
+                <h1>공지사항</h1>
+                <v-table>
+                  <thead>
+                    <tr>
+                      <th class="text-center">시작일</th>
+                      <th class="text-center">종료일</th>
+                      <th class="text-center">제목</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(notice, index) in paginatedNotices" :key="index" @click="goToNoticeDetail(notice.id)">
+                      <td class="text-center">{{ notice.startDate }}</td>
+                      <td class="text-center">{{ notice.endDate }}</td>
+                      <td class="text-center">{{ notice.name }}</td>
+                    </tr>
+                  </tbody>
+                </v-table>
+              </v-col>
+            </v-row>
+            <v-list>
+              <v-btn @click="showModal = true">글쓰기</v-btn>
+              <EditorModal v-model="showModal" />
+            </v-list>
+          </v-container>
+        </v-card-text>
         <v-pagination v-model="page" :length="totalPages" circle></v-pagination>
       </v-col>
-    </v-row>
-  </v-container>
+      </v-container>
 </template>
 
 <script>
