@@ -20,14 +20,14 @@ public class OrderResponseDto {
     private Long addressId;
     private String email;
     private String paymentMethod;
-    private String recipient;
+    private String recipientName;
     private LocalDateTime createdTime;
     private List<OrderDetailResponseDto> orderDetailResponseDtoList;
 
     public static OrderResponseDto toDto(Ordering ordering){
         return OrderResponseDto.builder()
                 .email(ordering.getEmail())
-                .recipient(ordering.getRecipient())
+                .recipientName(ordering.getRecipientName())
                 .createdTime(ordering.getCreatedTime())
                 .id(ordering.getId())
                 .addressId(ordering.getAddressId())

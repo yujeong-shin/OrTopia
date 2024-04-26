@@ -18,15 +18,13 @@ public class OrderRequestDto {
     @NotNull
     private Long addressId;
     @NotNull
-    private Long buyerId;
-    @NotNull
     private Long orderNumber;
     @NotNull
     private String email;
     @NotNull
     private String paymentMethod;
     @NotNull
-    private String recipient;
+    private String recipientName;
     @NotNull
     private String phoneNumber;
     @NotNull
@@ -43,10 +41,9 @@ public class OrderRequestDto {
         }
         return Ordering.builder()
                 .addressId(this.addressId)
-                .buyerId(this.buyerId)
                 .orderNumber(this.orderNumber)
                 .totalPrice(this.totalPrice)
-                .recipient(this.recipient)
+                .recipientName(this.recipientName)
                 .phoneNumber(this.phoneNumber)
                 .email(this.email)
                 .PaymentMethod(paymentMethod)

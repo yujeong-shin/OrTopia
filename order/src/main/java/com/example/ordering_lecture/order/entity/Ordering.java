@@ -25,14 +25,12 @@ public class Ordering {
     @Column(nullable = false)
     private Long addressId;
     @Column(nullable = false)
-    private Long buyerId;
-    @Column(nullable = false)
     private String email;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentMethod PaymentMethod;
     @Column(nullable = false)
-    private String recipient;
+    private String recipientName;
     @Column(nullable = false)
     private String phoneNumber;
     @CreationTimestamp
