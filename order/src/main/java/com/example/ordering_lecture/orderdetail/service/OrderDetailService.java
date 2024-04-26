@@ -2,6 +2,11 @@ package com.example.ordering_lecture.orderdetail.service;
 
 import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
+import com.example.ordering_lecture.order.dto.OrderResponseDto;
+import com.example.ordering_lecture.order.dto.OrderUpdateDto;
+import com.example.ordering_lecture.order.entity.Ordering;
+import com.example.ordering_lecture.orderdetail.dto.OrderDetailResponseDto;
+import com.example.ordering_lecture.orderdetail.dto.OrderDetailUpdateDto;
 import com.example.ordering_lecture.orderdetail.entity.OrderDetail;
 import com.example.ordering_lecture.orderdetail.repository.OrderDetailRepository;
 import org.springframework.stereotype.Service;
@@ -21,5 +26,11 @@ public class OrderDetailService {
         );
         System.out.println(orderDetailId);
         orderDetail.updateReview();
+    }
+
+    public OrderDetailResponseDto updateOrder(OrderDetailUpdateDto orderDetailUpdateDto) {
+        OrderDetail orderDetail = orderDetailRepository.findById(orderDetailUpdateDto.getId()).orElseThrow();
+        orderDetail.updateStatue(orderDetailUpdateDto.getStatue());
+        return OrderDetailResponseDto.toDto(orderDetail);
     }
 }

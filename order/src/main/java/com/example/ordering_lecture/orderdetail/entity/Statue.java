@@ -1,4 +1,4 @@
-package com.example.ordering_lecture.order.entity;
+package com.example.ordering_lecture.orderdetail.entity;
 
 public enum Statue {
     PAIED,

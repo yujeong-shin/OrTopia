@@ -19,13 +19,13 @@ public class Ordering {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
+    private Long orderNumber;
+    @Column(nullable = false)
     private int totalPrice;
     @Column(nullable = false)
     private Long addressId;
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @Builder.Default
-    private Statue statue = Statue.PAIED;
+    private Long buyerId;
     @Column(nullable = false)
     private String email;
     @Enumerated(EnumType.STRING)
@@ -33,10 +33,8 @@ public class Ordering {
     private PaymentMethod PaymentMethod;
     @Column(nullable = false)
     private String recipient;
+    @Column(nullable = false)
+    private String phoneNumber;
     @CreationTimestamp
     private LocalDateTime createdTime;
-
-    public void updateStatue(String statue){
-        this.statue = Statue.valueOf(statue);
-    }
 }

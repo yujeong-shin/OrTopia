@@ -18,11 +18,17 @@ public class OrderRequestDto {
     @NotNull
     private Long addressId;
     @NotNull
+    private Long buyerId;
+    @NotNull
+    private Long orderNumber;
+    @NotNull
     private String email;
     @NotNull
     private String paymentMethod;
     @NotNull
     private String recipient;
+    @NotNull
+    private String phoneNumber;
     @NotNull
     private String pgToken;
     private List<OrderDetailRequestDto> orderDetailRequestDtoList;
@@ -37,8 +43,11 @@ public class OrderRequestDto {
         }
         return Ordering.builder()
                 .addressId(this.addressId)
+                .buyerId(this.buyerId)
+                .orderNumber(this.orderNumber)
                 .totalPrice(this.totalPrice)
                 .recipient(this.recipient)
+                .phoneNumber(this.phoneNumber)
                 .email(this.email)
                 .PaymentMethod(paymentMethod)
                 .build();

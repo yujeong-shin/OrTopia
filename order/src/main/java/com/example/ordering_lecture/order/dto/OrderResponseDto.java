@@ -18,7 +18,6 @@ public class OrderResponseDto {
     private Long id;
     private int totalPrice;
     private Long addressId;
-    private String statue;
     private String email;
     private String paymentMethod;
     private String recipient;
@@ -32,7 +31,6 @@ public class OrderResponseDto {
                 .createdTime(ordering.getCreatedTime())
                 .id(ordering.getId())
                 .addressId(ordering.getAddressId())
-                .statue(ordering.getStatue().toString())
                 .totalPrice(ordering.getTotalPrice())
                 .paymentMethod(ordering.getPaymentMethod().toString())
                 .build();

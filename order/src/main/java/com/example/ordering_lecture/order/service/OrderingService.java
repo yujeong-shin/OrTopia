@@ -53,12 +53,6 @@ public class OrderingService {
         throw new OrTopiaException(ErrorCode.ACCESS_DENIED);
     }
 
-    public OrderResponseDto updateOrder(OrderUpdateDto orderUpdateDto) {
-        Ordering ordering = orderRepository.findById(orderUpdateDto.getId()).orElseThrow();
-        ordering.updateStatue(orderUpdateDto.getStatue());
-        return OrderResponseDto.toDto(ordering);
-    }
-
     public List<OrderResponseDto> showAllOrder() {
         List<Ordering> orderings = orderRepository.findAll();
         return orderings.stream()
@@ -102,30 +96,30 @@ public class OrderingService {
         }
         return orderResponseDtos;
     }
-    // 일별 구매 금액을 위한 데이터
-    public List<BuyerGraphPriceData> getBuyerGraphPriceData(String email) {
-        LocalDateTime endDate = LocalDateTime.now();
-        LocalDateTime startDate = endDate.minusWeeks(2);
-        System.out.println("startDate = " + startDate);
-        System.out.println("endDate = " + endDate);
-        return orderRepository.findSumPriceByDateBetweenAndStatueAndEmail(startDate, endDate, email);
-    }
-    // 일별 구매 건수를 위한 데이터
-    public List<BuyerGraphCountData> getBuyerGraphCountData(String email) {
-        LocalDateTime endDate = LocalDateTime.now();
-        LocalDateTime startDate = endDate.minusWeeks(2);
-        return orderRepository.findCompletedOrdersByEmailAndDateRange(startDate, endDate, email);
-    }
-    // 일별 판매 금액을 위한 데이터
-    public List<SellerGraphPriceData> getSellerGraphPriceData(Long sellerId) {
-        LocalDateTime endDate = LocalDateTime.now();
-        LocalDateTime startDate = endDate.minusWeeks(2);
-        return orderDetailRepository.findSalesData(startDate, endDate, sellerId);
-    }
-    // 일별 판매 건수를 위한 데이터
-    public List<SellerGraphCountData> getSellerGraphCountData(Long sellerId) {
-        LocalDateTime endDate = LocalDateTime.now();
-        LocalDateTime startDate = endDate.minusWeeks(2);
-        return orderDetailRepository.findSalesDataBySellerIdAndDateRange(startDate, endDate, sellerId);
-    }
+//    // 일별 구매 금액을 위한 데이터
+//    public List<BuyerGraphPriceData> getBuyerGraphPriceData(String email) {
+//        LocalDateTime endDate = LocalDateTime.now();
+//        LocalDateTime startDate = endDate.minusWeeks(2);
+//        System.out.println("startDate = " + startDate);
+//        System.out.println("endDate = " + endDate);
+//        return orderRepository.findSumPriceByDateBetweenAndStatueAndEmail(startDate, endDate, email);
+//    }
+//    // 일별 구매 건수를 위한 데이터
+//    public List<BuyerGraphCountData> getBuyerGraphCountData(String email) {
+//        LocalDateTime endDate = LocalDateTime.now();
+//        LocalDateTime startDate = endDate.minusWeeks(2);
+//        return orderRepository.findCompletedOrdersByEmailAndDateRange(startDate, endDate, email);
+//    }
+//    // 일별 판매 금액을 위한 데이터
+//    public List<SellerGraphPriceData> getSellerGraphPriceData(Long sellerId) {
+//        LocalDateTime endDate = LocalDateTime.now();
+//        LocalDateTime startDate = endDate.minusWeeks(2);
+//        return orderDetailRepository.findSalesData(startDate, endDate, sellerId);
+//    }
+//    // 일별 판매 건수를 위한 데이터
+//    public List<SellerGraphCountData> getSellerGraphCountData(Long sellerId) {
+//        LocalDateTime endDate = LocalDateTime.now();
+//        LocalDateTime startDate = endDate.minusWeeks(2);
+//        return orderDetailRepository.findSalesDataBySellerIdAndDateRange(startDate, endDate, sellerId);
+//    }
 }

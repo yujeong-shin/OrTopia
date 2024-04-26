@@ -33,11 +33,18 @@ public class OrderDetail {
     private String options;
     @Column(nullable = false)
     @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private Statue statue = Statue.PAIED;
+    @Column(nullable = false)
+    @Builder.Default
     private boolean isReviewed = false;
     @CreationTimestamp
     private LocalDateTime createdTime;
 
     public void updateReview() {
         isReviewed = true;
+    }
+    public void updateStatue(String statue){
+        this.statue = Statue.valueOf(statue);
     }
 }
