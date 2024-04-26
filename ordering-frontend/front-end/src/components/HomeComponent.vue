@@ -147,7 +147,7 @@ export default {
     const search = ref("");
     const router = useRouter();
 
-    const goToNotice = (notice) => {
+    const goToNotice = (notice) =>{
       if (notice && notice.id) {
         router.push({ name: 'NoticeDetail', params: { id: notice.id } });
       } else {
