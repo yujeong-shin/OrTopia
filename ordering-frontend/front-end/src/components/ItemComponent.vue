@@ -20,11 +20,17 @@
               >판매자 이름 : {{ seller.companyName }}</v-btn
             >
             &nbsp;&nbsp;&nbsp;
-            <v-btn icon @click="toggleFavorite(item.sellerId)">
+            <v-btn icon @click="toggleLove()">
               <v-icon>
-                {{ item.isFavorited ? 'mdi-heart' : 'mdi-heart-outline' }}
+                {{ item.isLove ? 'mdi-heart' : 'mdi-heart-outline' }}
               </v-icon>
             </v-btn>
+            &nbsp;&nbsp;&nbsp;
+            <v-btn icon @click="toggleFavorite(item.sellerId)">
+            <v-icon>
+              {{ item.isFavorited ? 'mdi-bookmark' : 'mdi-bookmark-outline' }}
+            </v-icon>
+          </v-btn>
             <br>
           <div style="display: flex; align-items: center; margin-top: 10px;">
           <p style="font-size: 20px;">평점 :</p>
@@ -201,31 +207,61 @@ export default {
         console.error("즐겨찾기 상태 확인 실패:", error);
       }
     },
-    
+    // 아이템 좋아요 표시
+    async toggleLove(){
+      const token = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+      if(token == null){
+        alert("로그인 후 사용해 주세요.")
+        this.$router.push(`/login`);
+      }
+      try{
+        const response = await axios.post(
+          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/love/${this.itemId}`,null,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "X-Refresh-Token": `${refreshToken}`,
+            },
+          }
+        );
+        console.log(response);
+        if(response.data.result === "save success"){
+          this.item.isLove = !this.item.isLove;
+          alert("아이템 좋아요!");
+        }else{
+          this.item.isLove = !this.item.isLove;
+          alert("아이템 좋아요! 취소");
+        }
+      }catch(e){
+        console.log(e);
+      }
+    }
+    ,
+    // 아이템 즐겨 찾기
     async toggleFavorite(sellerId) {
-    const token = localStorage.getItem("accessToken");
-    const refreshToken = localStorage.getItem("refreshToken");
-    const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
-    
-    const baseApiUrl = `${process.env.VUE_APP_API_BASE_URL}/member-service/member`;
-    const action = this.item.isFavorited ? 'unlikeSeller' : 'likeSeller';
-    const method = this.item.isFavorited ? 'delete' : 'post';
-    const url = `${baseApiUrl}/${action}/${sellerId}`;
+      const token = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+      const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
+      const baseApiUrl = `${process.env.VUE_APP_API_BASE_URL}/member-service/member`;
+      const action = this.item.isFavorited ? 'unlikeSeller' : 'likeSeller';
+      const method = this.item.isFavorited ? 'delete' : 'post';
+      const url = `${baseApiUrl}/${action}/${sellerId}`;
 
-  try {
-    await axios({
-      method: method,
-      url: url,
-      headers: headers,
-      data: null
-    });
-    this.item.isFavorited = !this.item.isFavorited;
-    alert(`즐겨찾기가 ${this.item.isFavorited ? '추가' : '삭제'}되었습니다!`);
-  } catch (error) {
-    console.error('즐겨찾기 변경 실패:', error);
-    alert('즐겨찾기 변경에 실패하였습니다.');
-  }
-},
+    try {
+      await axios({
+        method: method,
+        url: url,
+        headers: headers,
+        data: null
+      });
+      this.item.isFavorited = !this.item.isFavorited;
+      alert(`즐겨찾기가 ${this.item.isFavorited ? '추가' : '삭제'}되었습니다!`);
+    } catch (error) {
+      console.error('즐겨찾기 변경 실패:', error);
+      alert('즐겨찾기 변경에 실패하였습니다.');
+    }
+  },
   // 추천 아이템 클릭 시 해당 상품으로 이동
   handleImageClick(itemId) {
     // 여기서 다른 함수를 호출하거나 필요한 작업을 수행할 수 있습니다.
