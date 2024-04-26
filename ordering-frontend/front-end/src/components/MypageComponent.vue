@@ -364,7 +364,7 @@ export default {
         .getElementById("dailyPurchaseAmountChart")
         .getContext("2d");
       new Chart(ctx, {
-        type: "line",
+        type: "bar",
         data: {
           labels: this.datesForPurchaseAmount,
           datasets: [
@@ -420,7 +420,7 @@ export default {
         .getElementById("dailyPurchaseCountChart")
         .getContext("2d");
       new Chart(ctx, {
-        type: "bar",
+        type: "doughnut",
         data: {
           labels: this.datesForPurchaseCount,
           datasets: [
