@@ -153,6 +153,7 @@
               <v-img
                 v-if="seller.totalScore >= 0 && seller.totalScore < 10"
                 src="@/assets/unRank.png"
+                @click="showGradeInfoDeailModal = true"
                 class="mb-3 ml-2"
                 style="
                   height: 60px;
@@ -165,6 +166,7 @@
               <v-img
                 v-if="seller.totalScore >= 10 && seller.totalScore < 20"
                 src="@/assets/bronze.png"
+                @click="showGradeInfoDeailModal = true"
                 class="mb-3 ml-2"
                 style="
                   height: 60px;
@@ -177,6 +179,7 @@
               <v-img
                 v-if="seller.totalScore >= 20 && seller.totalScore < 30"
                 src="@/assets/iron.png"
+                @click="showGradeInfoDeailModal = true"
                 class="mb-3 ml-2"
                 style="
                   height: 60px;
@@ -189,6 +192,7 @@
               <v-img
                 v-if="seller.totalScore >= 30 && seller.totalScore < 40"
                 src="@/assets/silver.png"
+                @click="showGradeInfoDeailModal = true"
                 class="mb-3 ml-2"
                 style="
                   height: 60px;
@@ -201,6 +205,7 @@
               <v-img
                 v-if="seller.totalScore >= 40 && seller.totalScore < 50"
                 src="@/assets/gold.png"
+                @click="showGradeInfoDeailModal = true"
                 class="mb-3 ml-2"
                 style="
                   height: 60px;
@@ -213,6 +218,7 @@
               <v-img
                 v-if="seller.totalScore >= 50 && seller.totalScore < 60"
                 src="@/assets/platinum.png"
+                @click="showGradeInfoDeailModal = true"
                 class="mb-3 ml-2"
                 style="
                   height: 60px;
@@ -298,7 +304,7 @@
           outlined
           tile
           class="pa-3 mb-3"
-          @click="showAddressModal = true"
+          @click="showSellListModal = true"
         >
           <v-card-title class="headline">판매내역 관리</v-card-title>
         </v-card>
@@ -309,13 +315,17 @@
       @update:dialog="updateDialog('showManageItemsModal', $event)"
     ></ManageItemsModal>
     <SellerItemManageModal
-      v-model = "showBuyListModal"
+      v-model="showBuyListModal"
       @update:dialog="updateDialog('showBuyListModal', $event)"
     ></SellerItemManageModal>
     <GradeInfoDeailModal
       v-model="showGradeInfoDeailModal"
       @update:dialog="updateDialog('showGradeInfoDeailModal', $event)"
     ></GradeInfoDeailModal>
+    <SellListModal
+      v-model="showSellListModal"
+      @update:dialog="updateDialog('showSellListModal', $event)"
+    ></SellListModal>
   </v-container>
 </template>
 
@@ -325,6 +335,7 @@ import Chart from "chart.js/auto";
 import ManageItemsModal from "@/components/ManageItemsModal.vue";
 import SellerItemManageModal from "./SellerItemManageModal.vue";
 import GradeInfoDeailModal from "@/components/GradeInfoDeailModal.vue";
+import SellListModal from "@/components/SellListModal.vue";
 export default {
   mounted() {
     this.userRole = localStorage.getItem("role");
@@ -334,6 +345,7 @@ export default {
     ManageItemsModal,
     SellerItemManageModal,
     GradeInfoDeailModal,
+    SellListModal,
   },
   created() {
     this.getSellerInfo();
@@ -347,6 +359,7 @@ export default {
       showManageItemsModal: false,
       showBuyListModal: false,
       showGradeInfoDeailModal: false,
+      showSellListModal: false,
       seller: [],
       // 판매 그래프 시각화
       dailySalesAmountChartInfo: {},

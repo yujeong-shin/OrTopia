@@ -11,13 +11,14 @@
               <v-table>
                 <thead>
                   <tr>
-                    <th class="text-center">주문 번호</th>
-                    <th class="text-center">주문 시간</th>
-                    <th class="text-center">주문 금액</th>
-                    <th class="text-center">주문 상태</th>
-                    <th class="text-center">주문자 이메일</th>
-                    <th class="text-center">수령자 이름</th>
+                    <th class="text-center">주문번호</th>
+                    <th class="text-center">주문일시</th>
+                    <th class="text-center">주문자명</th>
+                    <th class="text-center">상품명</th>
+                    <th class="text-center">주문금액</th>
+                    <th class="text-center">수령인정보</th>
                     <th class="text-center">결제 방식</th>
+                    <th class="text-center">주문상태</th>
                   </tr>
                 </thead>
                 <tbody>

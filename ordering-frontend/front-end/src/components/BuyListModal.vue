@@ -13,10 +13,8 @@
                   <tr>
                     <th class="text-center">주문 번호</th>
                     <th class="text-center">주문 시간</th>
-                    <th class="text-center">주문 금액</th>
-                    <th class="text-center">주문 상태</th>
+                    <th class="text-center">결제 금액</th>
                     <th class="text-center">주문자 이메일</th>
-                    <th class="text-center">수령자 이름</th>
                     <th class="text-center">결제 방식</th>
                   </tr>
                 </thead>
@@ -28,78 +26,90 @@
                         {{ formatDateTime(order.createdTime) }}
                       </td>
                       <td class="text-center">{{ order.totalPrice }}</td>
-                      <td class="text-center">{{ order.statue }}</td>
                       <td class="text-center">{{ order.email }}</td>
-                      <td class="text-center">{{ order.recipient }}</td>
                       <td class="text-center">{{ order.paymentMethod }}</td>
                     </tr>
                     <template v-if="order.showDetails">
                       <tr>
                         <td colspan="10">
-                          <v-card outlined class="ma-7">
+                          <v-card outlined>
                             <v-card-title class="headline text-center">
                               상세 주문 정보
                             </v-card-title>
                             <v-card-text>
                               <v-row no-gutters>
-                                <v-col cols="12" sm="2" class="text-center ma-2"
+                                <v-col cols="12" sm="2" class="text-center"
                                   >사진</v-col
                                 >
-                                <v-col cols="12" sm="2" class="text-center ma-2"
+                                <v-col cols="12" sm="2" class="text-center"
                                   >수량</v-col
                                 >
-                                <v-col cols="12" sm="2" class="text-center ma-2"
+                                <v-col cols="12" sm="2" class="text-center"
                                   >옵션</v-col
                                 >
-                                <v-col cols="12" sm="2" class="text-center ma-2"
+                                <v-col cols="12" sm="2" class="text-center"
                                   >상품명</v-col
                                 >
-                                <v-col cols="12" sm="2" class="text-center ma-2"
+                                <v-col cols="12" sm="2" class="text-center"
                                   >가격</v-col
                                 >
-                                <v-col cols="12" sm="auto" class="text-center ma-2"
-                                ></v-col> <!-- 리뷰 쓰기 버튼 추가 -->
+                                <v-col cols="12" sm="2" class="text-center"
+                                  >주문 상태</v-col
+                                >
+                                <v-col
+                                  cols="12"
+                                  sm="2"
+                                  class="text-center"
+                                ></v-col>
+                                <!-- 리뷰 쓰기 버튼 추가 -->
                               </v-row>
                               <v-row
                                 v-for="detail in orderDetailList"
                                 :key="detail.id"
                               >
-                                <v-col cols="12" sm="2" class="text-center ma-2"
-                                  ><v-img
+                                <v-col cols="12" sm="2" class="text-center">
+                                  <v-img
                                     :src="detail.itemInfo?.imagePath"
                                     height="100px"
-                                  ></v-img
-                                ></v-col>
-                                <v-col
-                                  cols="12"
-                                  sm="2"
-                                  class="text-center ma-2"
-                                  >{{ detail.quantity }}</v-col
-                                >
-                                <v-col
-                                  cols="12"
-                                  sm="2"
-                                  class="text-center ma-2"
-                                  >{{ detail.options }}</v-col
-                                >
-                                <v-col
-                                  cols="12"
-                                  sm="2"
-                                  class="text-center ma-2"
-                                  >{{ detail.itemInfo?.name }}</v-col
-                                >
-                                <v-col
-                                  cols="12"
-                                  sm="2"
-                                  class="text-center ma-2"
-                                  >{{ detail.itemInfo?.price }}</v-col
-                                >
-                                <v-col cols="12" sm="auto" class="text-center ma-2">
-                                  <!-- 리뷰 쓰기 버튼 -->
-                                  <v-btn v-if=!detail.reviewed color="primary" @click="openNestedModal(detail)">리뷰 작성</v-btn>
-                                  <v-btn v-if=detail.reviewed @click="openNestedModal()">리뷰 수정하기</v-btn>
-                                  <ReviewModal v-model="nestedModalOpen" :dialog="nestedModalOpen" :detail="selectedDetail"  @update:dialog="nestedModalOpen = $event" />
-                              </v-col>
+                                  ></v-img>
+                                </v-col>
+                                <v-col cols="12" sm="2" class="text-center">{{
+                                  detail.quantity
+                                }}</v-col>
+                                <v-col cols="12" sm="2" class="text-center">{{
+                                  detail.options
+                                }}</v-col>
+                                <v-col cols="12" sm="2" class="text-center">{{
+                                  detail.itemInfo?.name
+                                }}</v-col>
+                                <v-col cols="12" sm="2" class="text-center">{{
+                                  detail.itemInfo?.price
+                                }}</v-col>
+                                <v-col cols="12" sm="2" class="text-center">{{
+                                  detail.statue
+                                }}</v-col>
+                                <v-col cols="12" sm="2" class="text-center">
+                                  <v-btn
+                                    v-if="!detail.reviewed"
+                                    color="primary"
+                                    class="ma-2"
+                                    @click="openNestedModal(detail)"
+                                    >리뷰 작성</v-btn
+                                  >
+                                  <v-btn
+                                    v-if="detail.reviewed"
+                                    color="primary"
+                                    class="ma-2"
+                                    @click="openNestedModal()"
+                                    >리뷰 수정하기</v-btn
+                                  >
+                                  <ReviewModal
+                                    v-model="nestedModalOpen"
+                                    :dialog="nestedModalOpen"
+                                    :detail="selectedDetail"
+                                    @update:dialog="nestedModalOpen = $event"
+                                  />
+                                </v-col>
                               </v-row>
                             </v-card-text>
                           </v-card>
@@ -123,9 +133,9 @@
 
 <script>
 import axios from "axios";
-import ReviewModal from "@/components/ReviewModal.vue"
+import ReviewModal from "@/components/ReviewModal.vue";
 export default {
-  components:{
+  components: {
     ReviewModal,
   },
   created() {
@@ -213,6 +223,6 @@ export default {
 
 <style>
 .col-width {
-  width: 25%;
+  width: 70%;
 }
 </style>
