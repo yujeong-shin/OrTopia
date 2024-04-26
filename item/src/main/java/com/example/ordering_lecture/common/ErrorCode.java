@@ -24,7 +24,8 @@ public enum ErrorCode {
     REDIS_ERROR("I16","레디스 저장에 실패했습니다"),
     JSON_PARSE_ERROR("I17","JSON 형변환에 실패했습니다"),
     S3_SERVER_ERROR("I18","이미지 저장에 실패했습니다."),
-    NOT_FOUND_OPTION("I19","해당 옵션의 아이템이 없습니다.");
+    NOT_FOUND_OPTION("I19","해당 옵션의 아이템이 없습니다."),
+    UN_AUTHORIZE_ERROR("I20","SELLER가 아닙니다" );
 
     private final String code;
     private final String message;
