@@ -31,6 +31,7 @@
           </tr>
           <tr>
             <th></th>
+            <th></th>
             <th v-for="(option, index) in item.optionName" :key="index">{{ option }}</th>
             <th>재고</th>
             <th>수량 조정 </th>
