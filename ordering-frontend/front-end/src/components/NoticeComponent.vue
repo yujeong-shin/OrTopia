@@ -9,6 +9,8 @@
                 <v-table>
                   <thead>
                     <tr>
+                      <th class="text-center">번호</th>
+                      <th class="text-center">카테고리</th>
                       <th class="text-center">시작일</th>
                       <th class="text-center">종료일</th>
                       <th class="text-center">제목</th>
@@ -16,6 +18,8 @@
                   </thead>
                   <tbody>
                     <tr v-for="(notice, index) in paginatedNotices" :key="index" @click="goToNoticeDetail(notice.id)">
+                      <td class="text-center">{{ notice.id }}</td>
+                      <td class="text-center">{{ notice.category }}</td>
                       <td class="text-center">{{ notice.startDate }}</td>
                       <td class="text-center">{{ notice.endDate }}</td>
                       <td class="text-center">{{ notice.name }}</td>

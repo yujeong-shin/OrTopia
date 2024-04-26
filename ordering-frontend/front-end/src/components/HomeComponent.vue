@@ -2,10 +2,10 @@
   <v-main>
     <v-container>
       <v-row align="start" class="top-minus-margin">
-        <v-col cols="5" style="height: 500px">
-          <v-carousel cycle hide-delimiters v-if="noticeList.length > 0">
+        <v-col cols="3" style="height: 500px; width: 300px;">
+          <v-carousel cycle hide-delimiters v-if="eventNoticeList.length > 0">
             <v-carousel-item
-              v-for="(notice, index) in noticeList"
+              v-for="(notice, index) in eventNoticeList"
               :key="notice.id"
               :v-show="index === 0"
               contain
@@ -19,11 +19,16 @@
             </v-carousel-item>
           </v-carousel>
         </v-col>
-        <v-col cols="5" style="height: 510px">
-          <img
-            src="/mainCommunityImage.png"
-            style="width: 150%; height: 103%"
-          />
+  
+        <!-- 오른쪽 카루셀: NOTICE 공지사항 -->
+        <v-col cols="9" style="height: 500px; width: 800px;">
+          <v-img
+            :src="randomRegularNotice.imagePath"
+            height="100%"
+            width="100%"
+            @click="goToNotice(randomRegularNotice)"
+            v-if="randomRegularNotice"
+          ></v-img>
         </v-col>
       </v-row>
       <br />
@@ -31,11 +36,6 @@
       <br />
       <div class="header-bottom-line"></div>
       <div class="text-center">
-        <!-- <v-select
-          v-model="location"
-          :items="locations"
-          label="Location"
-        ></v-select> -->
         <v-menu :location="location">
           <template v-slot:activator="{ props }">
             <v-row justify="end">
@@ -155,8 +155,12 @@ export default {
     const search = ref("");
     const router = useRouter();
 
-    const goToNotice = () => {
-      router.push("/notice");
+    const goToNotice = (notice) =>{
+      if (notice && notice.id) {
+        router.push({ name: 'NoticeDetail', params: { id: notice.id } });
+      } else {
+        alert("공지사항 정보가 없습니다.");
+      }
     };
     const goToDetailPage = (itemId) => {
       if (itemId !== null) {
@@ -173,6 +177,9 @@ export default {
   },
   data() {
     return {
+      eventNoticeList: [],
+      regularNoticeList: [],
+      randomRegularNotice: null,
       userRole: null,
       itemList: [],
       noticeList: [],
@@ -299,17 +306,19 @@ export default {
       }
     },
     async getNotice() {
-      try {
-        const data = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/notice-service/notices`
-        );
-        this.noticeList = data.data.result;
-        console.log(this.noticeList);
-      } catch (error) {
-        alert(error.response.data.error_message);
-        console.log(error);
+    try {
+      const { data } = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/notice-service/notices`);
+      this.eventNoticeList = data.result.filter(notice => notice.category === 'EVENT');
+      this.regularNoticeList = data.result.filter(notice => notice.category === 'NOTICE');
+      // Select a random notice from regularNoticeList
+      if (this.regularNoticeList.length > 0) {
+        this.randomRegularNotice = this.regularNoticeList[Math.floor(Math.random() * this.regularNoticeList.length)];
       }
-    },
+    } catch (error) {
+      console.error("공지사항 로딩 실패:", error);
+      alert(error.response.data.error_message);
+    }
+  },
   },
 };
 </script>
