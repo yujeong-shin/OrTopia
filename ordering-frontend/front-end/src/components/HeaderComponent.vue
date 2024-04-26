@@ -11,8 +11,9 @@
       text-color="white"
       class="top-margin"
       :style="{ 'margin-left': '50px' }"
+      @click="goToNotifications"
     >
-      커뮤니티
+      공지사항
     </v-btn>
     <!-- 판매자일 경우 판매 텍스트 표시 -->
     <v-btn
@@ -115,18 +116,18 @@
 
   <v-btn-toggle v-model="selectedCategory" mandatory class="category-buttons">
     <div class="d-flex">
-    <v-btn @click="handleButtonClick('가구')" class="mx-2">가구</v-btn>
-    <v-btn @click="handleButtonClick('도서')" class="mx-2">도서</v-btn>
-    <v-btn @click="handleButtonClick('가전')" class="mx-2">가전</v-btn>
-    <v-btn @click="handleButtonClick('생활')" class="mx-2">생활</v-btn>
-    <v-btn @click="handleButtonClick('건강')" class="mx-2">건강</v-btn>
-    <v-btn @click="handleButtonClick('스포츠')" class="mx-2">스포츠</v-btn>
-    <v-btn @click="handleButtonClick('식품')" class="mx-2">식품</v-btn>
-    <v-btn @click="handleButtonClick('육아')" class="mx-2">육아</v-btn>
-    <v-btn @click="handleButtonClick('의류')" class="mx-2">의류</v-btn>
-    <v-btn @click="handleButtonClick('잡화')" class="mx-2">잡화</v-btn>
-    <v-btn @click="handleButtonClick('화장품')" class="mx-2">화장품</v-btn>
-  </div>
+      <v-btn @click="handleButtonClick('가구')" class="mx-2">가구</v-btn>
+      <v-btn @click="handleButtonClick('도서')" class="mx-2">도서</v-btn>
+      <v-btn @click="handleButtonClick('가전')" class="mx-2">가전</v-btn>
+      <v-btn @click="handleButtonClick('생활')" class="mx-2">생활</v-btn>
+      <v-btn @click="handleButtonClick('건강')" class="mx-2">건강</v-btn>
+      <v-btn @click="handleButtonClick('스포츠')" class="mx-2">스포츠</v-btn>
+      <v-btn @click="handleButtonClick('식품')" class="mx-2">식품</v-btn>
+      <v-btn @click="handleButtonClick('육아')" class="mx-2">육아</v-btn>
+      <v-btn @click="handleButtonClick('의류')" class="mx-2">의류</v-btn>
+      <v-btn @click="handleButtonClick('잡화')" class="mx-2">잡화</v-btn>
+      <v-btn @click="handleButtonClick('화장품')" class="mx-2">화장품</v-btn>
+    </div>
   </v-btn-toggle>
   <div class="header-bottom-line"></div>
 </template>
@@ -155,11 +156,10 @@ onMounted(() => {
   const role = localStorage.getItem("role"); // localStorage에서 사용자 역할 가져오기
   isLoggedIn.value = !!token;
   isSeller.value = role === "SELLER"; // 사용자 역할이 판매자인 경우 true 설정
-  
 });
 const handleButtonClick = (category) => {
   const url = `/search/${category}`;
-    window.location.href = url;
+  window.location.href = url;
 };
 const logout = () => {
   localStorage.clear();
@@ -181,7 +181,7 @@ const goToMyCart = () => {
 };
 
 const goToNotifications = () => {
-  router.push("/notifications");
+  router.push("/notice");
 };
 
 const goToLogin = () => {

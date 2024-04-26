@@ -1,28 +1,292 @@
 <template>
   <v-container fluid style="max-width: 55vw">
-    <div style="height: 50px"></div>
-    <v-row>
-      <v-col cols="12" md="4"> </v-col>
-      <v-col cols="12" md="8">
-        <v-col cols="12" class="text-right">
-          <v-btn color="gray" class="mr-2" @click="showManageItemsModal = true">판매물품 등록</v-btn>
-          <v-btn color="gray" class="mr-2" @click="goToCouponPage">쿠폰 등록</v-btn>
-        </v-col>
-      </v-col>
+    <div style="height: 20px"></div>
+    <v-card outlined tile>
       <v-row>
-        <v-col cols="6">
-          <div class="text-center text-2xl font-bold">일별 판매 금액</div>
-          <div class="p-4 border-2">
-            <canvas id="dailySalesAmountChart" width="400" height="200"></canvas>
-          </div>
+        <v-col cols="9">
+          <v-img
+            @click="showGradeInfoDeailModal = true"
+            src="@/assets/gradeInfo.png"
+            class="mb-3"
+            style="
+              height: 50px;
+              width: 100px;
+              object-fit: contain;
+              margin-left: 680px;
+            "
+          ></v-img>
         </v-col>
-        <v-col cols="6">
-          <div class="text-center text-2xl font-bold">일별 판매 건수</div>
-          <div class="p-4 border-2">
-            <canvas id="dailySalesCountChart" width="400" height="200"></canvas>
-          </div>
+        <v-col cols="12" md="4">
+          <v-img
+            v-if="seller.businessType === '가구'"
+            src="@/assets/living.png"
+            class="mb-3"
+            style="
+              height: 200px;
+              width: 200px;
+              object-fit: contain;
+              margin-left: 130px;
+            "
+          ></v-img>
+          <v-img
+            v-if="seller.businessType === '도서'"
+            src="@/assets/book.png"
+            class="mb-3"
+            style="
+              height: 200px;
+              width: 200px;
+              object-fit: contain;
+              margin-left: 130px;
+            "
+          ></v-img>
+          <v-img
+            v-if="seller.businessType === '가전'"
+            src="@/assets/appliances.png"
+            class="mb-3"
+            style="
+              height: 200px;
+              width: 200px;
+              object-fit: contain;
+              margin-left: 130px;
+            "
+          ></v-img>
+          <v-img
+            v-if="seller.businessType === '생활'"
+            src="@/assets/living.png"
+            class="mb-3"
+            style="
+              height: 200px;
+              width: 200px;
+              object-fit: contain;
+              margin-left: 130px;
+            "
+          ></v-img>
+          <v-img
+            v-if="seller.businessType === '건강'"
+            src="@/assets/health.png"
+            class="mb-3"
+            style="
+              height: 200px;
+              width: 200px;
+              object-fit: contain;
+              margin-left: 130px;
+            "
+          ></v-img>
+          <v-img
+            v-if="seller.businessType === '스포츠'"
+            src="@/assets/sports.png"
+            class="mb-3"
+            style="
+              height: 200px;
+              width: 200px;
+              object-fit: contain;
+              margin-left: 130px;
+            "
+          ></v-img>
+          <v-img
+            v-if="seller.businessType === '식품'"
+            src="@/assets/food.png"
+            class="mb-3"
+            style="
+              height: 200px;
+              width: 200px;
+              object-fit: contain;
+              margin-left: 130px;
+            "
+          ></v-img>
+          <v-img
+            v-if="seller.businessType === '육아'"
+            src="@/assets/baby.png"
+            class="mb-3"
+            style="
+              height: 200px;
+              width: 200px;
+              object-fit: contain;
+              margin-left: 130px;
+            "
+          ></v-img>
+          <v-img
+            v-if="seller.businessType === '의류'"
+            src="@/assets/clothing.png"
+            class="mb-3"
+            style="
+              height: 200px;
+              width: 200px;
+              object-fit: contain;
+              margin-left: 130px;
+            "
+          ></v-img>
+          <v-img
+            v-if="seller.businessType === '잡화'"
+            src="@/assets/item.png"
+            class="mb-3"
+            style="
+              height: 200px;
+              width: 200px;
+              object-fit: contain;
+              margin-left: 130px;
+            "
+          ></v-img>
+          <v-img
+            v-if="seller.businessType === '화장품'"
+            src="@/assets/makeup.png"
+            class="mb-3"
+            style="
+              height: 200px;
+              width: 200px;
+              object-fit: contain;
+              margin-left: 130px;
+            "
+          ></v-img>
+        </v-col>
+        <v-col cols="12" md="8">
+          <v-col cols="12" md="8">
+            <v-col
+              cols="auto"
+              class="d-flex align-items-center justify-content-between"
+            >
+              <v-card-title
+                class="headline mb-1"
+                style="margin-left: 80px; font-size: 30px"
+                >{{ seller.companyName }}</v-card-title
+              >
+              <v-img
+                v-if="seller.totalScore >= 0 && seller.totalScore < 10"
+                src="@/assets/unRank.png"
+                class="mb-3 ml-2"
+                style="
+                  height: 60px;
+                  width: 60px;
+                  object-fit: contain;
+                  margin-right: 30px;
+                  margin-top: -10px;
+                "
+              ></v-img>
+              <v-img
+                v-if="seller.totalScore >= 10 && seller.totalScore < 20"
+                src="@/assets/bronze.png"
+                class="mb-3 ml-2"
+                style="
+                  height: 60px;
+                  width: 60px;
+                  object-fit: contain;
+                  margin-right: 30px;
+                  margin-top: -10px;
+                "
+              ></v-img>
+              <v-img
+                v-if="seller.totalScore >= 20 && seller.totalScore < 30"
+                src="@/assets/iron.png"
+                class="mb-3 ml-2"
+                style="
+                  height: 60px;
+                  width: 60px;
+                  object-fit: contain;
+                  margin-right: 30px;
+                  margin-top: -10px;
+                "
+              ></v-img>
+              <v-img
+                v-if="seller.totalScore >= 30 && seller.totalScore < 40"
+                src="@/assets/silver.png"
+                class="mb-3 ml-2"
+                style="
+                  height: 60px;
+                  width: 60px;
+                  object-fit: contain;
+                  margin-right: 30px;
+                  margin-top: -10px;
+                "
+              ></v-img>
+              <v-img
+                v-if="seller.totalScore >= 40 && seller.totalScore < 50"
+                src="@/assets/gold.png"
+                class="mb-3 ml-2"
+                style="
+                  height: 60px;
+                  width: 60px;
+                  object-fit: contain;
+                  margin-right: 30px;
+                  margin-top: -10px;
+                "
+              ></v-img>
+              <v-img
+                v-if="seller.totalScore >= 50 && seller.totalScore < 60"
+                src="@/assets/platinum.png"
+                class="mb-3 ml-2"
+                style="
+                  height: 60px;
+                  width: 60px;
+                  object-fit: contain;
+                  margin-right: 30px;
+                  margin-top: -10px;
+                "
+              ></v-img>
+            </v-col>
+            <v-card-title class="headline mb-1" style="margin-left: 80px">
+              <span v-if="seller.totalScore >= 0 && seller.totalScore < 10">
+                판매자님은 UNRANK입니다
+              </span>
+              <span
+                v-else-if="seller.totalScore >= 10 && seller.totalScore < 20"
+              >
+                판매자님은 BRONZE입니다
+              </span>
+              <span
+                v-else-if="seller.totalScore >= 20 && seller.totalScore < 30"
+              >
+                판매자님은 IRON입니다
+              </span>
+              <span
+                v-else-if="seller.totalScore >= 30 && seller.totalScore < 40"
+              >
+                판매자님은 SILVER입니다
+              </span>
+              <span
+                v-else-if="seller.totalScore >= 40 && seller.totalScore < 50"
+              >
+                판매자님은 GOLD입니다
+              </span>
+              <span
+                v-else-if="seller.totalScore >= 50 && seller.totalScore < 60"
+              >
+                판매자님은 PLATINUM입니다
+              </span>
+            </v-card-title>
+            <v-card-subtitle class="mb-1" style="margin-left: 80px"
+              >사업 유형: {{ seller.businessType }}</v-card-subtitle
+            >
+            <v-card-subtitle class="mb-1" style="margin-left: 80px"
+              >사업자 번호: {{ seller.businessNumber }}</v-card-subtitle
+            >
+          </v-col>
+          <v-col cols="12" md="12" class="text-right">
+            <v-btn
+              color="gray"
+              class="mr-2"
+              @click="showManageItemsModal = true"
+              >판매물품 등록</v-btn
+            >
+            <v-btn color="gray" class="mr-2" @click="goToCouponPage"
+              >쿠폰 등록</v-btn
+            >
+          </v-col>
         </v-col>
       </v-row>
+    </v-card>
+    <v-row class="mt-12">
+      <v-col cols="6">
+        <div class="text-center text-2xl font-bold">일별 판매 금액</div>
+        <div class="p-4 border-2">
+          <canvas id="dailySalesAmountChart" width="400" height="200"></canvas>
+        </div>
+      </v-col>
+      <v-col cols="6">
+        <div class="text-center text-2xl font-bold">일별 판매 건수</div>
+        <div class="p-4 border-2">
+          <canvas id="dailySalesCountChart" width="400" height="200"></canvas>
+        </div>
+      </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" md="6">
@@ -54,6 +318,10 @@
       v-model = "showBuyListModal"
       @update:dialog="updateDialog('showBuyListModal', $event)"
     ></SellerItemManageModal>
+    <GradeInfoDeailModal
+      v-model="showGradeInfoDeailModal"
+      @update:dialog="updateDialog('showGradeInfoDeailModal', $event)"
+    ></GradeInfoDeailModal>
   </v-container>
 </template>
 
@@ -62,6 +330,7 @@ import axios from "axios";
 import Chart from "chart.js/auto";
 import ManageItemsModal from "@/components/ManageItemsModal.vue";
 import SellerItemManageModal from "./SellerItemManageModal.vue";
+import GradeInfoDeailModal from "@/components/GradeInfoDeailModal.vue";
 export default {
   mounted() {
     this.userRole = localStorage.getItem("role");
@@ -70,8 +339,11 @@ export default {
   components: {
     ManageItemsModal,
     SellerItemManageModal,
+    GradeInfoDeailModal,
   },
-  created() {},
+  created() {
+    this.getSellerInfo();
+  },
   props: {
     dialog: Boolean,
   },
@@ -80,6 +352,8 @@ export default {
     return {
       showManageItemsModal: false,
       showBuyListModal: false,
+      showGradeInfoDeailModal: false,
+      seller: [],
       // 판매 그래프 시각화
       dailySalesAmountChartInfo: {},
       dailySalesCountChartInfo: {},
@@ -90,8 +364,30 @@ export default {
     };
   },
   methods: {
+    async getSellerInfo() {
+      const token = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+      const email = localStorage.getItem("email");
+      try {
+        const response = await axios.get(
+          `${process.env.VUE_APP_API_BASE_URL}/member-service/seller`,
+          {
+            headers: {
+              myEmail: `${email}`,
+              Authorization: `Bearer ${token}`,
+              "X-Refresh-Token": `${refreshToken}`,
+            },
+          }
+        );
+        this.seller = response.data.result;
+        console.log(this.seller);
+      } catch (error) {
+        alert(error.response.data.error_message);
+        console.log(error);
+      }
+    },
     goToCouponPage() {
-      this.$router.push({ name: 'CouponComponent' });
+      this.$router.push({ name: "CouponComponent" });
     },
     async fetchSalesInfo() {
       const token = localStorage.getItem("accessToken");

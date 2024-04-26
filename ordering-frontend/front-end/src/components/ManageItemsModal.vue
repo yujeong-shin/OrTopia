@@ -31,13 +31,23 @@
           </v-container>
           <v-btn @click="addOption" color="primary">옵션 추가하기</v-btn>
           <v-text-field
-        readonly
-        v-model="item.detail"
-        @click="showModal = true"
-        label="상세 설명"
-        required
-        append-icon="mdi-pencil"
-      ></v-text-field>
+            readonly
+            :value="item.detail"
+            @click="showModal = true"
+            label="상세 설명"
+            required
+            append-icon="mdi-pencil"
+          ></v-text-field>
+          <!-- HTML 콘텐츠를 렌더링하는 부분 -->
+          <div v-html="itemDetailHtml"></div>
+
+          <!-- 모달을 통해 상세 설명 수정 -->
+          <item-create-modal
+            :value="showModal"
+            :detail="item.detail"
+            @update:value="showModal = false"
+            @update:detail="updateDetail"
+          />
           <v-file-input v-model="item.imagePath" label="이미지 파일" accept="image/*"></v-file-input>
           <v-text-field v-model="item.minimumStock" label="최소 재고" type="number" required></v-text-field>
           <v-btn type="submit" color="success">등록하기</v-btn>
@@ -89,6 +99,11 @@ export default {
       optionList: [],
       showModal: false,
     };
+  },
+  watch: {
+    'item.detail': function(newVal) {
+      this.itemDetailHtml = newVal; // 상세 설명 업데이트 시 HTML 내용도 업데이트
+    }
   },
   methods: {
     updateDialog(value) {
