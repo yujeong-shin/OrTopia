@@ -5,6 +5,7 @@ import com.example.ordering_lecture.common.OrTopiaException;
 import com.example.ordering_lecture.member.domain.BannedSeller;
 import com.example.ordering_lecture.member.domain.Member;
 import com.example.ordering_lecture.member.domain.Seller;
+import com.example.ordering_lecture.member.dto.Buyer.MemberResponseDto;
 import com.example.ordering_lecture.member.dto.Seller.*;
 import com.example.ordering_lecture.member.repository.BannedSellerRepository;
 import com.example.ordering_lecture.member.repository.MemberRepository;
@@ -101,5 +102,11 @@ public class SellerService {
             throw new OrTopiaException(ErrorCode.NOT_FOUND_BANED_SELLERS);
         }
         return bannedSellerResponseDtos;
+    }
+
+    public SellerResponseDto findByMemberId(Long id) {
+        Seller seller = sellerRepository.findByMemberId(id)
+                .orElseThrow(() -> new IllegalArgumentException("판매자를 찾지 못했습니다."));
+        return SellerResponseDto.toDto(seller);
     }
 }
