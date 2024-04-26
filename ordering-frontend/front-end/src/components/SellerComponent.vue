@@ -3,6 +3,19 @@
     <div style="height: 50px"></div>
     <v-card outlined tile class="pa-3 mb-3">
       <v-row>
+        <v-col cols="9">
+          <v-img
+            @click="showGradeInfoDeailModal = true"
+            src="@/assets/gradeInfo.png"
+            class="mb-3"
+            style="
+              height: 50px;
+              width: 100px;
+              object-fit: contain;
+              margin-left: 680px;
+            "
+          ></v-img>
+        </v-col>
         <v-col cols="12" md="4">
           <v-img
             v-if="seller.businessType === '가구'"
@@ -301,6 +314,10 @@
       v-model="showManageItemsModal"
       @update:dialog="updateDialog('showManageItemsModal', $event)"
     ></ManageItemsModal>
+    <GradeInfoDeailModal
+      v-model="showGradeInfoDeailModal"
+      @update:dialog="updateDialog('showGradeInfoDeailModal', $event)"
+    ></GradeInfoDeailModal>
   </v-container>
 </template>
 
@@ -308,6 +325,7 @@
 import axios from "axios";
 import Chart from "chart.js/auto";
 import ManageItemsModal from "@/components/ManageItemsModal.vue";
+import GradeInfoDeailModal from "@/components/GradeInfoDeailModal.vue";
 export default {
   mounted() {
     this.userRole = localStorage.getItem("role");
@@ -315,6 +333,7 @@ export default {
   },
   components: {
     ManageItemsModal,
+    GradeInfoDeailModal,
   },
   created() {
     this.getSellerInfo();
@@ -326,6 +345,7 @@ export default {
   data() {
     return {
       showManageItemsModal: false,
+      showGradeInfoDeailModal: false,
       seller: [],
 
       // 판매 그래프 시각화
