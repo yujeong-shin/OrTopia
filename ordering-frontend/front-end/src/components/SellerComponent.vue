@@ -1,5 +1,6 @@
 <template>
   <v-container fluid style="max-width: 55vw">
+    <div style="height: 20px"></div>
     <v-card outlined tile>
       <v-row>
         <v-col cols="9">
@@ -441,7 +442,7 @@ export default {
         .getElementById("dailySalesAmountChart")
         .getContext("2d");
       new Chart(ctx, {
-        type: "bar",
+        type: "line",
         data: {
           labels: this.datesForSalesAmount,
           datasets: [
@@ -493,7 +494,7 @@ export default {
         .getElementById("dailySalesCountChart")
         .getContext("2d");
       new Chart(ctx, {
-        type: "doughnut",
+        type: "bar",
         data: {
           labels: this.datesForSalesCount,
           datasets: [
