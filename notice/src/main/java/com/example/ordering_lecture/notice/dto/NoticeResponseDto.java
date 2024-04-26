@@ -1,5 +1,6 @@
 package com.example.ordering_lecture.notice.dto;
 
+import com.example.ordering_lecture.notice.entity.Category;
 import com.example.ordering_lecture.notice.entity.Notice;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +11,7 @@ public class NoticeResponseDto {
     private Long id;
     private String name;
     private String contents;
+    private Category category;
     private String startDate;
     private String endDate;
     private boolean delYn;
@@ -20,6 +22,7 @@ public class NoticeResponseDto {
                 .id(notice.getId())
                 .name(notice.getName())
                 .contents(notice.getContents())
+                .category(notice.getCategory())
                 .startDate(notice.getStartDate())
                 .endDate(notice.getEndDate())
                 .delYn(notice.isDelYN())

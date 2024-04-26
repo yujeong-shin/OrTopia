@@ -1,5 +1,6 @@
 package com.example.ordering_lecture.notice.dto;
 
+import com.example.ordering_lecture.notice.entity.Category;
 import com.example.ordering_lecture.notice.entity.Notice;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,8 @@ public class NoticeRequestDto {
     @NotNull
     private String contents;
     @NotNull
+    private Category category;
+    @NotNull
     private String startDate;
     @NotNull
     private String endDate;
@@ -29,6 +32,7 @@ public class NoticeRequestDto {
         Notice notice = Notice.builder()
                 .name(this.getName())
                 .contents(this.getContents())
+                .category(this.getCategory())
                 .startDate(this.getStartDate())
                 .endDate(this.getEndDate())
                 .imagePath(imagePath)

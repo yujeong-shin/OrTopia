@@ -44,10 +44,8 @@ public class MemberCouponService {
         return new MemberCouponResponseDto(memberCoupon.getId(), CouponDetailResponseDto.toDto(memberCoupon.getCouponDetail()));
     }
     public List<MemberCouponResponseDto> findMyCoupons(String email) {
-        log.info("Fetching coupons for email: {}", email);
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    log.error("Member not found for email: {}", email);
                     return new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER);
                 });
         List<MemberCoupon> coupons = memberCouponRepository.findAllByMember(member);
