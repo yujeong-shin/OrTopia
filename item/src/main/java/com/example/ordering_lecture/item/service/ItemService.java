@@ -7,14 +7,8 @@ import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
 import com.example.ordering_lecture.item.controller.MemberServiceClient;
 import com.example.ordering_lecture.item.dto.*;
-import com.example.ordering_lecture.item.entity.Item;
-import com.example.ordering_lecture.item.entity.ItemOption;
-import com.example.ordering_lecture.item.entity.ItemOptionDetail;
-import com.example.ordering_lecture.item.entity.ItemOptionQuantity;
-import com.example.ordering_lecture.item.repository.ItemOptionDetailRepository;
-import com.example.ordering_lecture.item.repository.ItemOptionQuantityRepository;
-import com.example.ordering_lecture.item.repository.ItemOptionRepository;
-import com.example.ordering_lecture.item.repository.ItemRepository;
+import com.example.ordering_lecture.item.entity.*;
+import com.example.ordering_lecture.item.repository.*;
 import com.example.ordering_lecture.redis.RedisService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,7 +33,8 @@ public class ItemService {
     private final ItemOptionDetailRepository itemOptionDetailRepository;
     private final ItemOptionRepository itemOptionRepository;
     private final ItemOptionQuantityRepository itemOptionQuantityRepository;
-    public ItemService(ItemRepository itemRepository, RedisService redisService, AmazonS3Client amazonS3Client, MemberServiceClient memberServiceClient, ItemOptionDetailRepository itemOptionDetailRepository, ItemOptionRepository itemOptionRepository, ItemOptionQuantityRepository itemOptionQuantityRepository) {
+    private final LoveItemRepository loveItemRepository;
+    public ItemService(ItemRepository itemRepository, RedisService redisService, AmazonS3Client amazonS3Client, MemberServiceClient memberServiceClient, ItemOptionDetailRepository itemOptionDetailRepository, ItemOptionRepository itemOptionRepository, ItemOptionQuantityRepository itemOptionQuantityRepository, LoveItemRepository loveItemRepository) {
         this.itemRepository = itemRepository;
         this.redisService = redisService;
         this.amazonS3Client = amazonS3Client;
@@ -47,6 +42,7 @@ public class ItemService {
         this.itemOptionDetailRepository = itemOptionDetailRepository;
         this.itemOptionRepository = itemOptionRepository;
         this.itemOptionQuantityRepository = itemOptionQuantityRepository;
+        this.loveItemRepository = loveItemRepository;
     }
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -119,11 +115,22 @@ public class ItemService {
         }
     }
 
-    public List<ItemResponseDto> showAllItem(){
-
-        return itemRepository.findAll().stream()
-                .map(ItemResponseDto::toDto)
-                .collect(Collectors.toList());
+    public List<ItemResponseDto> showAllItem(String email){
+        if(email.equals("noLogin")){
+            return itemRepository.findAll().stream()
+                    .map(ItemResponseDto::toDto)
+                    .collect(Collectors.toList());
+        }
+        List<Item> items = itemRepository.findAll();
+        List<ItemResponseDto> itemResponseDtos = new ArrayList<>();
+        for(Item item : items){
+            ItemResponseDto itemResponseDto = ItemResponseDto.toDto(item);
+            if(loveItemRepository.findByItemIdAndEmail(item.getId(),email).isPresent()){
+                itemResponseDto.setLove(true);
+            }
+            itemResponseDtos.add(itemResponseDto);
+        }
+        return itemResponseDtos;
     }
 
     @Transactional
@@ -223,6 +230,10 @@ public class ItemService {
                 }
                 itemResponseDto.getItemOptionResponseDtoList().add(itemOptionResponseDto);
             }
+        }
+        // 멤버가 좋아하는지 확인
+        if(loveItemRepository.findByItemIdAndEmail(id,email).isPresent()){
+            itemResponseDto.setLove(true);
         }
         return itemResponseDto;
     }
@@ -325,5 +336,22 @@ public class ItemService {
         itemOptionQuantity.updateQuantity(itemOptionQuantityDto.getQuantity());
         // redis 내 아이템 수량 조정
         redisService.setItemQuantity(itemOptionQuantity.getId(),itemOptionQuantityDto.getQuantity());
+    }
+
+    public String loveAndDisLoveItem(String email, Long itemId) {
+        Optional<LoveItem> optionalLoveItem =  loveItemRepository.findByItemIdAndEmail(itemId,email);
+        if(optionalLoveItem.isEmpty()){
+            Item item = itemRepository.findById(itemId).orElseThrow(
+                    ()-> new OrTopiaException(ErrorCode.NOT_FOUND_ITEM)
+            );
+            LoveItem loveItem = LoveItem.builder()
+                    .email(email)
+                    .item(item)
+                    .build();
+            loveItemRepository.save(loveItem);
+            return "save success";
+        }
+        loveItemRepository.deleteById(optionalLoveItem.get().getId());
+        return "delete success";
     }
 }
