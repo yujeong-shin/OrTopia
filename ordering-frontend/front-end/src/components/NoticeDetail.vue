@@ -1,6 +1,11 @@
 <template>
   <v-container class="my-5 py-4">
-    <v-card :class="{ 'gray-scale': noticeDeleted }" elevation="10" class="mx-auto" max-width="800">
+    <v-card
+      :class="{ 'gray-scale': noticeDeleted }"
+      elevation="10"
+      class="mx-auto"
+      max-width="800"
+    >
       <v-card-title class="justify-center">{{ notice.name }}</v-card-title>
       <v-card-text>
         <v-row justify="center">
@@ -22,7 +27,10 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="red" @click="deleteNotice" v-if="!noticeDeleted">삭제하기</v-btn>
+        <v-btn color="red" @click="deleteNotice" v-if="!noticeDeleted"
+          >삭제하기</v-btn
+        >
+        <v-btn color="primary" @click="goToNotifications">닫기</v-btn>
       </v-card-actions>
       <v-dialog v-model="dialog" persistent max-width="300px">
         <v-card>
@@ -40,9 +48,19 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
+import { useRouter } from "vue-router";
 
 export default {
+  setup() {
+    const router = useRouter();
+    const goToNotifications = () => {
+      router.push("/notice");
+    };
+    return {
+      goToNotifications,
+    };
+  },
   data() {
     return {
       notice: {},
@@ -63,55 +81,44 @@ export default {
     confirmDelete() {
       const config = {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-          'X-Refresh-Token': localStorage.getItem('refreshToken')
-        }
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "X-Refresh-Token": localStorage.getItem("refreshToken"),
+        },
       };
-      axios.patch(`${process.env.VUE_APP_API_BASE_URL}/notice-service/delete/${this.$route.params.id}`, null, config)
+      axios
+        .patch(
+          `${process.env.VUE_APP_API_BASE_URL}/notice-service/delete/${this.$route.params.id}`,
+          null,
+          config
+        )
         .then(() => {
           this.noticeDeleted = true;
           this.dialog = false;
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("공지사항 삭제 중 에러 발생:", error);
         });
     },
     fetchNotice() {
-    const config = {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        'X-Refresh-Token': localStorage.getItem('refreshToken')
-      }
-    };
-    axios.get(`${process.env.VUE_APP_API_BASE_URL}/notice-service/notice/${this.$route.params.id}`, config)
-      .then(response => {
-        this.notice = response.data.result;
-        this.noticeDeleted = this.notice.delYN === false; 
-      })
-      .catch(error => {
-        console.error("공지사항 상세 정보를 불러오는 중 에러 발생:", error);
-      });
+      const config = {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "X-Refresh-Token": localStorage.getItem("refreshToken"),
+        },
+      };
+      axios
+        .get(
+          `${process.env.VUE_APP_API_BASE_URL}/notice-service/notice/${this.$route.params.id}`,
+          config
+        )
+        .then((response) => {
+          this.notice = response.data.result;
+          this.noticeDeleted = this.notice.delYN === false;
+        })
+        .catch((error) => {
+          console.error("공지사항 상세 정보를 불러오는 중 에러 발생:", error);
+        });
+    },
   },
-  },
-}
+};
 </script>
-
-<style scoped>
-.gray-scale {
-  filter: grayscale(100%);
-}
-
-.v-subheader {
-  font-weight: bold;
-  color: rgba(0, 0, 0, 0.87);
-}
-
-.caption {
-  font-size: 14px;
-  color: #757575;
-}
-
-.v-container {
-  max-width: 800px;
-}
-</style>
