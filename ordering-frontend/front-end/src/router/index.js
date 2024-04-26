@@ -61,10 +61,10 @@ const routes = [
     component: OrderByKakaoComponent,
   },
   {
-    path: "/notice/:id",
-    name: "NoticeDetail",
+    path: '/notice/:id',
+    name: 'NoticeDetail',
     component: NoticeDetail,
-    props: true,
+    props: true
   },
   {
     path: "/coupon",

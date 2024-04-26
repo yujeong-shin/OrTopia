@@ -2,7 +2,6 @@
   <v-main>
     <v-container>
       <v-row align="start" class="top-minus-margin">
-        <!-- 왼쪽 EVENT 공지사항 -->
         <v-col cols="3" style="height: 500px; width: 300px;">
           <v-carousel cycle hide-delimiters v-if="eventNoticeList.length > 0">
             <v-carousel-item
@@ -148,8 +147,12 @@ export default {
     const search = ref("");
     const router = useRouter();
 
-    const goToNotice = () => {
-      router.push("/notice");
+    const goToNotice = (notice) => {
+      if (notice && notice.id) {
+        router.push({ name: 'NoticeDetail', params: { id: notice.id } });
+      } else {
+        alert("공지사항 정보가 없습니다.");
+      }
     };
     const goToDetailPage = (itemId) => {
       if (itemId !== null) {
