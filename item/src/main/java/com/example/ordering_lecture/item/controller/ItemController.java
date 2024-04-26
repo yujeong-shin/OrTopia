@@ -29,8 +29,8 @@ public class ItemController {
     }
 
     @GetMapping("/items")
-    public ResponseEntity<OrTopiaResponse> showAllItems(){
-        List<ItemResponseDto> itemResponseDtos = itemService.showAllItem();
+    public ResponseEntity<OrTopiaResponse> showAllItems(@RequestHeader("myEmail") String email){
+        List<ItemResponseDto> itemResponseDtos = itemService.showAllItem(email);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",itemResponseDtos);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
@@ -121,6 +121,12 @@ public class ItemController {
     public ResponseEntity<OrTopiaResponse> updateQuantity(@RequestBody ItemOptionQuantityDto itemOptionQuantityDto){
         itemService.updateQuantity(itemOptionQuantityDto);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("update success",null);
+        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+    }
+    // 특정 아이템을 좋아요 처리
+    @PostMapping("/love/{itemId}")
+    public ResponseEntity<OrTopiaResponse> loveAndDisLoveItem(@RequestHeader("myEmail") String email,@PathVariable Long itemId){
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("update success",itemService.loveAndDisLoveItem(email,itemId));
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
 }
