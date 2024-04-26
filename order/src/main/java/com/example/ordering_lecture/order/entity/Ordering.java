@@ -19,7 +19,8 @@ public class Ordering {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private Long orderNumber;
+    @Builder.Default
+    private Long orderNumber = 0L;
     @Column(nullable = false)
     private int totalPrice;
     @Column(nullable = false)

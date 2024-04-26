@@ -17,7 +17,6 @@ public class OrderRequestDto {
     private int totalPrice;
     @NotNull
     private Long addressId;
-    @NotNull
     private Long orderNumber;
     @NotNull
     private String email;
@@ -41,7 +40,6 @@ public class OrderRequestDto {
         }
         return Ordering.builder()
                 .addressId(this.addressId)
-                .orderNumber(this.orderNumber)
                 .totalPrice(this.totalPrice)
                 .recipientName(this.recipientName)
                 .phoneNumber(this.phoneNumber)
