@@ -50,6 +50,10 @@
       v-model="showManageItemsModal"
       @update:dialog="updateDialog('showManageItemsModal', $event)"
     ></ManageItemsModal>
+    <SellerItemManageModal
+      v-model = "showBuyListModal"
+      @update:dialog="updateDialog('showBuyListModal', $event)"
+    ></SellerItemManageModal>
   </v-container>
 </template>
 
@@ -57,6 +61,7 @@
 import axios from "axios";
 import Chart from "chart.js/auto";
 import ManageItemsModal from "@/components/ManageItemsModal.vue";
+import SellerItemManageModal from "./SellerItemManageModal.vue";
 export default {
   mounted() {
     this.userRole = localStorage.getItem("role");
@@ -64,6 +69,7 @@ export default {
   },
   components: {
     ManageItemsModal,
+    SellerItemManageModal,
   },
   created() {},
   props: {
@@ -73,7 +79,7 @@ export default {
   data() {
     return {
       showManageItemsModal: false,
-
+      showBuyListModal: false,
       // 판매 그래프 시각화
       dailySalesAmountChartInfo: {},
       dailySalesCountChartInfo: {},
