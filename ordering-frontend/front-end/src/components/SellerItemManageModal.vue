@@ -1,5 +1,19 @@
 <template>
     <v-dialog :value="dialog" @input="updateDialog" max-width="1400px">
+      <v-col cols="12" md="12" class="text-right">
+            <v-btn
+              color="gray"
+              class="mr-2"
+              @click="openNestedModal()"
+              >판매물품 등록</v-btn
+            >
+            <ManageItemsModal
+              v-model="nestedModalOpen"
+              :dialog="nestedModalOpen" :detail="selectedDetail"  @update:dialog="nestedModalOpen = $event"/>
+            <v-btn color="gray" class="mr-2" @click="goToCouponPage"
+              >쿠폰 등록</v-btn
+            >
+          </v-col>
       <v-card>
         <v-card-title class="headline grey lighten-2 text-center">
           판매물품관리
@@ -10,6 +24,7 @@
         :items="myItems"
         show-expand
         item-value="name"
+        show-select
         >
         <template v-slot:expanded-row="{ item }">
           <tr>
@@ -22,6 +37,7 @@
             <th>변경사항 저장</th>
           </tr>
           <tr v-for="(itemOption,index) in item.itemOptionQuantityResponseDtos" :key="itemOption.id">
+            <td></td>
             <td>옵션 {{ index + 1 }}</td>
             <td>{{ itemOption.value1 === 'NONE' ? '-' : itemOption.value1 }}</td>
             <td>{{ itemOption.value2 === 'NONE' ? '-' : itemOption.value2 }}</td>
@@ -30,8 +46,8 @@
             <td>
               <input type="number" v-model="itemOption.quantity" style="width: 80px;" />
             </td>
-            <td>
-              <button class="custom-button" @click="editItem(itemOption)">수정하기</button>
+            <td >
+              <button class="custom-button" @click="editItem(itemOption)">수정</button>
             </td>
           </tr>
         </template>
@@ -46,10 +62,11 @@
   
   <script>
   import axios from 'axios';
+  import ManageItemsModal from "@/components/ManageItemsModal.vue";
   export default {
 
     components: {
-      
+      ManageItemsModal,
     },
     created() {
         this.getMyItem();
@@ -60,9 +77,10 @@
     emits: ["update:dialog"],
     data() {
       return {
+        nestedModalOpen: false,
         expanded: [
-      
         ],
+        selected: [],
         myItems : [],
         showModal: false,
         headers: [
@@ -77,6 +95,11 @@
       };
     },
     methods: {
+      openNestedModal(detail) {
+      this.selectedDetail = detail;
+      console.log(this.selectedDetail);
+      this.nestedModalOpen = true; // 하위 모달 창 열기
+    },
       async editItem(itemOption) {
         console.log("수정하기 버튼 클릭:", itemOption);
         const token = localStorage.getItem("accessToken");

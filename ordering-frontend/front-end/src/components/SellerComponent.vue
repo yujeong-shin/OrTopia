@@ -261,12 +261,6 @@
             >
           </v-col>
           <v-col cols="12" md="12" class="text-right">
-            <v-btn
-              color="gray"
-              class="mr-2"
-              @click="showManageItemsModal = true"
-              >판매물품 등록</v-btn
-            >
             <v-btn color="gray" class="mr-2" @click="goToCouponPage"
               >쿠폰 등록</v-btn
             >
