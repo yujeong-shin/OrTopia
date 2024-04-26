@@ -1,5 +1,6 @@
 package com.example.ordering_lecture.item.entity;
 
+import com.example.ordering_lecture.item.dto.ItemOptionQuantityDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,4 +28,8 @@ public class ItemOptionQuantity {
     @JoinColumn(name="item_id",nullable = false)
     @ManyToOne(fetch = FetchType.EAGER)
     private Item item;
+
+    public void updateQuantity(int updateQuantity) {
+        this.quantity = updateQuantity;
+    }
 }

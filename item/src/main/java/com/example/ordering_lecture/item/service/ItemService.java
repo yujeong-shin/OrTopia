@@ -208,7 +208,9 @@ public class ItemService {
                 );
         ItemResponseDto itemResponseDto = ItemResponseDto.toDto(item);
         // 최근본 상품을 저장하기 위함
-        redisService.setValues(email,itemResponseDto);
+        if(!email.equals("noLogin")) {
+            redisService.setValues(email,itemResponseDto);
+        }
         // 옵션을 불러옴
         List<ItemOption> itemOptions = itemOptionRepository.findAllByItemId(id);
         if(!itemOptions.isEmpty()){
@@ -289,5 +291,39 @@ public class ItemService {
                 () -> new OrTopiaException(ErrorCode.NOT_FOUND_OPTION)
         );
         return itemOptionQuantity.getId();
+    }
+
+    public List<ItemResponseForSellerDto> findMyAllItem(String email) {
+        Long sellerId = memberServiceClient.searchIdByEmail(email);
+        List<Item> items = itemRepository.findAllBySellerId(sellerId);
+        if(items.isEmpty()){
+            throw new OrTopiaException(ErrorCode.NOT_FOUND_ITEM);
+        }
+        List<ItemResponseForSellerDto> itemResponseDtos = new ArrayList<>();
+        for(Item item:items){
+            ItemResponseForSellerDto itemResponseDto = ItemResponseForSellerDto.toDto(item);
+            List<ItemOptionQuantity> itemOptionQuantities = itemOptionQuantityRepository.findAllByItemId(item.getId());
+            for(ItemOptionQuantity itemOptionQuantity : itemOptionQuantities){
+                itemResponseDto.getItemOptionQuantityResponseDtos().add(ItemOptionQuantityResponseDto.toDto(itemOptionQuantity));
+            }
+            List<ItemOption> itemOptions = itemOptionRepository.findAllByItemId(item.getId());
+            for(ItemOption itemOption :itemOptions){
+                itemResponseDto.getOptionName().add(itemOption.getName());
+            }
+            itemResponseDtos.add(itemResponseDto);
+        }
+
+        return itemResponseDtos;
+    }
+
+    @Transactional
+    public void updateQuantity(ItemOptionQuantityDto itemOptionQuantityDto) {
+        ItemOptionQuantity itemOptionQuantity = itemOptionQuantityRepository.findById(itemOptionQuantityDto.getId()).orElseThrow(
+                () -> new OrTopiaException(ErrorCode.NOT_FOUND_OPTION)
+        );
+        //DB 내 아이템 조정
+        itemOptionQuantity.updateQuantity(itemOptionQuantityDto.getQuantity());
+        // redis 내 아이템 수량 조정
+        redisService.setItemQuantity(itemOptionQuantity.getId(),itemOptionQuantityDto.getQuantity());
     }
 }
