@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-public class ItemResponseDto {
+public class ItemResponseForSellerDto {
     private Long id;
     private String name;
     private int stock;
@@ -28,15 +27,15 @@ public class ItemResponseDto {
     private boolean delYN;
     private boolean isBaned;
     private Long sellerId;
-    private List<ItemOptionResponseDto> itemOptionResponseDtoList;
+    private List<String> optionName;
+    private List<ItemOptionQuantityResponseDto> itemOptionQuantityResponseDtos;
     private String createdTime;
     private Long reviewNumber;
     private Long score;
-    private boolean isLove = false;
 
 
-    public static ItemResponseDto toDto(Item item){
-        return ItemResponseDto.builder()
+    public static ItemResponseForSellerDto toDto(Item item){
+        return ItemResponseForSellerDto.builder()
                 .reviewNumber(item.getReviewNumber())
                 .score(item.getScore())
                 .name(item.getName())
@@ -51,7 +50,8 @@ public class ItemResponseDto {
                 .isBaned(item.isBaned())
                 .stock(item.getStock())
                 .createdTime(item.getCreatedTime().toString())
-                .itemOptionResponseDtoList(new ArrayList<>())
+                .optionName(new ArrayList<>())
+                .itemOptionQuantityResponseDtos(new ArrayList<>())
                 .build();
     }
 }
