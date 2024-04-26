@@ -2,13 +2,18 @@ package com.example.ordering_lecture.item.dto;
 
 import com.example.ordering_lecture.item.entity.Item;
 import com.example.ordering_lecture.item.entity.ItemOptionQuantity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
 public class ItemOptionQuantityDto {
+    private Long id;
     private String value1;
     private String value2;
     private String value3;
+    private int quantity;
 
     public ItemOptionQuantityDto(){
         value1 = "NONE";
