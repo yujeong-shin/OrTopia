@@ -12,6 +12,8 @@
           outlined
           dense
         ></v-text-field>
+
+        <v-select v-model="notice.category" :items="category" label="카테고리" required></v-select>
         
         <!-- 썸내일 올리기 -->
         <v-file-input label="썸네일 업로드" v-model="selectedFile" @change="handleFileUpload"></v-file-input>
@@ -54,10 +56,12 @@ export default {
       dialog: this.value,
       notice: {
         name: '',
+        category: '',
         startDate: '',
         endDate: '',
         contents: '',
       },
+      category: ['EVENT','NOTICE','POPUP'],
       selectedFile: null,
       contents: '',
     };
@@ -81,6 +85,7 @@ export default {
       const formData = new FormData();
       formData.append('imagePath', this.selectedFile);
       formData.append('name', this.notice.name);
+      formData.append('category', this.notice.category);
       formData.append('startDate', this.notice.startDate);
       formData.append('endDate', this.notice.endDate);
       formData.append('contents', this.contents);
