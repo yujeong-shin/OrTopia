@@ -29,7 +29,7 @@
                     <td class="text-center">
                       {{ formatDateTime(sales.createdTime) }}
                     </td>
-                    <td class="text-center">{{ sales.buyerEmail }}</td>
+                    <td class="text-center">{{ sales.buyerName }}</td>
                     <td class="text-center">
                       {{ sales.itemName }}
                       <br>

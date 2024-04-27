@@ -294,9 +294,18 @@
           outlined
           tile
           class="pa-3 mb-3"
+          style="height: 170px"
           @click="showBuyListModal = true"
         >
-          <v-card-title class="headline">판매물품 관리</v-card-title>
+          <v-card-title class="headline">Item</v-card-title>
+          <v-card-subtitle class="grey--text">물품관리</v-card-subtitle>
+          <v-card-subtitle class="mt-3" style="height: 20px"></v-card-subtitle>
+          <v-card-subtitle class="grey--text small-text"
+            >판매자님께서 판매하실 상품의</v-card-subtitle
+          >
+          <v-card-subtitle class="grey--text small-text"
+            >정보 및 재고를 관리하실 수 있습니다.</v-card-subtitle
+          >
         </v-card>
       </v-col>
       <v-col cols="12" md="6">
@@ -304,9 +313,18 @@
           outlined
           tile
           class="pa-3 mb-3"
+          style="height: 170px"
           @click="showSellListModal = true"
         >
-          <v-card-title class="headline">판매내역 관리</v-card-title>
+          <v-card-title class="headline">History</v-card-title>
+          <v-card-subtitle class="grey--text">내역관리</v-card-subtitle>
+          <v-card-subtitle class="mt-3" style="height: 20px"></v-card-subtitle>
+          <v-card-subtitle class="grey--text small-text"
+            >판매자님의 주문에 대한</v-card-subtitle
+          >
+          <v-card-subtitle class="grey--text small-text"
+            >정보를 확인 및 관리하실 수 있습니다.</v-card-subtitle
+          >
         </v-card>
       </v-col>
     </v-row>
