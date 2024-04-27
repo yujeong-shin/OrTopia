@@ -354,4 +354,9 @@ public class ItemService {
         loveItemRepository.deleteById(optionalLoveItem.get().getId());
         return "delete success";
     }
+
+    public String getItemName(Long itemId) {
+        Item item = itemRepository.findImagePathById(itemId).orElseThrow(()->new OrTopiaException(ErrorCode.NOT_FOUND_ITEM));
+        return item.getName();
+    }
 }

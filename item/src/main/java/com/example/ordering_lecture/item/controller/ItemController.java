@@ -129,4 +129,9 @@ public class ItemController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("update success",itemService.loveAndDisLoveItem(email,itemId));
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
+    // 특정 아이템의 이름을 조회
+    @GetMapping("/{itemId}/itemName")
+    public String findNameById(@PathVariable Long itemId){
+        return itemService.getItemName(itemId);
+    }
 }
