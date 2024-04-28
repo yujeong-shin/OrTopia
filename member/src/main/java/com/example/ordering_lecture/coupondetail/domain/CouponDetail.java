@@ -37,7 +37,7 @@ public class CouponDetail {
     @OneToMany(mappedBy = "couponDetail",fetch = FetchType.LAZY, orphanRemoval = true,cascade = CascadeType.ALL)
     private List<Coupon> coupons;
 
-    @OneToMany(mappedBy = "couponDetail",fetch = FetchType.LAZY, orphanRemoval = true,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "coupon", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<MemberCoupon> memberCoupons;
     public void updateName(String name) {
         this.name = name;

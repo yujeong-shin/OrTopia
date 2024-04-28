@@ -25,19 +25,20 @@ public class CouponService {
     }
 
     public List<CouponResponseDto> createCoupon(CouponRequestDto couponRequestDto) {
-        //TODO:에러메세지 수정
-        CouponDetail couponDetail = couponDetailRepository.findById(couponRequestDto.getCouponDetailId()).orElseThrow();
-        List<Coupon> coupons = new ArrayList<>();
-        for (Long itemId : couponRequestDto.getItemIdList()) {
-            Coupon coupon = Coupon.builder()
-                    .itemId(itemId)
-                    .couponDetail(couponDetail)
-                    .build();
-            coupons.add(coupon);
-            couponRepository.save(coupon);
-        }
+        CouponDetail couponDetail = couponDetailRepository.findById(couponRequestDto.getCouponDetailId())
+                .orElseThrow(() -> new RuntimeException("쿠폰 세부 정보를 찾을 수 없습니다."));
+
+        List<Coupon> coupons = couponRequestDto.getItemId().stream()
+                .map(itemId -> Coupon.builder()
+                        .itemId(itemId)
+                        .couponDetail(couponDetail)
+                        .build())
+                .collect(Collectors.toList());
+
+        couponRepository.saveAll(coupons); // 일괄 저장
+
         return coupons.stream()
-                .map(a->CouponResponseDto.toDto(a,couponDetail))
+                .map(coupon -> CouponResponseDto.toDto(coupon, couponDetail))
                 .collect(Collectors.toList());
     }
 }
