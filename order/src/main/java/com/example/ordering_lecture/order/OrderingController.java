@@ -30,14 +30,6 @@ public class OrderingController {
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);
 
     }
-
-    // 주문 수정
-    @PatchMapping("/update")
-    public ResponseEntity<OrTopiaResponse> updateOrder(@RequestBody OrderUpdateDto orderUpdateDto){
-        OrderResponseDto orderResponseDto = orderingService.updateOrder(orderUpdateDto);
-        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("update success",orderResponseDto);
-        return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
-    }
     // 전체 주문 조회
     @GetMapping("/all_order")
     public ResponseEntity<OrTopiaResponse> showAllOrder(){
@@ -66,30 +58,30 @@ public class OrderingController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", orderResponseDtos);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
-    @GetMapping("/total_price")
-    public ResponseEntity<OrTopiaResponse> totalPrice(@RequestHeader("myEmail") String email){
-        List<BuyerGraphPriceData> buyerGraphPriceDatas = orderingService.getBuyerGraphPriceData(email);
-        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",buyerGraphPriceDatas);
-        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
-    }
-    @GetMapping("/total_count")
-    public ResponseEntity<OrTopiaResponse> totalCount(@RequestHeader("myEmail") String email){
-        List<BuyerGraphCountData> buyerGraphCountDatas = orderingService.getBuyerGraphCountData(email);
-        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",buyerGraphCountDatas);
-        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
-    }
-    @GetMapping("/total_price/seller")
-    public ResponseEntity<OrTopiaResponse> totalPriceBySeller(@RequestHeader("myEmail") String email){
-        Long sellerId = feignClient.findIdByMemberEmail(email);
-        List<SellerGraphPriceData> sellerGraphPriceDatas = orderingService.getSellerGraphPriceData(sellerId);
-        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",sellerGraphPriceDatas);
-        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
-    }
-    @GetMapping("/total_count/seller")
-    public ResponseEntity<OrTopiaResponse> totalCountBySeller(@RequestHeader("myEmail") String email){
-        Long sellerId = feignClient.findIdByMemberEmail(email);
-        List<SellerGraphCountData> sellerGraphCountDatas = orderingService.getSellerGraphCountData(sellerId);
-        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",sellerGraphCountDatas);
-        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
-    }
+//    @GetMapping("/total_price")
+//    public ResponseEntity<OrTopiaResponse> totalPrice(@RequestHeader("myEmail") String email){
+//        List<BuyerGraphPriceData> buyerGraphPriceDatas = orderingService.getBuyerGraphPriceData(email);
+//        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",buyerGraphPriceDatas);
+//        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+//    }
+//    @GetMapping("/total_count")
+//    public ResponseEntity<OrTopiaResponse> totalCount(@RequestHeader("myEmail") String email){
+//        List<BuyerGraphCountData> buyerGraphCountDatas = orderingService.getBuyerGraphCountData(email);
+//        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",buyerGraphCountDatas);
+//        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+//    }
+//    @GetMapping("/total_price/seller")
+//    public ResponseEntity<OrTopiaResponse> totalPriceBySeller(@RequestHeader("myEmail") String email){
+//        Long sellerId = feignClient.findIdByMemberEmail(email);
+//        List<SellerGraphPriceData> sellerGraphPriceDatas = orderingService.getSellerGraphPriceData(sellerId);
+//        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",sellerGraphPriceDatas);
+//        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+//    }
+//    @GetMapping("/total_count/seller")
+//    public ResponseEntity<OrTopiaResponse> totalCountBySeller(@RequestHeader("myEmail") String email){
+//        Long sellerId = feignClient.findIdByMemberEmail(email);
+//        List<SellerGraphCountData> sellerGraphCountDatas = orderingService.getSellerGraphCountData(sellerId);
+//        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",sellerGraphCountDatas);
+//        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+//    }
 }
