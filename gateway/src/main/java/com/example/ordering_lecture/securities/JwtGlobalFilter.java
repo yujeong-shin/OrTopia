@@ -40,6 +40,7 @@ public class JwtGlobalFilter implements GlobalFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String reqUri = request.getURI().getPath();
+        System.out.println(reqUri);
         boolean isAllowed = allowUrl.stream().anyMatch(uri -> antPathMatcher.match(uri, reqUri));
 
         if (isAllowed) {
