@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: ortopia-gateway-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ortopia-gateway
+  template:
+  # pod의 네임
+    metadata:
+      labels:
+        app: ortopia-gateway
+    spec:
+      containers:
+      - name: item
+        image: 168123310368.dkr.ecr.ap-northeast-2.amazonaws.com/ortopia_gateway:latest
+        ports:
+        - containerPort: 8080
+        resources:
+          # 컨테이너가 사용할 수 있는 리소스의 최대치
+          limits:
+            cpu: "1"
+            memory: "500Mi"
+          # 컨테이너가 시작될 때 보장 받아야하는 최소 자원  
+          requests:
+            cpu: "0.5"
+            memory: "250Mi"
+          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ortopia-gateway-service
+spec:
+# ClusterIp는 클러스터 내부에서만 접근 가능한 service를 생성
+  type: ClusterIP
+  ports:
+  - name : http
+    port: 80
+    targetPort: 8080
+  selector:
+    app: ortopia-gateway
