@@ -67,7 +67,7 @@ jobs:
       - name: eks kubectl apply gateway
         run: |
           kubectl apply -f ./gateway/k8s/ortopia-gateway-depl-serv.yml
-          kubectl rollout restart deployment jy-item-dep
+          kubectl rollout restart deployment ortopia-gateway-depl
 
 #      - name: eks kubectl apply member
 #        run: |
