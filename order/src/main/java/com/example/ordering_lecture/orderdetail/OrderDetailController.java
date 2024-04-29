@@ -59,4 +59,11 @@ public class OrderDetailController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",sellerGraphCountDatas);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
+    @GetMapping("/each_item_price/seller")
+    public ResponseEntity<OrTopiaResponse> eachItemPriceBySeller(@RequestHeader("myEmail") String email){
+        Long sellerId = memberServiceClient.searchIdByEmail(email);
+        List<SellerGraphItemPriceData> sellerGraphItemPriceData = orderDetailService.getSellerEachItemPriceData(sellerId);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",sellerGraphItemPriceData);
+        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+    }
 }
