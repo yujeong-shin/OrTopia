@@ -130,7 +130,7 @@ public class ItemController {
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
     // 특정 아이템의 이름을 조회
-    @GetMapping("/{itemId}/itemName")
+    @PostMapping("/{itemId}/itemName")
     public String findNameById(@PathVariable Long itemId){
         return itemService.getItemName(itemId);
     }

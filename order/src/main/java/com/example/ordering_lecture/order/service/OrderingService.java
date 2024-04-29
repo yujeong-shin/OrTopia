@@ -2,14 +2,11 @@ package com.example.ordering_lecture.order.service;
 
 import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
-import com.example.ordering_lecture.feign.MemberServiceClient;
 import com.example.ordering_lecture.order.dto.*;
 import com.example.ordering_lecture.order.entity.Ordering;
 import com.example.ordering_lecture.order.repository.OrderRepository;
-import com.example.ordering_lecture.orderdetail.dto.BuyerGraphCountData;
-import com.example.ordering_lecture.orderdetail.dto.BuyerGraphPriceData;
-import com.example.ordering_lecture.orderdetail.dto.OrderDetailRequestDto;
-import com.example.ordering_lecture.orderdetail.dto.OrderDetailResponseDto;
+import com.example.ordering_lecture.orderdetail.controller.MemberServiceClient;
+import com.example.ordering_lecture.orderdetail.dto.*;
 import com.example.ordering_lecture.orderdetail.entity.OrderDetail;
 import com.example.ordering_lecture.orderdetail.repository.OrderDetailRepository;
 import com.example.ordering_lecture.payment.controller.ItemServiceClient;
@@ -135,16 +132,16 @@ public class OrderingService {
         LocalDateTime startDate = endDate.minusWeeks(2);
         return orderDetailRepository.findCompletedOrdersByEmailAndDateRange(startDate, endDate, email);
     }
-//    // 일별 판매 금액을 위한 데이터
-//    public List<SellerGraphPriceData> getSellerGraphPriceData(Long sellerId) {
-//        LocalDateTime endDate = LocalDateTime.now();
-//        LocalDateTime startDate = endDate.minusWeeks(2);
-//        return orderDetailRepository.findSalesData(startDate, endDate, sellerId);
-//    }
-//    // 일별 판매 건수를 위한 데이터
-//    public List<SellerGraphCountData> getSellerGraphCountData(Long sellerId) {
-//        LocalDateTime endDate = LocalDateTime.now();
-//        LocalDateTime startDate = endDate.minusWeeks(2);
-//        return orderDetailRepository.findSalesDataBySellerIdAndDateRange(startDate, endDate, sellerId);
-//    }
+    // 일별 판매 금액을 위한 데이터
+    public List<SellerGraphPriceData> getSellerGraphPriceData(Long sellerId) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusWeeks(2);
+        return orderDetailRepository.findSalesData(startDate, endDate, sellerId);
+    }
+    // 일별 판매 건수를 위한 데이터
+    public List<SellerGraphCountData> getSellerGraphCountData(Long sellerId) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusWeeks(2);
+        return orderDetailRepository.findSalesDataBySellerIdAndDateRange(startDate, endDate, sellerId);
+    }
 }
