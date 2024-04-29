@@ -1,4 +1,4 @@
-package com.example.ordering_lecture.order.dto;
+package com.example.ordering_lecture.orderdetail.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Data
 @AllArgsConstructor
-public class SellerGraphPriceData {
+public class SellerGraphCountData {
     private Date createdTime;
-    private Long price;
+    private Long count;
 }

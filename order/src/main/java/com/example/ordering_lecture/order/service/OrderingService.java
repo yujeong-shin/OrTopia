@@ -2,12 +2,11 @@ package com.example.ordering_lecture.order.service;
 
 import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
-import com.example.ordering_lecture.feign.MemberServiceClient;
 import com.example.ordering_lecture.order.dto.*;
 import com.example.ordering_lecture.order.entity.Ordering;
 import com.example.ordering_lecture.order.repository.OrderRepository;
-import com.example.ordering_lecture.orderdetail.dto.OrderDetailRequestDto;
-import com.example.ordering_lecture.orderdetail.dto.OrderDetailResponseDto;
+import com.example.ordering_lecture.orderdetail.controller.MemberServiceClient;
+import com.example.ordering_lecture.orderdetail.dto.*;
 import com.example.ordering_lecture.orderdetail.entity.OrderDetail;
 import com.example.ordering_lecture.orderdetail.repository.OrderDetailRepository;
 import com.example.ordering_lecture.payment.controller.ItemServiceClient;
@@ -16,6 +15,7 @@ import com.example.ordering_lecture.redis.RedisService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -118,30 +118,30 @@ public class OrderingService {
         }
         return orderResponseDtos;
     }
-//    // 일별 구매 금액을 위한 데이터
-//    public List<BuyerGraphPriceData> getBuyerGraphPriceData(String email) {
-//        LocalDateTime endDate = LocalDateTime.now();
-//        LocalDateTime startDate = endDate.minusWeeks(2);
-//        System.out.println("startDate = " + startDate);
-//        System.out.println("endDate = " + endDate);
-//        return orderRepository.findSumPriceByDateBetweenAndStatueAndEmail(startDate, endDate, email);
-//    }
-//    // 일별 구매 건수를 위한 데이터
-//    public List<BuyerGraphCountData> getBuyerGraphCountData(String email) {
-//        LocalDateTime endDate = LocalDateTime.now();
-//        LocalDateTime startDate = endDate.minusWeeks(2);
-//        return orderRepository.findCompletedOrdersByEmailAndDateRange(startDate, endDate, email);
-//    }
-//    // 일별 판매 금액을 위한 데이터
-//    public List<SellerGraphPriceData> getSellerGraphPriceData(Long sellerId) {
-//        LocalDateTime endDate = LocalDateTime.now();
-//        LocalDateTime startDate = endDate.minusWeeks(2);
-//        return orderDetailRepository.findSalesData(startDate, endDate, sellerId);
-//    }
-//    // 일별 판매 건수를 위한 데이터
-//    public List<SellerGraphCountData> getSellerGraphCountData(Long sellerId) {
-//        LocalDateTime endDate = LocalDateTime.now();
-//        LocalDateTime startDate = endDate.minusWeeks(2);
-//        return orderDetailRepository.findSalesDataBySellerIdAndDateRange(startDate, endDate, sellerId);
-//    }
+    // 일별 구매 금액을 위한 데이터
+    public List<BuyerGraphPriceData> getBuyerGraphPriceData(String email) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusWeeks(2);
+        System.out.println("startDate = " + startDate);
+        System.out.println("endDate = " + endDate);
+        return orderDetailRepository.findSumPriceByDateBetweenAndStatueAndEmail(startDate, endDate, email);
+    }
+    // 일별 구매 건수를 위한 데이터
+    public List<BuyerGraphCountData> getBuyerGraphCountData(String email) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusWeeks(2);
+        return orderDetailRepository.findCompletedOrdersByEmailAndDateRange(startDate, endDate, email);
+    }
+    // 일별 판매 금액을 위한 데이터
+    public List<SellerGraphPriceData> getSellerGraphPriceData(Long sellerId) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusWeeks(2);
+        return orderDetailRepository.findSalesData(startDate, endDate, sellerId);
+    }
+    // 일별 판매 건수를 위한 데이터
+    public List<SellerGraphCountData> getSellerGraphCountData(Long sellerId) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusWeeks(2);
+        return orderDetailRepository.findSalesDataBySellerIdAndDateRange(startDate, endDate, sellerId);
+    }
 }

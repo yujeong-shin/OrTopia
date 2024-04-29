@@ -12,6 +12,8 @@ import java.util.List;
 public interface ItemServiceClient {
     @PostMapping("item/search/optionDetailId/{itemId}")
     Long searchIdByOptionDetail(@PathVariable(name = "itemId") Long itemId,@RequestBody List<String> values);
-    @GetMapping(value="item/{itemId}/itemName")
-    String findNameById(@PathVariable("itemId") Long itemId);
+    @PostMapping("item/{itemId}/itemName")
+    String findNameById(@PathVariable(name="itemId") Long itemId);
+
+
 }
