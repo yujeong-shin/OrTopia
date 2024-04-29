@@ -478,7 +478,7 @@ export default {
         .getElementById("dailySalesAmountChart")
         .getContext("2d");
       new Chart(ctx, {
-        type: "line",
+        type: "bar",
         data: {
           labels: this.datesForSalesAmount,
           datasets: [
@@ -530,7 +530,7 @@ export default {
         .getElementById("dailySalesCountChart")
         .getContext("2d");
       new Chart(ctx, {
-        type: "bar",
+        type: "doughnut",
         data: {
           labels: this.datesForSalesCount,
           datasets: [
