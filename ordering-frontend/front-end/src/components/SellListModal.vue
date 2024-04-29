@@ -29,11 +29,12 @@
                     <td class="text-center">
                       {{ formatDateTime(sales.createdTime) }}
                     </td>
-                    <td class="text-center">{{ sales.buyerName }}</td>
+                    <td class="text-center">{{ sales.buyerEmail }}</td>
                     <td class="text-center">
                       {{ sales.itemName }}
-                      <br>
-                      {{ sales.options ? sales.options : '옵션 없음' }} / {{ sales.quantity }}
+                      <br />
+                      {{ sales.options ? sales.options : "옵션 없음" }} /
+                      {{ sales.quantity }}
                     </td>
                     <td class="text-center">{{ sales.totalPrice }}</td>
                     <td class="text-center">{{ sales.recipientName }}</td>
@@ -43,13 +44,8 @@
                     <td class="text-center">
                       <v-menu :location="location">
                         <template v-slot:activator="{ props }">
-                          <v-btn
-                            color="primary"
-                            dark
-                            flat
-                            v-bind="props"
-                          >
-                          변경
+                          <v-btn color="primary" dark flat v-bind="props">
+                            변경
                           </v-btn>
                         </template>
                         <v-list>
@@ -92,8 +88,13 @@ export default {
   data() {
     return {
       salesList: [],
-      statusOptions: ['PAID', 'PREPARE_DELIVERY', 'PROCEEDING_DELIVERY', 'COMPLETE_DELIVERY'],
-      location: 'bottom',
+      statusOptions: [
+        "PAID",
+        "PREPARE_DELIVERY",
+        "PROCEEDING_DELIVERY",
+        "COMPLETE_DELIVERY",
+      ],
+      location: "bottom",
     };
   },
   methods: {
@@ -114,7 +115,7 @@ export default {
           {
             headers: {
               myEmail: `${email}`,
-              myRole : `${role}`,
+              myRole: `${role}`,
               Authorization: `Bearer ${token}`,
               "X-Refresh-Token": `${refreshToken}`,
             },
