@@ -1,10 +1,10 @@
 package com.example.ordering_lecture.order;
 
+import com.example.ordering_lecture.common.ErrorCode;
+import com.example.ordering_lecture.common.OrTopiaException;
 import com.example.ordering_lecture.common.OrTopiaResponse;
-import com.example.ordering_lecture.feign.FeignClient;
 import com.example.ordering_lecture.order.dto.*;
 import com.example.ordering_lecture.order.service.OrderingService;
-import com.example.ordering_lecture.redis.RedisService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +14,8 @@ import java.util.List;
 @RestController
 public class OrderingController {
     private final OrderingService orderingService;
-    private final RedisService redisService;
-    private final FeignClient feignClient;
-    public OrderingController(OrderingService orderingService, RedisService redisService, FeignClient feignClient) {
+    public OrderingController(OrderingService orderingService) {
         this.orderingService = orderingService;
-        this.redisService = redisService;
-        this.feignClient = feignClient;
     }
 
     //주문 생성
@@ -57,6 +53,16 @@ public class OrderingController {
         List<OrderResponseDto> orderResponseDtos = orderingService.showMyOrdersDetail(email);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", orderResponseDtos);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
+    }
+    // 판매자가 자신의 판매 내역 조회
+    @GetMapping("/mySales")
+    public ResponseEntity<OrTopiaResponse> findMyAllItem(@RequestHeader("myEmail") String email, @RequestHeader("myRole") String role){
+        if(!role.equals("SELLER")){
+            throw new OrTopiaException(ErrorCode.UN_AUTHORIZE_ERROR);
+        }
+        List<OrderResponseForSellerDto> orderResponseForSellerDtos = orderingService.findMyAllSales(email);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",orderResponseForSellerDtos);
+        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
 //    @GetMapping("/total_price")
 //    public ResponseEntity<OrTopiaResponse> totalPrice(@RequestHeader("myEmail") String email){

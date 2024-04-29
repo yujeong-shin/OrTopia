@@ -28,6 +28,7 @@ public class OrderDetailService {
         orderDetail.updateReview();
     }
 
+    @Transactional
     public OrderDetailResponseDto updateOrder(OrderDetailUpdateDto orderDetailUpdateDto) {
         OrderDetail orderDetail = orderDetailRepository.findById(orderDetailUpdateDto.getId()).orElseThrow();
         orderDetail.updateStatue(orderDetailUpdateDto.getStatue());
