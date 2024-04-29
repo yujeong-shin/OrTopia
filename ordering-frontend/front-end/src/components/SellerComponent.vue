@@ -295,7 +295,7 @@
           tile
           class="pa-3 mb-3"
           style="height: 170px"
-          @click="showBuyListModal = true"
+          @click="SellerItemManageModal = true"
         >
           <v-card-title class="headline">Item</v-card-title>
           <v-card-subtitle class="grey--text">물품관리</v-card-subtitle>
