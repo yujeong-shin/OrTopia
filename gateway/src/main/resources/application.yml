@@ -18,7 +18,7 @@ spring:
             - Path=/member-service/**
           filters:
             - StripPrefix=1
-          uri: lb://member-service
+          uri: lb://ortopia-member-service
         - id: order-service
           predicates:
             - Path=/order-service/**
