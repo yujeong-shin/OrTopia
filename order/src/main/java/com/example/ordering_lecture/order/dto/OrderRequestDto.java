@@ -17,12 +17,17 @@ public class OrderRequestDto {
     private int totalPrice;
     @NotNull
     private Long addressId;
+    private Long orderNumber;
     @NotNull
     private String email;
     @NotNull
     private String paymentMethod;
     @NotNull
-    private String recipient;
+    private String recipientName;
+    @NotNull
+    private String phoneNumber;
+    @NotNull
+    private String pgToken;
     private List<OrderDetailRequestDto> orderDetailRequestDtoList;
 
     public Ordering toEntity(){
@@ -36,7 +41,8 @@ public class OrderRequestDto {
         return Ordering.builder()
                 .addressId(this.addressId)
                 .totalPrice(this.totalPrice)
-                .recipient(this.recipient)
+                .recipientName(this.recipientName)
+                .phoneNumber(this.phoneNumber)
                 .email(this.email)
                 .PaymentMethod(paymentMethod)
                 .build();

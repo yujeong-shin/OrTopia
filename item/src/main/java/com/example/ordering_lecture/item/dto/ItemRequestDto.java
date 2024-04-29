@@ -29,23 +29,24 @@ public class ItemRequestDto {
     private int minimumStock;
     private boolean delYN;
     private boolean isBaned;
-    @NotNull(message =  "EMPTY_ITEM_SELLER")
+//    @NotNull(message =  "EMPTY_ITEM_SELLER")
     private Long sellerId;
 
-    public Item toEntity() throws OrTopiaException {
+    public Item toEntity(String fileUrl, Long SellerId) throws OrTopiaException {
         //TODO : S3 저장 후 나오는 url를 넣어줌
-        String fileUrl = "testing";
         try {
             Category category = null;
             category = Category.valueOf(this.getCategory());
             return Item.builder()
+                    .reviewNumber(0L)
+                    .score(0L)
                     .name(this.getName())
                     .price(this.getPrice())
                     .category(category)
                     .stock(this.getStock())
                     .detail(this.getDetail())
                     .minimumStock(this.getMinimumStock())
-                    .sellerId(this.getSellerId())
+                    .sellerId(SellerId)
                     .imagePath(fileUrl)
                     .build();
         }catch (Exception e){
