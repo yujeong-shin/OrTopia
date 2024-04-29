@@ -2,6 +2,8 @@ package com.example.ordering_lecture.membercoupon.cotroller;
 
 import com.example.ordering_lecture.address.dto.AddressRequestDto;
 import com.example.ordering_lecture.common.OrTopiaResponse;
+import com.example.ordering_lecture.coupondetail.dto.CouponDetailRequestDto;
+import com.example.ordering_lecture.coupondetail.dto.CouponDetailResponseDto;
 import com.example.ordering_lecture.membercoupon.dto.MemberCouponRequestDto;
 import com.example.ordering_lecture.membercoupon.dto.MemberCouponResponseDto;
 import com.example.ordering_lecture.membercoupon.service.MemberCouponService;
@@ -15,7 +17,6 @@ import java.util.List;
 @RestController
 public class MemberCouponController {
     private final MemberCouponService memberCouponService;
-
     public MemberCouponController(MemberCouponService memberCouponService) {
         this.memberCouponService = memberCouponService;
     }

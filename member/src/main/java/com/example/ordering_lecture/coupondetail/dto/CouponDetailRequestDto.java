@@ -17,7 +17,9 @@ import javax.validation.constraints.NotNull;
 public class CouponDetailRequestDto {
     @NotNull
     private String name;
+    @NotNull
     private String startDate;
+    @NotNull
     private String endDate;
     private int rateDiscount;
     private int fixDiscount;

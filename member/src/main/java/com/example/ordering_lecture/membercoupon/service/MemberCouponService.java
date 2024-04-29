@@ -1,5 +1,7 @@
 package com.example.ordering_lecture.membercoupon.service;
 
+import com.example.ordering_lecture.common.ErrorCode;
+import com.example.ordering_lecture.common.OrTopiaException;
 import com.example.ordering_lecture.coupon.domain.Coupon;
 import com.example.ordering_lecture.coupon.repository.CouponRepository;
 import com.example.ordering_lecture.member.repository.MemberRepository;
@@ -50,10 +52,10 @@ public class MemberCouponService {
     }
     public void useCoupon(String email, Long couponId) {
         Long memberId = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Member not found"))
+                .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER))
                 .getId();
         MemberCoupon coupon = memberCouponRepository.findByMemberIdAndCouponId(memberId, couponId)
-                .orElseThrow(() -> new RuntimeException("Coupon not found"));
+                .orElseThrow(() -> new OrTopiaException(ErrorCode.COUPON_NOT_FOUND));
         memberCouponRepository.delete(coupon);
     }
 }

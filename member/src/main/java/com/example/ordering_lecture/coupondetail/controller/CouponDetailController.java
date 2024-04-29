@@ -31,7 +31,6 @@ public class CouponDetailController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", couponDetails);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
-
     @PatchMapping("/couponupdate/{id}")
     public ResponseEntity<OrTopiaResponse> updateCoupon(@PathVariable Long id, @RequestBody CouponDetailUpdateDto couponDetailUpdateDto) {
         CouponDetailResponseDto couponDetailResponseDto = couponDetailService.updateCoupons(id, couponDetailUpdateDto);
