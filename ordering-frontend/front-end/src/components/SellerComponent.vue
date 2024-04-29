@@ -295,7 +295,7 @@
           tile
           class="pa-3 mb-3"
           style="height: 170px"
-          @click="SellerItemManageModal = true"
+          @click="showSellerItemManageModal = true"
         >
           <v-card-title class="headline">Item</v-card-title>
           <v-card-subtitle class="grey--text">물품관리</v-card-subtitle>
@@ -344,6 +344,10 @@
       v-model="showSellListModal"
       @update:dialog="updateDialog('showSellListModal', $event)"
     ></SellListModal>
+    <SellerItemManageModal
+      v-model="showSellerItemManageModal"
+      @update:dialog="updateDialog('showSellerItemManageModal', $event)"
+    ></SellerItemManageModal>
   </v-container>
 </template>
 
@@ -351,7 +355,7 @@
 import axios from "axios";
 import Chart from "chart.js/auto";
 import ManageItemsModal from "@/components/ManageItemsModal.vue";
-import SellerItemManageModal from "./SellerItemManageModal.vue";
+import SellerItemManageModal from "@/components/SellerItemManageModal.vue";
 import GradeInfoDeailModal from "@/components/GradeInfoDeailModal.vue";
 import SellListModal from "@/components/SellListModal.vue";
 export default {
@@ -378,6 +382,7 @@ export default {
       showBuyListModal: false,
       showGradeInfoDeailModal: false,
       showSellListModal: false,
+      showSellerItemManageModal: false,
       seller: [],
       // 판매 그래프 시각화
       dailySalesAmountChartInfo: {},
