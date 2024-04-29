@@ -5,6 +5,8 @@ import com.example.ordering_lecture.common.OrTopiaException;
 import com.example.ordering_lecture.common.OrTopiaResponse;
 import com.example.ordering_lecture.order.dto.*;
 import com.example.ordering_lecture.order.service.OrderingService;
+import com.example.ordering_lecture.orderdetail.dto.BuyerGraphCountData;
+import com.example.ordering_lecture.orderdetail.dto.BuyerGraphPriceData;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -64,18 +66,18 @@ public class OrderingController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",orderResponseForSellerDtos);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
-//    @GetMapping("/total_price")
-//    public ResponseEntity<OrTopiaResponse> totalPrice(@RequestHeader("myEmail") String email){
-//        List<BuyerGraphPriceData> buyerGraphPriceDatas = orderingService.getBuyerGraphPriceData(email);
-//        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",buyerGraphPriceDatas);
-//        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
-//    }
-//    @GetMapping("/total_count")
-//    public ResponseEntity<OrTopiaResponse> totalCount(@RequestHeader("myEmail") String email){
-//        List<BuyerGraphCountData> buyerGraphCountDatas = orderingService.getBuyerGraphCountData(email);
-//        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",buyerGraphCountDatas);
-//        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
-//    }
+    @GetMapping("/total_price")
+    public ResponseEntity<OrTopiaResponse> totalPrice(@RequestHeader("myEmail") String email){
+        List<BuyerGraphPriceData> buyerGraphPriceDatas = orderingService.getBuyerGraphPriceData(email);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",buyerGraphPriceDatas);
+        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+    }
+    @GetMapping("/total_count")
+    public ResponseEntity<OrTopiaResponse> totalCount(@RequestHeader("myEmail") String email){
+        List<BuyerGraphCountData> buyerGraphCountDatas = orderingService.getBuyerGraphCountData(email);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",buyerGraphCountDatas);
+        return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
+    }
 //    @GetMapping("/total_price/seller")
 //    public ResponseEntity<OrTopiaResponse> totalPriceBySeller(@RequestHeader("myEmail") String email){
 //        Long sellerId = feignClient.findIdByMemberEmail(email);
