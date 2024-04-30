@@ -39,10 +39,3 @@ jwt:
   secretKey: mysecret
   token:
     access-expiration-time: 1800000
-#eureka:
-#  client:
-#    serviceUrl:
-#      defaultZone: http://localhost:8761/eureka/
-#  instance:
-#    preferIpAddress: true
-#    hostname: localhost

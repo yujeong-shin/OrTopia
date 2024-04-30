@@ -1,6 +1,10 @@
 server:
   port: 8084
 spring:
+  cloud :
+    kubernetes:
+      discovery:
+        all-namespaces: true #모든 네임스페이스에서 활성화
   security:
     user:
       name: user
