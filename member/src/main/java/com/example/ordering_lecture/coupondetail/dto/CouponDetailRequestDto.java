@@ -21,6 +21,7 @@ public class CouponDetailRequestDto {
     private String startDate;
     @NotNull
     private String endDate;
+    private int firstCome;
     private int rateDiscount;
     private int fixDiscount;
 
@@ -29,6 +30,7 @@ public class CouponDetailRequestDto {
                 .name(this.name)
                 .startDate(this.startDate)
                 .endDate(this.endDate)
+                .firstCome(this.firstCome)
                 .rateDiscount(this.rateDiscount)
                 .fixDiscount(this.fixDiscount)
                 .member(member)

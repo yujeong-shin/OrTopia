@@ -26,6 +26,8 @@ public class CouponDetail {
     private String startDate;
     @Column(nullable = false)
     private String endDate;
+    @Column(nullable = false)
+    private int firstCome; // 선착순
     @Column
     private int rateDiscount;
     @Column
@@ -50,6 +52,7 @@ public class CouponDetail {
     public void updateEndDate(String endDate) {
         this.endDate = endDate;
     }
+    public void updateFirstCome(int firstCome) {this.firstCome = firstCome; }
 
     public void updateRateDiscount(int rateDiscount) {
         this.rateDiscount = rateDiscount;

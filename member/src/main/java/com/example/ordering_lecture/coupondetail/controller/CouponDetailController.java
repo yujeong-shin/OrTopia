@@ -37,7 +37,6 @@ public class CouponDetailController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("update success", couponDetailResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
-
     @DeleteMapping("/coupon/delete/{id}")
     public ResponseEntity<OrTopiaResponse> deleteCoupon(@PathVariable Long id) {
         couponDetailService.deleteCoupon(id);

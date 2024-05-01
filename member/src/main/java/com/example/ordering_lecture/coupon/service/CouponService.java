@@ -41,4 +41,10 @@ public class CouponService {
                 .map(coupon -> CouponResponseDto.toDto(coupon, couponDetail))
                 .collect(Collectors.toList());
     }
+    public List<CouponResponseDto> getCoupon(Long itemId) {
+        List<Coupon> coupons = couponRepository.findByItemId(itemId);
+        return coupons.stream()
+                .map(coupon -> CouponResponseDto.toDto(coupon, coupon.getCouponDetail()))
+                .collect(Collectors.toList());
+    }
 }
