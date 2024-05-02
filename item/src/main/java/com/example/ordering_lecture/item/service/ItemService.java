@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -358,5 +359,21 @@ public class ItemService {
     public String getItemName(Long itemId) {
         Item item = itemRepository.findImagePathById(itemId).orElseThrow(()->new OrTopiaException(ErrorCode.NOT_FOUND_ITEM));
         return item.getName();
+    }
+
+    public List<SellerGraphStockData> getEachItemStockData(Long sellerId) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusWeeks(2);
+        List<Object[]> ageAndCountData = itemOptionQuantityRepository.findItemStockBySellerId(startDate, endDate, sellerId);
+        List<SellerGraphStockData> result = new ArrayList<>();
+        for(Object[] data : ageAndCountData) {
+            System.out.println("data[0] = " + data[0]);
+            System.out.println("data[1] = " + data[1]);
+            String itemName = itemRepository.findById((Long) data[0]).orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_ITEM)).getName();
+            // age, count 저장
+            SellerGraphStockData sellerGraphStockData = new SellerGraphStockData(itemName, (Long) data[1]);
+            result.add(sellerGraphStockData);
+        }
+        return result;
     }
 }
