@@ -1,11 +1,21 @@
 package com.example.ordering_lecture.item.dto;
 
 import com.example.ordering_lecture.item.entity.Item;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ItemResponseDto {
     private Long id;
     private String name;
@@ -18,9 +28,17 @@ public class ItemResponseDto {
     private boolean delYN;
     private boolean isBaned;
     private Long sellerId;
+    private List<ItemOptionResponseDto> itemOptionResponseDtoList;
+    private String createdTime;
+    private Long reviewNumber;
+    private Long score;
+    private boolean isLove = false;
+
 
     public static ItemResponseDto toDto(Item item){
         return ItemResponseDto.builder()
+                .reviewNumber(item.getReviewNumber())
+                .score(item.getScore())
                 .name(item.getName())
                 .imagePath(item.getImagePath())
                 .price(item.getPrice())
@@ -32,6 +50,8 @@ public class ItemResponseDto {
                 .delYN(item.isDelYN())
                 .isBaned(item.isBaned())
                 .stock(item.getStock())
+                .createdTime(item.getCreatedTime().toString())
+                .itemOptionResponseDtoList(new ArrayList<>())
                 .build();
     }
 }

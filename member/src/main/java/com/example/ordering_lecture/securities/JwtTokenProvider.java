@@ -29,7 +29,6 @@ public class JwtTokenProvider {
     @Value("${jwt.token.refresh-expiration-time}")
     private long refreshExpirationTime;
 
-
     public String createAccessToken(String email, String role) {
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("role",role);
@@ -58,4 +57,5 @@ public class JwtTokenProvider {
 
         return refreshToken;
     }
+
 }

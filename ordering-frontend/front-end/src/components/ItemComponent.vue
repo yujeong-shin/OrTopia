@@ -76,6 +76,9 @@
       <v-row>
       <!-- 첫 번째 열 -->
       <v-col cols="12">
+      <v-btn large color="pink" @click="showFirstComeModal = true" class="aggressive-button">선착순 쿠폰받으러 가기</v-btn>
+    </v-col>
+      <v-col cols="12">
         <p class="grid-text">나와 취향이 비슷한 회원들이 구매한 상품</p>
       </v-col>
       </v-row>
@@ -159,13 +162,20 @@
       <v-img :src="product.imagePath" height="100px"></v-img>
     </v-card>
   </div>
+  <first-come-modal v-model="showFirstComeModal" :item-id="itemId"></first-come-modal>
 </template>
 <script>
 import axios from "axios";
 import { mapActions } from "vuex";
+import FirstComeModal from './FirstComeModal.vue';
+
 export default {
+  components: {
+    FirstComeModal
+  },
   data() {
     return {
+      showFirstComeModal: false,
       itemId: null,
       item: [],
       selectedOptions:[],
@@ -183,6 +193,7 @@ export default {
   created() {
     this.itemId = this.$route.params.id;
     this.getItemInfo(); 
+    console.log("Item ID:", this.itemId);
     this.getRecommend();
     this.getReview();
 },
