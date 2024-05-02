@@ -1,0 +1,113 @@
+name: deploy order backend
+
+on:
+  push:
+    branches:
+      - devops_test
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout github
+        uses: actions/checkout@v2
+
+      - name: install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "v1.25.9"
+        id: install
+
+      - name: configure aws
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ID }}
+          aws-region: ap-northeast-2
+
+      - name: update cluster information
+        run: aws eks update-kubeconfig --name ortopia_cluster --region ap-northeast-2
+
+      - name: Login to ecr
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: build and push docker gateway image
+        env:
+          REGISTRY: 168123310368.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: ortopia_gateway
+          IMAGE_TAG: latest
+        run: |
+          docker build \
+          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          -f ./gateway/Dockerfile ./gateway
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: build and push docker member image
+        env:
+          REGISTRY: 168123310368.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: ortopia_member
+          IMAGE_TAG: latest
+        run: |
+          docker build \
+          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          -f ./member/Dockerfile ./member
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: build and push docker item image
+        env:
+          REGISTRY: 168123310368.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: ortopia_item
+          IMAGE_TAG: latest
+        run: |
+          docker build \
+          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          -f ./member/Dockerfile ./item
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: build and push docker notice image
+        env:
+          REGISTRY: 168123310368.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: ortopia_notice
+          IMAGE_TAG: latest
+        run: |
+          docker build \
+          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          -f ./member/Dockerfile ./notice
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: build and push docker order image
+        env:
+          REGISTRY: 168123310368.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: ortopia_order
+          IMAGE_TAG: latest
+        run: |
+          docker build \
+          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          -f ./member/Dockerfile ./order
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: eks kubectl apply gateway
+        run: |
+          kubectl apply -f ./gateway/k8s/ortopia-gateway-depl-serv.yml
+          kubectl rollout restart deployment ortopia-gateway-depl
+
+      - name: eks kubectl apply member
+        run: |
+          kubectl apply -f ./member/k8s/ortopia-member-depl-serv.yml
+          kubectl rollout restart deployment ortopia-member-depl
+
+      - name: eks kubectl apply item
+        run: |
+          kubectl apply -f ./item/k8s/ortopia-item-depl-serv.yml
+          kubectl rollout restart deployment ortopia-item-depl
+
+      - name: eks kubectl apply notice
+        run: |
+          kubectl apply -f ./notice/k8s/ortopia-notice-depl-serv.yml
+          kubectl rollout restart deployment ortopia-notice-depl
+
+      - name: eks kubectl apply order
+        run: |
+          kubectl apply -f ./order/k8s/ortopia-order-depl-serv.yml
+          kubectl rollout restart deployment ortopia-order-depl

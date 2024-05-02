@@ -1,0 +1,40 @@
+#server:
+#  port: 8082
+spring:
+  redis:
+    host: ${REDIS_HOST}
+    port: 6379
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://${DB_HOST}:3306/item_server
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+#    유레카 서버에 아래 application name으로 서비스명을 등록.
+  application:
+    name: item-service
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show_sql: true
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://localhost:8761/eureka/
+#  instance:
+#    preferIpAddress: true
+#    hostname: localhost
+cloud:
+  kubernetes:
+    discovery:
+      all-namespaces: true #모든 네임스페이스에서 활성화
+  aws:
+    s3:
+      bucket: ${S3_NAME}
+    stack.auto: false
+    region.static: ap-northeast-2
+    credentials:
+      accessKey: ${S3_ACCESS_KEY}
+      secretKey: ${S3_SECRET_KEY}

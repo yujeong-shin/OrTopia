@@ -5,32 +5,37 @@ spring:
   application:
     name: API-gateway
   cloud:
+    kubernetes:
+      discovery:
+        all-namespaces: true # 모든 네임스페이스에서 탐색
+      loadbalancer:
+        mode: service # loadbalancer 모드를 Kubernetes 서비스 이름 기반으로 설정
     gateway:
       routes:
-        - id: item-service
+        - id: ortopia-item-service
           predicates:
-            - Path=/item-service/**
+            - Path=/ortopia-item-service/**
           filters:
             - StripPrefix=1
-          uri: lb://item-service
-        - id: member-service
+          uri: lb://ortopia-item-service
+        - id: ortopia-member-service
           predicates:
-            - Path=/member-service/**
+            - Path=/ortopia-member-service/**
           filters:
             - StripPrefix=1
-          uri: lb://member-service
-        - id: order-service
+          uri: lb://ortopia-member-service
+        - id: ortopia-order-service
           predicates:
-            - Path=/order-service/**
+            - Path=/ortopia-order-service/**
           filters:
             - StripPrefix=1
-          uri: lb://order-service
-        - id: notice-service
+          uri: lb://ortopia-order-service
+        - id: ortopia-notice-service
           predicates:
-            - Path=/notice-service/**
+            - Path=/ortopia-notice-service/**
           filters:
             - StripPrefix=1
-          uri: lb://notice-service
+          uri: lb://ortopia-notice-service
   redis:
     host: localhost
     port: 6379
@@ -39,10 +44,3 @@ jwt:
   secretKey: mysecret
   token:
     access-expiration-time: 1800000
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-  instance:
-    preferIpAddress: true
-    hostname: localhost

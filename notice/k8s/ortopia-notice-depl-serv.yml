@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: ortopia-notice-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ortopia-notice
+  template:
+  # pod의 네임
+    metadata:
+      labels:
+        app: ortopia-notice
+    spec:
+      containers:
+      - name: notice
+        image: 168123310368.dkr.ecr.ap-northeast-2.amazonaws.com/ortopia_notice:latest
+        ports:
+        - containerPort: 8080
+        env: 
+          - name: DB_HOST
+            valueFrom: 
+              secretKeyRef:
+                name: ortopia-db
+                key: DB_HOST
+          - name: DB_USERNAME
+            valueFrom: 
+              secretKeyRef:
+                name: ortopia-db
+                key: DB_USERNAME
+          - name: DB_PASSWORD
+            valueFrom: 
+              secretKeyRef:
+                name: ortopia-db
+                key: DB_PASSWORD
+          - name: REDIS_HOST
+            valueFrom:
+              secretKeyRef:
+                name: ortopia-redis
+                key: REDIS_HOST
+          - name: S3_NAME
+            valueFrom:
+              secretKeyRef:
+                name: ortopia-s3
+                key: S3_NAME
+          - name: S3_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: ortopia-s3
+                key: S3_ACCESS_KEY
+          - name: S3_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: ortopia-s3
+                key: S3_SECRET_KEY
+          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ortopia-notice-service
+spec:
+# ClusterIp는 클러스터 내부에서만 접근 가능한 service를 생성
+  type: ClusterIP
+  ports:
+  - name : http
+    port: 80
+    targetPort: 8080
+  selector:
+    app: ortopia-notice
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: fabric8-rbac
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: default # pod의 네임스페이스
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
