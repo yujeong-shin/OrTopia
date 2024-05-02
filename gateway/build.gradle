@@ -33,6 +33,7 @@ dependencies {
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.cloud:spring-cloud-starter-kubernetes-client-all'
+	implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
 }
 
 tasks.named('test') {
