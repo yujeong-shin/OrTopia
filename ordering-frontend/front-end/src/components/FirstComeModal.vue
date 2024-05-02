@@ -10,12 +10,13 @@
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="green" text @click="claimCoupon">쿠폰 받기</v-btn>
+                <v-btn color="green" text @click="claimCoupon" :disabled="!canClaimCoupon">쿠폰 받기</v-btn>
                 <v-btn color="red darken-1" text @click="close">닫기</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
+
 <script>
 import axios from 'axios';
 
@@ -29,8 +30,8 @@ export default {
             coupon: {
                 couponDetailResponseDto: {}
             },
-            couponLoaded: false, // 쿠폰 로드 상태 표시
-            alreadyClaimed: false // 쿠폰을 이미 받았는지 여부
+            couponLoaded: false,
+            alreadyClaimed: false
         };
     },
     computed: {
@@ -41,45 +42,44 @@ export default {
             set(value) {
                 this.$emit('update:modelValue', value);
             }
+        },
+        canClaimCoupon() {
+            return this.couponLoaded && !this.alreadyClaimed;
         }
     },
-    canClaimCoupon() {
-            return this.couponLoaded && !this.alreadyClaimed; // 쿠폰을 받을 수 있는지 여부
-        },
     methods: {
         close() {
             this.$emit('update:modelValue', false);
         },
         fetchCoupon() {
-    const token = localStorage.getItem('accessToken');
-    const refreshToken = localStorage.getItem("refreshToken");
+            const token = localStorage.getItem('accessToken');
+            const refreshToken = localStorage.getItem("refreshToken");
 
-    console.log('Fetching coupon for itemId:', this.itemId); // 요청 로그 출력
+            console.log('Fetching coupon for itemId:', this.itemId);
 
-    axios.get(`${process.env.VUE_APP_API_BASE_URL}/member-service/coupon/${this.itemId}`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "X-Refresh-Token": `${refreshToken}`,
-        }
-    })
-    .then(response => {
-        console.log('Coupon data received:', response.data); // 응답 데이터 로그 출력
-        if (response.data.length > 0 && response.data[0].couponDetailResponseDto) {
-            this.coupon = response.data[0];
-            this.couponLoaded = true;
-        } else {
-            this.couponLoaded = false; // 데이터가 비어있을 경우
-            console.error("No coupon details available.");
-        }
-    })
-    .catch(error => {
-        console.error("Error fetching coupon:", error.response || error); // 에러 로그 출력
-        alert('쿠폰 정보를 불러오는데 실패했습니다.');
-        this.couponLoaded = false;
-    });
-    
-},
-claimCoupon() {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}/member-service/coupon/${this.itemId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "X-Refresh-Token": `${refreshToken}`,
+                }
+            })
+            .then(response => {
+                console.log('Coupon data received:', response.data);
+                if (response.data.result.length > 0 && response.data.result[0].couponDetailResponseDto) {
+                    this.coupon = response.data.result[0];
+                    this.couponLoaded = true;
+                } else {
+                    this.couponLoaded = false;
+                    console.error("No coupon details available.");
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching coupon:", error.response || error);
+                alert('쿠폰 정보를 불러오는데 실패했습니다.');
+                this.couponLoaded = false;
+            });
+        },
+        claimCoupon() {
             const token = localStorage.getItem('accessToken');
             const email = localStorage.getItem('userEmail');
 
@@ -97,7 +97,7 @@ claimCoupon() {
                     alert('이미 이 쿠폰을 받으셨습니다.');
                 } else {
                     alert('쿠폰이 성공적으로 추가되었습니다!');
-                    this.alreadyClaimed = true; // 쿠폰을 받았으므로 상태 업데이트
+                    this.alreadyClaimed = true;
                 }
             })
             .catch(error => {
@@ -109,16 +109,9 @@ claimCoupon() {
     watch: {
         modelValue(newValue) {
             if (newValue && this.itemId) {
-                this.fetchCoupon(); // 모달이 표시될 때 쿠폰 정보를 불러옵니다.
+                this.fetchCoupon();
             }
         }
     }
 };
 </script>
-
-<style scoped>
-.aggressive-button {
-  background-color: #ff5252;
-  color: white;
-}
-</style>
