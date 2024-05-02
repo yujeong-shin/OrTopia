@@ -40,7 +40,19 @@
                     <td class="text-center">{{ sales.recipientName }}</td>
                     <td class="text-center">{{ sales.phoneNumber }}</td>
                     <td class="text-center">{{ sales.paymentMethod }}</td>
-                    <td class="text-center">{{ sales.statue }}</td>
+                    <td class="text-center">
+                      <span v-if="sales.statue === 'PAIED'">결제 완료</span>
+                      <span v-else-if="sales.statue === 'PREPARE_DELIVERY'"
+                        >배송 준비</span
+                      >
+                      <span v-else-if="sales.statue === 'PROCEEDING_DELIVERY'"
+                        >배송중</span
+                      >
+                      <span v-else-if="sales.statue === 'COMPLETE_DELIVERY'"
+                        >배송 완료</span
+                      >
+                      <span v-else>알 수 없음</span>
+                    </td>
                     <td class="text-center">
                       <v-menu :location="location">
                         <template v-slot:activator="{ props }">
@@ -88,12 +100,7 @@ export default {
   data() {
     return {
       salesList: [],
-      statusOptions: [
-        "PAID",
-        "PREPARE_DELIVERY",
-        "PROCEEDING_DELIVERY",
-        "COMPLETE_DELIVERY",
-      ],
+      statusOptions: ["결제 완료", "배송 준비", "배송중", "배송 완료"],
       location: "bottom",
     };
   },
@@ -132,16 +139,33 @@ export default {
       return dateTime.replace("T", " ");
     },
     async updateStatus(orderId, newStatus) {
+      // newStatus 값에 따라 "PAID","PREPARE_DELIVERY","PROCEEDING_DELIVERY","COMPLETE_DELIVERY"을 statue에 넣어주기
       const token = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
       const email = localStorage.getItem("email");
       const role = localStorage.getItem("role");
-      console.log(orderId);
-      console.log(newStatus);
+      let statue = "";
+      switch (newStatus) {
+        case "결제 완료":
+          statue = "PAIED";
+          break;
+        case "배송 준비":
+          statue = "PREPARE_DELIVERY";
+          break;
+        case "배송중":
+          statue = "PROCEEDING_DELIVERY";
+          break;
+        case "배송 완료":
+          statue = "COMPLETE_DELIVERY";
+          break;
+        default:
+          console.error("잘못된 주문 상태입니다.");
+          return;
+      }
       try {
         const updateData = {
           id: orderId,
-          statue: newStatus,
+          statue: statue,
         };
         await axios.post(
           `${process.env.VUE_APP_API_BASE_URL}/order-service/updateStatus`,

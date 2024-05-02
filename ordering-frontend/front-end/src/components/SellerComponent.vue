@@ -288,6 +288,24 @@
         </div>
       </v-col>
     </v-row>
+    <v-row class="mt-12">
+      <v-col cols="6">
+        <div class="text-center text-2xl font-bold">아이템별 판매 금액</div>
+        <div class="p-4 border-2">
+          <canvas
+            id="dailySalesAmountEachItemChart"
+            width="400"
+            height="200"
+          ></canvas>
+        </div>
+      </v-col>
+      <v-col cols="6">
+        <div class="text-center text-2xl font-bold">아이템별 재고 변화</div>
+        <div class="p-4 border-2">
+          <canvas id="" width="400" height="200"></canvas>
+        </div>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col cols="12" md="6">
         <v-card
@@ -391,6 +409,10 @@ export default {
       datesForSalesCount: [],
       salesAmount: [],
       salesCount: [],
+      // 아이템별 매출 그래프
+      dailySalesAmountEachItemChartInfo: {},
+      itemNamesForEachItem: [],
+      salesAmountForEachItem: [],
     };
   },
   methods: {
@@ -469,6 +491,35 @@ export default {
         }
 
         this.dailySalesCountChart();
+
+        const response3 = await axios.get(
+          `${process.env.VUE_APP_API_BASE_URL}/order-service/each_item_price/seller`,
+          {
+            headers: {
+              myEmail: `${email}`,
+              Authorization: `Bearer ${token}`,
+              "X-Refresh-Token": `${refreshToken}`,
+            },
+          }
+        );
+        this.dailySalesAmountEachItemChartInfo = response3.data.result;
+        console.log("dailySalesAmountEachItemChartInfo : ");
+        console.log(this.dailySalesAmountEachItemChartInfo);
+
+        for (
+          var k = 0;
+          k < this.dailySalesAmountEachItemChartInfo.length;
+          k++
+        ) {
+          this.itemNamesForEachItem.push(
+            this.dailySalesAmountEachItemChartInfo[k].itemName
+          );
+          this.salesAmountForEachItem.push(
+            this.dailySalesAmountEachItemChartInfo[k].price
+          );
+        }
+
+        this.dailySalesAmountEachItemChart();
       } catch (error) {
         console.log(error);
       }
@@ -546,6 +597,58 @@ export default {
               ],
               borderColor: [
                 // "rgba(0, 0, 128, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(245, 124, 0, 1)",
+                "rgba(255, 99, 132, 1)",
+              ],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: false,
+          aspectRatio: 1,
+          scales: {
+            x: {
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              grid: {
+                display: false,
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: false,
+            },
+          },
+        },
+      });
+    },
+    dailySalesAmountEachItemChart() {
+      const ctx = document
+        .getElementById("dailySalesAmountEachItemChart")
+        .getContext("2d");
+      new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: this.itemNamesForSalesAmount,
+          datasets: [
+            {
+              data: this.salesAmount,
+              backgroundColor: [
+                "rgba(54, 162, 235, 0.2)",
+                "rgba(75, 192, 192, 0.2)",
+                "rgba(255, 206, 86, 0.2)",
+                "rgba(245, 124, 0, 0.2)",
+                "rgba(255, 99, 132, 0.2)",
+              ],
+              borderColor: [
                 "rgba(54, 162, 235, 1)",
                 "rgba(75, 192, 192, 1)",
                 "rgba(255, 206, 86, 1)",
