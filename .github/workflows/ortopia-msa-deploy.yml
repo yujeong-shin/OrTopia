@@ -87,7 +87,7 @@ jobs:
 
       - name: eks kubectl apply item
         run: |
-          kubectl apply -f ./member/k8s/ortopia-item-depl-serv.yml
+          kubectl apply -f ./item/k8s/ortopia-item-depl-serv.yml
           kubectl rollout restart deployment ortopia-item-depl
 
 #      - name: eks kubectl apply member
