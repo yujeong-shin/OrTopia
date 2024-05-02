@@ -20,7 +20,7 @@ public class CouponDetailController {
     }
 
     @PostMapping("/coupondetail/create")
-    public ResponseEntity<OrTopiaResponse> createCoupon(@RequestBody CouponDetailRequestDto couponDetailRequestDto, @RequestHeader("myEmail") String email) {
+    public ResponseEntity<OrTopiaResponse> createCouponDetail(@RequestBody CouponDetailRequestDto couponDetailRequestDto, @RequestHeader("myEmail") String email) {
         CouponDetailResponseDto couponDetailResponseDto = couponDetailService.createCouponDetail(couponDetailRequestDto, email);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success", couponDetailResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);

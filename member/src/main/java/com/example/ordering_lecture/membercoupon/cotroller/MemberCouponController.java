@@ -21,18 +21,18 @@ public class MemberCouponController {
         this.memberCouponService = memberCouponService;
     }
     @PostMapping("/coupons")
-    public ResponseEntity<MemberCouponResponseDto> addCoupon(@RequestHeader("myEmail") String email, @RequestBody MemberCouponRequestDto request) {
+    public ResponseEntity<OrTopiaResponse> addCoupon(@RequestHeader("myEmail") String email, @RequestBody MemberCouponRequestDto request) {
         MemberCouponResponseDto response = memberCouponService.addCoupon(email, request);
-        return ResponseEntity.ok(response);
+        return new ResponseEntity<>(new OrTopiaResponse("create success", response), HttpStatus.CREATED);
     }
     @GetMapping("/member/coupons")
-    public ResponseEntity<List<MemberCouponResponseDto>> getAllCoupons(@RequestHeader("myEmail") String email) {
+    public ResponseEntity<OrTopiaResponse> getAllCoupons(@RequestHeader("myEmail") String email) {
         List<MemberCouponResponseDto> coupons = memberCouponService.findAllCouponsByEmail(email);
-        return ResponseEntity.ok(coupons);
+        return new ResponseEntity<>(new OrTopiaResponse("read success", coupons), HttpStatus.OK);
     }
     @DeleteMapping("/member/coupons/{couponId}")
-    public ResponseEntity<Void> useCoupon(@RequestHeader("myEmail") String email, @PathVariable Long couponId) {
+    public ResponseEntity<OrTopiaResponse> useCoupon(@RequestHeader("myEmail") String email, @PathVariable Long couponId) {
         memberCouponService.useCoupon(email, couponId);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(new OrTopiaResponse("delete success", null), HttpStatus.OK);
     }
 }

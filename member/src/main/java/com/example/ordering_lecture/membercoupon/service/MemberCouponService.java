@@ -26,36 +26,37 @@ public class MemberCouponService {
         this.memberRepository = memberRepository;
     }
 
-    public MemberCouponResponseDto addCoupon(String email, MemberCouponRequestDto request) {
+    public MemberCouponResponseDto addCoupon(String email, MemberCouponRequestDto request) throws OrTopiaException {
         Long memberId = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Member not found"))
+                .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER))
                 .getId();
         Coupon coupon = couponRepository.findById(request.getCouponId())
-                .orElseThrow(() -> new RuntimeException("Coupon not found"));
-
+                .orElseThrow(() -> new OrTopiaException(ErrorCode.COUPON_NOT_FOUND));
         MemberCoupon memberCoupon = MemberCoupon.builder()
                 .memberId(memberId)
                 .coupon(coupon)
                 .build();
-
         memberCouponRepository.save(memberCoupon);
         return MemberCouponResponseDto.toDto(memberCoupon);
     }
-    public List<MemberCouponResponseDto> findAllCouponsByEmail(String email) {
+
+    public List<MemberCouponResponseDto> findAllCouponsByEmail(String email) throws OrTopiaException {
         Long memberId = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Member not found"))
+                .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER))
                 .getId();
         List<MemberCoupon> coupons = memberCouponRepository.findByMemberId(memberId);
         return coupons.stream()
                 .map(MemberCouponResponseDto::toDto)
                 .collect(Collectors.toList());
     }
-    public void useCoupon(String email, Long couponId) {
+
+    public void useCoupon(String email, Long couponId) throws OrTopiaException {
         Long memberId = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER))
                 .getId();
         MemberCoupon coupon = memberCouponRepository.findByMemberIdAndCouponId(memberId, couponId)
                 .orElseThrow(() -> new OrTopiaException(ErrorCode.COUPON_NOT_FOUND));
+
         memberCouponRepository.delete(coupon);
     }
 }
