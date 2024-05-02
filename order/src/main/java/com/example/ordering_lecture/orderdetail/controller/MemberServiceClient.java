@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(name = "member-service")
+@FeignClient(name = "ortopia-member-service", url ="http://ortopia-member-service.default.svc.cluster.local")
 public interface MemberServiceClient {
     @GetMapping(value="/member/search/{email}")
     Long searchIdByEmail(@PathVariable("email") String email);
