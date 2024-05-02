@@ -11,14 +11,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/item")
 public class ItemController {
     private final ItemService itemService;
+    private final MemberServiceClient memberServiceClient;
 
-    public ItemController(ItemService itemService) {
+    public ItemController(ItemService itemService, MemberServiceClient memberServiceClient) {
         this.itemService = itemService;
+        this.memberServiceClient = memberServiceClient;
     }
 
     @PostMapping("/create")
@@ -133,5 +136,13 @@ public class ItemController {
     @PostMapping("/{itemId}/itemName")
     public String findNameById(@PathVariable Long itemId){
         return itemService.getItemName(itemId);
+    }
+    @GetMapping("/stock/seller")
+    public ResponseEntity<OrTopiaResponse> eachItemStockBySeller(@RequestHeader("myEmail") String email){
+        Long sellerId = memberServiceClient.searchIdByEmail(email);
+        System.out.println("sellerId = " + sellerId);
+        List<SellerGraphStockData> sellerGraphStockData = itemService.getEachItemStockData(sellerId);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", sellerGraphStockData);
+        return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
 }

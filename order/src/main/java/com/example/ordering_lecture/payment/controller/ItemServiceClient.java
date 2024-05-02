@@ -14,6 +14,4 @@ public interface ItemServiceClient {
     Long searchIdByOptionDetail(@PathVariable(name = "itemId") Long itemId,@RequestBody List<String> values);
     @PostMapping("item/{itemId}/itemName")
     String findNameById(@PathVariable(name="itemId") Long itemId);
-
-
 }

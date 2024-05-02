@@ -2,6 +2,7 @@ package com.example.ordering_lecture.orderdetail.service;
 
 import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
+import com.example.ordering_lecture.orderdetail.controller.MemberServiceClient;
 import com.example.ordering_lecture.orderdetail.dto.*;
 import com.example.ordering_lecture.orderdetail.entity.OrderDetail;
 import com.example.ordering_lecture.orderdetail.repository.OrderDetailRepository;
@@ -11,16 +12,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderDetailService {
     private final OrderDetailRepository orderDetailRepository;
     private final ItemServiceClient itemServiceClient;
+    private final MemberServiceClient memberServiceClient;
 
-    public OrderDetailService(OrderDetailRepository orderDetailRepository, ItemServiceClient itemServiceClient) {
+    public OrderDetailService(OrderDetailRepository orderDetailRepository, ItemServiceClient itemServiceClient, MemberServiceClient memberServiceClient) {
         this.orderDetailRepository = orderDetailRepository;
         this.itemServiceClient = itemServiceClient;
+        this.memberServiceClient = memberServiceClient;
     }
     // 일별 구매 금액을 위한 데이터
     public List<BuyerGraphPriceData> getBuyerGraphPriceData(String email) {
@@ -63,6 +68,30 @@ public class OrderDetailService {
         }
 
         return sellerGraphItemPriceDatas;
+    }
+    public Map<String, Long> getGenderData(Long sellerId) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusWeeks(2);
+        List<Object[]> genderAndCountData = orderDetailRepository.getGenderCountDataBySellerId(startDate, endDate, sellerId);
+        Map<String, Long> result = new HashMap<>();
+        for(Object[] data : genderAndCountData) {
+            String gender = memberServiceClient.searchGenderByEmail(data[0].toString());
+            // gender, count 저장
+            result.put(gender, result.getOrDefault(gender, 0L)+(Long)data[1]);
+        }
+        return result;
+    }
+    public Map<Byte, Long> getAgeData(Long sellerId) {
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusWeeks(2);
+        List<Object[]> ageAndCountData = orderDetailRepository.getAgeCountDataBySellerId(startDate, endDate, sellerId);
+        Map<Byte, Long> result = new HashMap<>();
+        for(Object[] data : ageAndCountData) {
+            byte age = memberServiceClient.searchAgeByEmail(data[0].toString());
+            // age, count 저장
+            result.put(age, result.getOrDefault(age, 0L)+(Long)data[1]);
+        }
+        return result;
     }
 
     @Transactional

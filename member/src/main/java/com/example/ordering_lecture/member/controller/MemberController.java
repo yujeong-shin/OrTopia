@@ -4,6 +4,7 @@ package com.example.ordering_lecture.member.controller;
 import com.example.ordering_lecture.common.MemberLoginReqDto;
 import com.example.ordering_lecture.common.MemberLoginResDto;
 import com.example.ordering_lecture.common.OrTopiaResponse;
+import com.example.ordering_lecture.member.domain.Gender;
 import com.example.ordering_lecture.member.domain.Seller;
 import com.example.ordering_lecture.member.dto.Buyer.*;
 import com.example.ordering_lecture.member.dto.Seller.SellerResponseDto;
@@ -53,14 +54,14 @@ public class MemberController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",memberResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
-    // 판매자 전체조회
+    // 사용자 전체조회
     @GetMapping("/member/All")
     public ResponseEntity<OrTopiaResponse> findAllMembers(){
         List<MemberResponseDto> memberResponseDtos = memberService.findAllMembers();
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",memberResponseDtos);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
-    // 사용자 전체조회
+    // 사용자 전체조회(탈퇴X)
     @GetMapping("/member/members")
     public ResponseEntity<OrTopiaResponse> findMembers(){
         List<MemberResponseDto> memberResponseDtos = memberService.findMembers();
@@ -124,5 +125,17 @@ public class MemberController {
     @GetMapping("/member/search/name/{email}")
     public String searchNameByEmail(@PathVariable("email") String email){
         return memberService.searchNameByEmail(email);
+    }
+    // 이메일을 통해서 성별을 찾는 API
+    @PostMapping("/member/gender/{email}")
+    public String searchGenderByEmail(@PathVariable("email") String email){
+        MemberResponseDto memberResponseDto = memberService.findIdByEmail(email);
+        return memberResponseDto.getGender().toString();
+    }
+    // 이메일을 통해서 나이를 찾는 API
+    @PostMapping(value="/member/age/{email}")
+    public byte searchAgeByEmail(@PathVariable(name="email") String email){
+        MemberResponseDto memberResponseDto = memberService.findIdByEmail(email);
+        return memberResponseDto.getAge();
     }
 }
