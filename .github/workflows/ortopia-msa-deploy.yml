@@ -54,6 +54,17 @@ jobs:
           -f ./member/Dockerfile ./member
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
+      - name: build and push docker item image
+        env:
+          REGISTRY: 168123310368.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: ortopia_item
+          IMAGE_TAG: latest
+        run: |
+          docker build \
+          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          -f ./member/Dockerfile ./item
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
 #      - name: build and push docker member image
 #        env:
 #          REGISTRY: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com
@@ -73,6 +84,11 @@ jobs:
         run: |
           kubectl apply -f ./member/k8s/ortopia-member-depl-serv.yml
           kubectl rollout restart deployment ortopia-member-depl
+
+      - name: eks kubectl apply item
+        run: |
+          kubectl apply -f ./member/k8s/ortopia-item-depl-serv.yml
+          kubectl rollout restart deployment ortopia-item-depl
 
 #      - name: eks kubectl apply member
 #        run: |
