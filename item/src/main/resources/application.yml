@@ -1,10 +1,6 @@
 #server:
 #  port: 8082
 spring:
-  cloud:
-    kubernetes:
-      discovery:
-        all-namespaces: true #모든 네임스페이스에서 활성화
   redis:
     host: ${REDIS_HOST}
     port: 6379
@@ -31,6 +27,9 @@ spring:
 #    preferIpAddress: true
 #    hostname: localhost
 cloud:
+  kubernetes:
+    discovery:
+      all-namespaces: true #모든 네임스페이스에서 활성화
   aws:
     s3:
       bucket: ${S3_NAME}
