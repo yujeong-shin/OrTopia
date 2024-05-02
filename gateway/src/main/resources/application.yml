@@ -24,12 +24,12 @@ spring:
           filters:
             - StripPrefix=1
           uri: lb://ortopia-member-service
-        - id: order-service
+        - id: ortopia-order-service
           predicates:
-            - Path=/order-service/**
+            - Path=/ortopia-order-service/**
           filters:
             - StripPrefix=1
-          uri: lb://order-service
+          uri: lb://ortopia-order-service
         - id: ortopia-notice-service
           predicates:
             - Path=/ortopia-notice-service/**

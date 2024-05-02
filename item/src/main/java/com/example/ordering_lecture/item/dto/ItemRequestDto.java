@@ -38,7 +38,7 @@ public class ItemRequestDto {
         //TODO : S3 저장 후 나오는 url를 넣어줌
         try {
             Category category = null;
-            log.debug(this.getCategory());
+            log.info(this.getCategory());
             category = Category.valueOf(this.getCategory());
             log.info(category.toString());
             return Item.builder()

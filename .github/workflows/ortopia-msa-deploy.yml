@@ -65,16 +65,28 @@ jobs:
           -f ./member/Dockerfile ./item
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-#      - name: build and push docker member image
-#        env:
-#          REGISTRY: 346903264902.dkr.ecr.ap-northeast-2.amazonaws.com
-#          REPOSITORY: team5-member
-#          IMAGE_TAG: latest
-#        run: |
-#          docker build \
-#          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
-#          -f ./order_msa_server/ordering_member_server/Dockerfile ./order_msa_server/ordering_member_server
-#          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+      - name: build and push docker notice image
+        env:
+          REGISTRY: 168123310368.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: ortopia_notice
+          IMAGE_TAG: latest
+        run: |
+          docker build \
+          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          -f ./member/Dockerfile ./notice
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: build and push docker order image
+        env:
+          REGISTRY: 168123310368.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: ortopia_order
+          IMAGE_TAG: latest
+        run: |
+          docker build \
+          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          -f ./member/Dockerfile ./order
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
       - name: eks kubectl apply gateway
         run: |
           kubectl apply -f ./gateway/k8s/ortopia-gateway-depl-serv.yml
@@ -90,7 +102,12 @@ jobs:
           kubectl apply -f ./item/k8s/ortopia-item-depl-serv.yml
           kubectl rollout restart deployment ortopia-item-depl
 
-#      - name: eks kubectl apply member
-#        run: |
-#          kubectl apply -f ./order_msa_server/ordering_member_server/k8s/order-member-depl-serv.yml
-#          kubectl rollout restart deployment jy-member-depl
+      - name: eks kubectl apply notice
+        run: |
+          kubectl apply -f ./notice/k8s/ortopia-notice-depl-serv.yml
+          kubectl rollout restart deployment ortopia-notice-depl
+
+      - name: eks kubectl apply order
+        run: |
+          kubectl apply -f ./order/k8s/ortopia-order-depl-serv.yml
+          kubectl rollout restart deployment ortopia-order-depl
