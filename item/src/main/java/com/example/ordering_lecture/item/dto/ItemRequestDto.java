@@ -38,6 +38,7 @@ public class ItemRequestDto {
         //TODO : S3 저장 후 나오는 url를 넣어줌
         try {
             Category category = null;
+            log.debug(this.getCategory());
             category = Category.valueOf(this.getCategory());
             log.info(category.toString());
             return Item.builder()
@@ -53,6 +54,7 @@ public class ItemRequestDto {
                     .imagePath(fileUrl)
                     .build();
         }catch (Exception e){
+            log.error(e.toString());
             throw new OrTopiaException(ErrorCode.WRONG_ITEM_INFORMATION);
         }
     }
