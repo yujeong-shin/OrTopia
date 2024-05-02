@@ -57,7 +57,7 @@ export default {
 
             console.log('Fetching coupon for itemId:', this.itemId);
 
-            axios.get(`${process.env.VUE_APP_API_BASE_URL}/member-service/coupon/${this.itemId}`, {
+            axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/coupon/${this.itemId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "X-Refresh-Token": `${refreshToken}`,
@@ -83,7 +83,7 @@ export default {
             const token = localStorage.getItem('accessToken');
             const email = localStorage.getItem('userEmail');
 
-            axios.post(`${process.env.VUE_APP_API_BASE_URL}/member-service/coupons`, {
+            axios.post(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/coupons`, {
                 couponId: this.coupon.id
             }, {
                 headers: {

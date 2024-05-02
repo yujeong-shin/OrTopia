@@ -50,7 +50,7 @@
         try {
           const formData = new FormData();
           formData.append('email', this.email);
-          const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/member-service/member/reset-password`, formData, {
+          const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member/reset-password`, formData, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
             }

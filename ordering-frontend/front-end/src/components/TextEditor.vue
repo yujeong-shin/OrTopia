@@ -164,7 +164,7 @@ export default {
       let formData = new FormData();
       formData.append('file', file); // 'file' 파라미터 이름 확인
 
-      axios.post(`${process.env.VUE_APP_API_BASE_URL}/notice-service/upload`, formData, {
+      axios.post(`${process.env.VUE_APP_API_BASE_URL}/ortopia-notice-service/upload`, formData, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
           "X-Refresh-Token": localStorage.getItem('refreshToken'),

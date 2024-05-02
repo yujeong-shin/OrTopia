@@ -118,7 +118,7 @@ export default {
       const role = localStorage.getItem("role");
       try {
         const response = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/order-service/mySales`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/mySales`,
           {
             headers: {
               myEmail: `${email}`,
@@ -168,7 +168,7 @@ export default {
           statue: statue,
         };
         await axios.post(
-          `${process.env.VUE_APP_API_BASE_URL}/order-service/updateStatus`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/updateStatus`,
           updateData,
           {
             headers: {

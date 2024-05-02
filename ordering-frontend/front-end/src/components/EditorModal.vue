@@ -98,7 +98,7 @@ export default {
         },
       };
 
-      axios.post(`${process.env.VUE_APP_API_BASE_URL}/notice-service/create`, formData, config)
+      axios.post(`${process.env.VUE_APP_API_BASE_URL}/ortopia-notice-service/create`, formData, config)
         .then(response => {
           console.log(response.data);
           window.location.reload();

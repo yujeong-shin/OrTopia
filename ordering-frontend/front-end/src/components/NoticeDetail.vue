@@ -87,7 +87,7 @@ export default {
       };
       axios
         .patch(
-          `${process.env.VUE_APP_API_BASE_URL}/notice-service/delete/${this.$route.params.id}`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-notice-service/delete/${this.$route.params.id}`,
           null,
           config
         )
@@ -108,7 +108,7 @@ export default {
       };
       axios
         .get(
-          `${process.env.VUE_APP_API_BASE_URL}/notice-service/notice/${this.$route.params.id}`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-notice-service/notice/${this.$route.params.id}`,
           config
         )
         .then((response) => {

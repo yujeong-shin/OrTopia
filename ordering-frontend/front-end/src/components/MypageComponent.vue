@@ -265,7 +265,7 @@ export default {
       const email = localStorage.getItem("email");
       try {
         const response = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/member-service/member`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member`,
           {
             headers: {
               myEmail: `${email}`,
@@ -311,7 +311,7 @@ export default {
       const email = localStorage.getItem("email");
       try {
         const response1 = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/order-service/total_price`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/total_price`,
           {
             headers: {
               myEmail: `${email}`,
@@ -334,7 +334,7 @@ export default {
         this.dailyPurchaseAmountChart();
 
         const response2 = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/order-service/total_count`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/total_count`,
           {
             headers: {
               myEmail: `${email}`,

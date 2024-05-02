@@ -146,7 +146,7 @@ export default {
     async getItems() {
       try {
         const data = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/items`
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/items`
         );
         const key = this.$route.params.value;
         this.itemList = data.data.result.filter(item => item.name.includes(key) || item.category.includes(key));
@@ -163,7 +163,7 @@ export default {
     async getNotice() {
       try {
         const data = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/notice-service/notices`
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-notice-service/notices`
         );
         this.noticeList = data.data.result;
         console.log(this.noticeList);

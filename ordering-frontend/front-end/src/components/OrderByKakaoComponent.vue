@@ -54,7 +54,7 @@ export default {
           orderDetailRequestDtoList: this.buyItems,
         };
         const data = await axios.post(
-          `${process.env.VUE_APP_API_BASE_URL}/order-service/create`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/create`,
           body,
           { headers }
         );

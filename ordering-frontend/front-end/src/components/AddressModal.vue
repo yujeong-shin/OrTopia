@@ -111,7 +111,7 @@ export default {
       try {
         const email = localStorage.getItem("email");
         await axios.delete(
-          `${process.env.VUE_APP_API_BASE_URL}/member-service/address/delete/${addressId}`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/address/delete/${addressId}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -136,7 +136,7 @@ export default {
       try {
         const email = localStorage.getItem("email");
         const response = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/member-service/address/by-email`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/address/by-email`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -175,7 +175,7 @@ export default {
         // URL에 이메일을 직접 포함하여 요청 보냄
         const email = localStorage.getItem("email");
         await axios.post(
-          `${process.env.VUE_APP_API_BASE_URL}/member-service/address/create`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/address/create`,
           addressData,
           {
             headers: {

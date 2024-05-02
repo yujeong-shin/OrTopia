@@ -58,7 +58,7 @@ export default {
       const token = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
       try {
-        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/member-service/mycoupons`, {
+        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/mycoupons`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "X-Refresh-Token": `${refreshToken}`,

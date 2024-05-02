@@ -87,7 +87,7 @@ async function signup() {
 
   try {
     // axios를 사용하여 회원가입 요청 전송
-    const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/member-service/member/create`, {
+    const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member/create`, {
       email: signupForm.email,
       name: signupForm.name,
       password: signupForm.password,

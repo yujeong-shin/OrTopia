@@ -244,7 +244,7 @@
         const token = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
         const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
-        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/member-service/member/${localStorage.getItem('email')}`, { headers });
+        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member/${localStorage.getItem('email')}`, { headers });
         console.log(response);
         this.defaultName = response.data.result.name;
         this.defaultPhoneNumber = response.data.result.phoneNumber;
@@ -273,7 +273,7 @@
           const itemList = this.myItems.map(item => ({ id: item.id, count: item.count, name : item.name, options:item.options }));
           const body = { price: this.price, itemDtoList: itemList }; // itemList을 itemDtoList로 변경
           const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
-          const data = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/order-service/payment/ready`, body, { headers });
+          const data = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/payment/ready`, body, { headers });
           console.log(data);
           const reDirectURL = data.data.result.next_redirect_pc_url;
           // window.open(reDirectURL, '_blank');// 결제 창을 하나 띄우기

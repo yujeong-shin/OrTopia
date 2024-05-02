@@ -53,7 +53,7 @@
         try {
           const formData = new FormData();
           formData.append('email', this.userEmail);
-          const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/member-service/member/find-id`, formData, {
+          const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member/find-id`, formData, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
             }

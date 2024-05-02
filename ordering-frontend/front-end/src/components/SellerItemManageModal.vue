@@ -107,7 +107,7 @@
         const refreshToken = localStorage.getItem("refreshToken");
         try{
           const response  = await axios.post(
-              `${process.env.VUE_APP_API_BASE_URL}/item-service/item/update/quantity`,itemOption,
+              `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/update/quantity`,itemOption,
                   {
                   headers: {
                       Authorization: `Bearer ${token}`,
@@ -129,7 +129,7 @@
           const refreshToken = localStorage.getItem("refreshToken");
           try{
               const response  = await axios.get(
-              `${process.env.VUE_APP_API_BASE_URL}/item-service/item/myItem`,
+              `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/myItem`,
                   {
                   headers: {
                       Authorization: `Bearer ${token}`,

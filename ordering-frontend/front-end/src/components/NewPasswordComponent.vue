@@ -57,7 +57,7 @@ export default {
            const token = this.$route.query.token;  // Vue Router를 사용하여 토큰을 가져옵니다.
           formData.append('token', token);
           formData.append('password', this.password);
-          await axios.post(`${process.env.VUE_APP_API_BASE_URL}/member-service/member/change-password`, formData, {
+          await axios.post(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member/change-password`, formData, {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
             }

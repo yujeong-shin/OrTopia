@@ -76,7 +76,7 @@
         formData.append('orderDetailId', detail.id);
         formData.append('imagePath',this.file);
         const response = await axios.post(
-          `${process.env.VUE_APP_API_BASE_URL}/item-service/review/create`, 
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/review/create`, 
           formData, 
           { 
             headers: { 

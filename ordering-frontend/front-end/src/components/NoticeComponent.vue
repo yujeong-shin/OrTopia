@@ -63,7 +63,7 @@ export default {
     // 서버에서 공지사항 데이터를 불러오는 함수
     const fetchNotices = async () => {
       try {
-        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/notice-service/notices`);
+        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-notice-service/notices`);
         if (Array.isArray(response.data.result)) {
           // 삭제 되지 않은 공지만 불러옴. 실패
           notices.value = response.data.result;

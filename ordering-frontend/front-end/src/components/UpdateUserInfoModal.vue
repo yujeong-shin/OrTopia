@@ -87,7 +87,7 @@ export default {
       const email = localStorage.getItem("email");
       try {
         const response = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/member-service/member`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member`,
           {
             headers: {
               myEmail: `${email}`,
@@ -109,7 +109,7 @@ export default {
       const email = localStorage.getItem("email");
       try {
         await axios.patch(
-          `${process.env.VUE_APP_API_BASE_URL}/member-service/member`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member`,
           this.member, // 수정된 부분: member 객체를 직접 참조
           {
             headers: {

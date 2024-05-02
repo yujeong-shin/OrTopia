@@ -69,7 +69,7 @@ export default {
             }
           : {};
         const response = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/member-service/member/likeSellers`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member/likeSellers`,
           { headers }
         );
         this.sellers = response.data.result;

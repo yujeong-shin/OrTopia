@@ -203,7 +203,7 @@ export default {
       const token = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
       const email = localStorage.getItem("email");
-      const url = `${process.env.VUE_APP_API_BASE_URL}/member-service/member/checkLiked/${sellerId}`;
+      const url = `${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member/checkLiked/${sellerId}`;
 
       try {
         const response = await axios.get(url, {
@@ -228,7 +228,7 @@ export default {
       }
       try{
         const response = await axios.post(
-          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/love/${this.itemId}`,null,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/love/${this.itemId}`,null,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -254,7 +254,7 @@ export default {
       const token = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
       const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
-      const baseApiUrl = `${process.env.VUE_APP_API_BASE_URL}/member-service/member`;
+      const baseApiUrl = `${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member`;
       const action = this.item.isFavorited ? 'unlikeSeller' : 'likeSeller';
       const method = this.item.isFavorited ? 'delete' : 'post';
       const url = `${baseApiUrl}/${action}/${sellerId}`;
@@ -320,7 +320,7 @@ export default {
       const refreshToken = localStorage.getItem("refreshToken");
       try{
         const data  = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/recommendItems`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/recommendItems`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -336,7 +336,7 @@ export default {
     },
     async getReview(){
       try{
-        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/item-service/review/show_item/${this.itemId}`);
+        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/review/show_item/${this.itemId}`);
         console.log(response);
         this.reviews = response.data.result;
         if(this.reviews.length != 0){
@@ -356,7 +356,7 @@ export default {
         email = "noLogin";
       }
   try {
-    const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/item-service/item/read/${this.itemId}`, {
+    const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/read/${this.itemId}`, {
       headers: {
         myEmail: email,
       },
@@ -380,7 +380,7 @@ export default {
       if (token != null) {
         try {
           const data = await axios.get(
-            `${process.env.VUE_APP_API_BASE_URL}/item-service/item/recent_items`,
+            `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/recent_items`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -400,7 +400,7 @@ export default {
   const token = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
   try {
-    const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/member-service/seller/${sellerId}`, {
+    const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/seller/${sellerId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "X-Refresh-Token": `${refreshToken}`,

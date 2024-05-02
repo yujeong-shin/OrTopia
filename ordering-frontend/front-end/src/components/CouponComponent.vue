@@ -87,7 +87,7 @@ export default {
     fetchItems() {
       const token = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
-      axios.get(`${process.env.VUE_APP_API_BASE_URL}/item-service/item/myItem`, {
+      axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/myItem`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "X-Refresh-Token": refreshToken
@@ -104,7 +104,7 @@ export default {
     fetchAvailableCoupons() {
       const token = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
-      axios.get(`${process.env.VUE_APP_API_BASE_URL}/member-service/coupondetail`, {
+      axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/coupondetail`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "X-Refresh-Token": refreshToken
@@ -130,7 +130,7 @@ export default {
     issueCoupons() {
       const token = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
-      axios.post(`${process.env.VUE_APP_API_BASE_URL}/member-service/coupon/create`, {
+      axios.post(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/coupon/create`, {
         itemId: this.selectedItems,
         couponDetailId: this.selectedCouponId
       }, {

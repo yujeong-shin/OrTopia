@@ -116,7 +116,7 @@ export default {
       try {
         console.log("판매자 등록 요청을 보냅니다...");
         const response = await axios.post(
-          `${process.env.VUE_APP_API_BASE_URL}/member-service/seller/${email}/create`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/seller/${email}/create`,
           {
             businessNumber: this.sellerForm.businessNumber,
             companyName: this.sellerForm.companyName,

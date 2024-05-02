@@ -206,7 +206,7 @@ export default {
         }
         const email = localStorage.getItem("email");
         const response = await axios.post(
-          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/create`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/create`,
           formData,
           {
             headers: {

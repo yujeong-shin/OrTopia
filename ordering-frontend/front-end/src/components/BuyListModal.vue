@@ -170,7 +170,7 @@ export default {
       const email = localStorage.getItem("email");
       try {
         const response = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/order-service/all_my_order_detail`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/all_my_order_detail`,
           {
             headers: {
               myEmail: `${email}`,
@@ -199,7 +199,7 @@ export default {
       for (var i = 0; i < this.orderDetailList.length; i++) {
         try {
           const response = await axios.get(
-            `${process.env.VUE_APP_API_BASE_URL}/item-service/item/read/${this.orderDetailList[i].itemId}/my_page`,
+            `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/read/${this.orderDetailList[i].itemId}/my_page`,
             {
               headers: {
                 myEmail: `${email}`,

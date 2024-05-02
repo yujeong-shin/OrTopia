@@ -84,7 +84,7 @@ export default {
     async doLogin() {
       try {
         const loginData = { email: this.email, password: this.password };
-        const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/member-service/doLogin`, loginData);
+        const response = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/doLogin`, loginData);
         const accessToken = response.data.result.accessToken;
         const refreshToken = response.data.result.refreshToken;
 

@@ -236,7 +236,7 @@ export default {
       if(token == null){
         try {
         const data = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/items`,{
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/items`,{
           headers: {
             myEmail: "noLogin",
           }
@@ -256,7 +256,7 @@ export default {
         try {
         const eamil = localStorage.getItem("email");
         const data = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/items`,{
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/items`,{
           headers: {
             myEmail: eamil,
           }
@@ -284,7 +284,7 @@ export default {
       }
       try{
         const response = await axios.post(
-          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/love/${itemId}`,null,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/love/${itemId}`,null,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -307,7 +307,7 @@ export default {
     },
     async getNotice() {
     try {
-      const { data } = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/notice-service/notices`);
+      const { data } = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-notice-service/notices`);
       this.eventNoticeList = data.result.filter(notice => notice.category === 'EVENT');
       this.regularNoticeList = data.result.filter(notice => notice.category === 'NOTICE');
       // Select a random notice from regularNoticeList

@@ -96,7 +96,7 @@ methods: {
     const email = localStorage.getItem("email");
     const couponData = this.details;
 
-    axios.post(`${process.env.VUE_APP_API_BASE_URL}/member-service/coupondetail/create`, couponData, {
+    axios.post(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/coupondetail/create`, couponData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "X-Refresh-Token": `${refreshToken}`,

@@ -67,7 +67,7 @@
         const email = localStorage.getItem("email");
         try {
           const response = await axios.get(
-            `${process.env.VUE_APP_API_BASE_URL}/item-service/item/find_item_email`,
+            `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/find_item_email`,
             {
               headers: {
                 myEmail: `${email}`,
