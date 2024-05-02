@@ -5,6 +5,11 @@ spring:
   application:
     name: API-gateway
   cloud:
+    kubernetes:
+      discovery:
+        all-namespaces: true # 모든 네임스페이스에서 탐색
+      loadbalancer:
+        mode: service # loadbalancer 모드를 Kubernetes 서비스 이름 기반으로 설정
     gateway:
       routes:
         - id: item-service
