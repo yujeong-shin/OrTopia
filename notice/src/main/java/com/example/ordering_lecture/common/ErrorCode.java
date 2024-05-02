@@ -13,7 +13,8 @@ public enum ErrorCode {
     PAST_NOTICE_START_DATE("N7", "시작일은 오늘 이후의 날짜로 설정해야 합니다."),
     END_DATE_BEFORE_START_DATE("N8", "종료일은 시작일 이후의 날짜로 설정해야 합니다."),
     EMPTY_NOTICE_ID("N9", "공지사항 ID를 입력해주세요."),
-    DELETED_NOTICE("N10", "이미 삭제된 공지사항입니다.");
+    DELETED_NOTICE("N10", "이미 삭제된 공지사항입니다."),
+    ALARM_CONNECT_ERROR("N11","알람 연결에 실패했습니다." );
 
     private final String code;
     private final String message;
