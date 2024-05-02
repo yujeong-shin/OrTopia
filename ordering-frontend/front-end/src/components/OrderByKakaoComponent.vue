@@ -49,7 +49,7 @@ export default {
           addressId: this.order.addressId,
           email: email,
           paymentMethod: "KAKAO",
-          recipientName: this.order.name,
+          recipient: this.order.name,
           phoneNumber: this.order.phoneNumber,
           orderDetailRequestDtoList: this.buyItems,
         };
