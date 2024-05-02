@@ -547,7 +547,7 @@ export default {
         this.dailySalesAmountEachItemChart();
 
         const response4 = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/order-service/buyer_gender/seller`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/buyer_gender/seller`,
           {
             headers: {
               myEmail: `${email}`,
@@ -569,7 +569,7 @@ export default {
         this.itemGenderRatioChart();
 
         const response5 = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/order-service/buyer_age/seller`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/buyer_age/seller`,
           {
             headers: {
               myEmail: `${email}`,
@@ -588,7 +588,7 @@ export default {
         this.itemAgeRatioChart();
 
         const response6 = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/stock/seller`,
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/stock/seller`,
           {
             headers: {
               myEmail: `${email}`,
