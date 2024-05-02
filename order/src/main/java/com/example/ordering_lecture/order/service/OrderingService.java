@@ -2,10 +2,10 @@ package com.example.ordering_lecture.order.service;
 
 import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
+import com.example.ordering_lecture.feign.FeignClient;
 import com.example.ordering_lecture.order.dto.*;
 import com.example.ordering_lecture.order.entity.Ordering;
 import com.example.ordering_lecture.order.repository.OrderRepository;
-import com.example.ordering_lecture.orderdetail.controller.MemberServiceClient;
 import com.example.ordering_lecture.orderdetail.dto.*;
 import com.example.ordering_lecture.orderdetail.entity.OrderDetail;
 import com.example.ordering_lecture.orderdetail.repository.OrderDetailRepository;
@@ -15,7 +15,6 @@ import com.example.ordering_lecture.redis.RedisService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,13 +24,13 @@ public class OrderingService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final RedisService redisService;
-    private final MemberServiceClient memberServiceClient;
+    private final FeignClient feignClient;
     private final ItemServiceClient itemServiceClient;
-    public OrderingService(OrderRepository orderRepository, OrderDetailRepository orderDetailRepository, RedisService redisService, MemberServiceClient memberServiceClient, ItemServiceClient itemServiceClient) {
+    public OrderingService(OrderRepository orderRepository, OrderDetailRepository orderDetailRepository, RedisService redisService, FeignClient feignClient, ItemServiceClient itemServiceClient) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.redisService = redisService;
-        this.memberServiceClient = memberServiceClient;
+        this.feignClient = feignClient;
         this.itemServiceClient = itemServiceClient;
     }
 
@@ -103,7 +102,7 @@ public class OrderingService {
     }
 
     public List<OrderResponseForSellerDto> findMyAllSales(String email) {
-        Long sellerId = memberServiceClient.searchIdByEmail(email);
+        Long sellerId = feignClient.searchIdByEmail(email);
         List<OrderDetail> orderDetails = orderRepository.findAllBySeller(sellerId);
         if(orderDetails.isEmpty()){
             throw new OrTopiaException(ErrorCode.NOT_FOUND_ORDERDETAIL);

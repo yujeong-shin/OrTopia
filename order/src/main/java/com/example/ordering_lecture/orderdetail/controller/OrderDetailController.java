@@ -1,6 +1,7 @@
 package com.example.ordering_lecture.orderdetail.controller;
 
 import com.example.ordering_lecture.common.OrTopiaResponse;
+import com.example.ordering_lecture.feign.FeignClient;
 import com.example.ordering_lecture.orderdetail.dto.*;
 import com.example.ordering_lecture.orderdetail.service.OrderDetailService;
 import org.springframework.http.HttpStatus;
@@ -13,11 +14,11 @@ import java.util.Map;
 @RestController
 public class OrderDetailController {
     private final OrderDetailService orderDetailService;
-    private final MemberServiceClient memberServiceClient;
+    private final FeignClient feignClient;
 
-    public OrderDetailController(OrderDetailService orderDetailService, MemberServiceClient memberServiceClient) {
+    public OrderDetailController(OrderDetailService orderDetailService, FeignClient feignClient) {
         this.orderDetailService = orderDetailService;
-        this.memberServiceClient = memberServiceClient;
+        this.feignClient = feignClient;
     }
 
     @GetMapping("check/review/{orderDetailId}")
@@ -47,35 +48,35 @@ public class OrderDetailController {
     }
     @GetMapping("/total_price/seller")
     public ResponseEntity<OrTopiaResponse> totalPriceBySeller(@RequestHeader("myEmail") String email){
-        Long sellerId = memberServiceClient.searchIdByEmail(email);
+        Long sellerId = feignClient.searchIdByEmail(email);
         List<SellerGraphPriceData> sellerGraphPriceDatas = orderDetailService.getSellerGraphPriceData(sellerId);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",sellerGraphPriceDatas);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
     @GetMapping("/total_count/seller")
     public ResponseEntity<OrTopiaResponse> totalCountBySeller(@RequestHeader("myEmail") String email){
-        Long sellerId = memberServiceClient.searchIdByEmail(email);
+        Long sellerId = feignClient.searchIdByEmail(email);
         List<SellerGraphCountData> sellerGraphCountDatas = orderDetailService.getSellerGraphCountData(sellerId);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",sellerGraphCountDatas);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
     @GetMapping("/each_item_price/seller")
     public ResponseEntity<OrTopiaResponse> eachItemPriceBySeller(@RequestHeader("myEmail") String email){
-        Long sellerId = memberServiceClient.searchIdByEmail(email);
+        Long sellerId = feignClient.searchIdByEmail(email);
         List<SellerGraphItemPriceData> sellerGraphItemPriceData = orderDetailService.getSellerEachItemPriceData(sellerId);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success",sellerGraphItemPriceData);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.OK);
     }
     @GetMapping("/buyer_gender/seller")
     public ResponseEntity<OrTopiaResponse> buyerGenderBySeller(@RequestHeader("myEmail") String email){
-        Long sellerId = memberServiceClient.searchIdByEmail(email);
+        Long sellerId = feignClient.searchIdByEmail(email);
         Map<String, Long> sellerGraphItemGenderData = orderDetailService.getGenderData(sellerId);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", sellerGraphItemGenderData);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
     @GetMapping("/buyer_age/seller")
     public ResponseEntity<OrTopiaResponse> buyerAgeBySeller(@RequestHeader("myEmail") String email){
-        Long sellerId = memberServiceClient.searchIdByEmail(email);
+        Long sellerId = feignClient.searchIdByEmail(email);
         Map<Byte, Long> sellerGraphItemAgeData = orderDetailService.getAgeData(sellerId);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", sellerGraphItemAgeData);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
