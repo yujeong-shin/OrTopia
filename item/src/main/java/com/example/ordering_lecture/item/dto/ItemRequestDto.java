@@ -7,6 +7,7 @@ import com.example.ordering_lecture.item.entity.Item;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Slf4j
 public class ItemRequestDto {
     @NotNull(message =  "EMPTY_ITEM_NAME")
     private String name;
@@ -37,6 +39,7 @@ public class ItemRequestDto {
         try {
             Category category = null;
             category = Category.valueOf(this.getCategory());
+            log.info(category.toString());
             return Item.builder()
                     .reviewNumber(0L)
                     .score(0L)

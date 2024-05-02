@@ -13,6 +13,7 @@ import com.example.ordering_lecture.redis.RedisService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ItemService {
     private final ItemRepository itemRepository;
     private final RedisService redisService;
@@ -57,6 +59,8 @@ public class ItemService {
             amazonS3Client.putObject(bucket, fileName, itemRequestDto.getImagePath().getInputStream(), metadata);
             fileUrl = amazonS3Client.getUrl(bucket, fileName).toString();
             Long sellerId = memberServiceClient.searchIdByEmail(email);
+            log.info("fein client result " + sellerId.toString());
+            log.info("file url " + fileUrl);
             Item item = itemRequestDto.toEntity(fileUrl, sellerId);
             itemRepository.save(item);
             // 옵션이 존재하는 경우
