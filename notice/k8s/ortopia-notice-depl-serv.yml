@@ -39,6 +39,21 @@ spec:
               secretKeyRef:
                 name: ortopia-redis
                 key: REDIS_HOST
+          - name: S3_NAME
+            valueFrom:
+              secretKeyRef:
+                name: ortopia-s3
+                key: S3_NAME
+          - name: S3_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: ortopia-s3
+                key: S3_ACCESS_KEY
+          - name: S3_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: ortopia-s3
+                key: S3_SECRET_KEY
           
 ---
 apiVersion: v1
