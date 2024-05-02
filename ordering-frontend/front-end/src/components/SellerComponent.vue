@@ -300,9 +300,23 @@
         </div>
       </v-col>
       <v-col cols="6">
-        <div class="text-center text-2xl font-bold">아이템별 재고 변화</div>
+        <div class="text-center text-2xl font-bold">아이템별 재고 현황</div>
         <div class="p-4 border-2">
-          <canvas id="" width="400" height="200"></canvas>
+          <canvas id="itemStockChart" width="400" height="200"></canvas>
+        </div>
+      </v-col>
+    </v-row>
+    <v-row class="mt-12">
+      <v-col cols="6">
+        <div class="text-center text-2xl font-bold">구매자 성별 비율</div>
+        <div class="p-4 border-2">
+          <canvas id="itemGenderRatioChart" width="400" height="200"></canvas>
+        </div>
+      </v-col>
+      <v-col cols="6">
+        <div class="text-center text-2xl font-bold">구매자 연령 비율</div>
+        <div class="p-4 border-2">
+          <canvas id="itemAgeRatioChart" width="400" height="200"></canvas>
         </div>
       </v-col>
     </v-row>
@@ -413,6 +427,18 @@ export default {
       dailySalesAmountEachItemChartInfo: {},
       itemNamesForEachItem: [],
       salesAmountForEachItem: [],
+      // 구매자 성별 비율
+      itemGenderRatioChartInfo: {},
+      itemGenderTypes: [],
+      itemGenderCounts: [],
+      // 구매자 연령 비율
+      itemAgeRatioChartInfo: {},
+      itemAges: [],
+      itemAgeCounts: [],
+      // 아이템별 재고 현황
+      itemStockChartInfo: {},
+      itemNames: [],
+      itemStock: [],
     };
   },
   methods: {
@@ -518,8 +544,69 @@ export default {
             this.dailySalesAmountEachItemChartInfo[k].price
           );
         }
-
         this.dailySalesAmountEachItemChart();
+
+        const response4 = await axios.get(
+          `${process.env.VUE_APP_API_BASE_URL}/order-service/buyer_gender/seller`,
+          {
+            headers: {
+              myEmail: `${email}`,
+              Authorization: `Bearer ${token}`,
+              "X-Refresh-Token": `${refreshToken}`,
+            },
+          }
+        );
+        this.itemGenderRatioChartInfo = response4.data.result;
+        console.log("itemGenderRatioChartInfo : ");
+        console.log(this.itemGenderRatioChartInfo);
+
+        this.itemGenderTypes = ["MALE", "FEMALE"];
+        this.itemGenderCounts = [
+          this.itemGenderRatioChartInfo.MALE,
+          this.itemGenderRatioChartInfo.FEMALE,
+        ];
+
+        this.itemGenderRatioChart();
+
+        const response5 = await axios.get(
+          `${process.env.VUE_APP_API_BASE_URL}/order-service/buyer_age/seller`,
+          {
+            headers: {
+              myEmail: `${email}`,
+              Authorization: `Bearer ${token}`,
+              "X-Refresh-Token": `${refreshToken}`,
+            },
+          }
+        );
+        this.itemAgeRatioChartInfo = response5.data.result;
+        console.log("itemAgeRatioChartInfo : ");
+        console.log(this.itemAgeRatioChartInfo);
+
+        this.itemAges = Object.keys(this.itemAgeRatioChartInfo).map(Number);
+        this.itemAgeCounts = Object.values(this.itemAgeRatioChartInfo);
+
+        this.itemAgeRatioChart();
+
+        const response6 = await axios.get(
+          `${process.env.VUE_APP_API_BASE_URL}/item-service/item/stock/seller`,
+          {
+            headers: {
+              myEmail: `${email}`,
+              Authorization: `Bearer ${token}`,
+              "X-Refresh-Token": `${refreshToken}`,
+            },
+          }
+        );
+        this.itemStockChartInfo = response6.data.result;
+        console.log("itemStockChartInfo : ");
+        console.log(this.itemStockChartInfo);
+
+        for (var l = 0; l < this.itemStockChartInfo.length; l++) {
+          this.itemNames.push(this.itemStockChartInfo[l].itemName);
+          this.itemStock.push(this.itemStockChartInfo[l].stock);
+        }
+
+        this.itemStockChart();
       } catch (error) {
         console.log(error);
       }
@@ -581,7 +668,7 @@ export default {
         .getElementById("dailySalesCountChart")
         .getContext("2d");
       new Chart(ctx, {
-        type: "doughnut",
+        type: "line",
         data: {
           labels: this.datesForSalesCount,
           datasets: [
@@ -635,12 +722,12 @@ export default {
         .getElementById("dailySalesAmountEachItemChart")
         .getContext("2d");
       new Chart(ctx, {
-        type: "pie",
+        type: "bar",
         data: {
-          labels: this.itemNamesForSalesAmount,
+          labels: this.itemNamesForEachItem,
           datasets: [
             {
-              data: this.salesAmount,
+              data: this.salesAmountForEachItem,
               backgroundColor: [
                 "rgba(54, 162, 235, 0.2)",
                 "rgba(75, 192, 192, 0.2)",
@@ -649,6 +736,163 @@ export default {
                 "rgba(255, 99, 132, 0.2)",
               ],
               borderColor: [
+                "rgba(54, 162, 235, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(245, 124, 0, 1)",
+                "rgba(255, 99, 132, 1)",
+              ],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          indexAxis: "y",
+          maintainAspectRatio: false,
+          aspectRatio: 1,
+          scales: {
+            x: {
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              grid: {
+                display: false,
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: false,
+            },
+          },
+        },
+      });
+    },
+    itemGenderRatioChart() {
+      const ctx = document
+        .getElementById("itemGenderRatioChart")
+        .getContext("2d");
+      new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: this.itemGenderTypes,
+          datasets: [
+            {
+              data: this.itemGenderCounts,
+              backgroundColor: [
+                // "rgba(0, 0, 128, 0.2)",
+                "rgba(54, 162, 235, 0.2)",
+                "rgba(75, 192, 192, 0.2)",
+                "rgba(255, 206, 86, 0.2)",
+                "rgba(245, 124, 0, 0.2)",
+                "rgba(255, 99, 132, 0.2)",
+              ],
+              borderColor: [
+                // "rgba(0, 0, 128, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(245, 124, 0, 1)",
+                "rgba(255, 99, 132, 1)",
+              ],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: false,
+          aspectRatio: 1,
+          scales: {
+            x: {
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              grid: {
+                display: false,
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: false,
+            },
+          },
+        },
+      });
+    },
+    itemAgeRatioChart() {
+      const ctx = document.getElementById("itemAgeRatioChart").getContext("2d");
+      new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: this.itemAges,
+          datasets: [
+            {
+              data: this.itemAgeCounts,
+              backgroundColor: [
+                "rgba(54, 162, 235, 0.2)",
+                "rgba(75, 192, 192, 0.2)",
+                "rgba(255, 206, 86, 0.2)",
+                "rgba(245, 124, 0, 0.2)",
+                "rgba(255, 99, 132, 0.2)",
+              ],
+              borderColor: [
+                "rgba(54, 162, 235, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(245, 124, 0, 1)",
+                "rgba(255, 99, 132, 1)",
+              ],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: false,
+          aspectRatio: 1,
+          scales: {
+            x: {
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              grid: {
+                display: false,
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: false,
+            },
+          },
+        },
+      });
+    },
+    itemStockChart() {
+      const ctx = document.getElementById("itemStockChart").getContext("2d");
+      new Chart(ctx, {
+        type: "polarArea",
+        data: {
+          labels: this.itemNames,
+          datasets: [
+            {
+              data: this.itemStock,
+              backgroundColor: [
+                // "rgba(0, 0, 128, 0.2)",
+                "rgba(54, 162, 235, 0.2)",
+                "rgba(75, 192, 192, 0.2)",
+                "rgba(255, 206, 86, 0.2)",
+                "rgba(245, 124, 0, 0.2)",
+                "rgba(255, 99, 132, 0.2)",
+              ],
+              borderColor: [
+                // "rgba(0, 0, 128, 1)",
                 "rgba(54, 162, 235, 1)",
                 "rgba(75, 192, 192, 1)",
                 "rgba(255, 206, 86, 1)",
