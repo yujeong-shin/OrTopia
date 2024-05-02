@@ -12,7 +12,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 				org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration.class
 		}
 )
-
 @EnableFeignClients
 @EnableDiscoveryClient
 public class ItemApplication {
