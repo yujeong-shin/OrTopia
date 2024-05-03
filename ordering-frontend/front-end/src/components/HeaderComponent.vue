@@ -143,7 +143,7 @@ import {EventSourcePolyfill } from 'event-source-polyfill';
 const router = useRouter();
 const store = useStore();
 const totalQuantity = computed(() => store.getters.getTotalQuantity);
-let myFeedBack = 0;
+const myFeedBack = ref(0); 
 const isLoggedIn = ref(false);
 const isSeller = ref(false); // 판매자인지 확인하는 ref 추가
 const search = ref(""); // ref로 search 변수를 생성합니다.
@@ -177,8 +177,8 @@ onMounted(() => {
     });
     sse.addEventListener('message', e => { 
       // const obj = JSON.parse(e.data);
-      myFeedBack = myFeedBack+1;
-      console.log(myFeedBack);
+      myFeedBack.value += 1;
+      console.log(myFeedBack.value);
       console.log(e);
       // this.feedback.push(obj) 
       // console.log(this.feedback[0].type); 
