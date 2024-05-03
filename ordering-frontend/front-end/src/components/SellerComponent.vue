@@ -267,9 +267,6 @@
             >
           </v-col>
           <v-col cols="12" md="12" class="text-right">
-            <v-btn color="gray" class="mr-2" @click="goToCouponPage"
-              >쿠폰 등록</v-btn
-            >
           </v-col>
         </v-col>
       </v-row>
@@ -463,9 +460,6 @@ export default {
         alert(error.response.data.error_message);
         console.log(error);
       }
-    },
-    goToCouponPage() {
-      this.$router.push({ name: "CouponComponent" });
     },
     async fetchSalesInfo() {
       const token = localStorage.getItem("accessToken");

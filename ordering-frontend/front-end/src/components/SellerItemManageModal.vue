@@ -10,7 +10,7 @@
             <ManageItemsModal
               v-model="nestedModalOpen"
               :dialog="nestedModalOpen" :detail="selectedDetail"  @update:dialog="nestedModalOpen = $event"/>
-            <v-btn color="gray" class="mr-2" @click="goToCouponPage"
+              <v-btn color="gray" class="mr-2" @click="goToCouponPage"
               >쿠폰 등록</v-btn
             >
           </v-col>
@@ -96,6 +96,9 @@
       };
     },
     methods: {
+      goToCouponPage() {
+      this.$router.push({ name: "CouponComponent" });
+    },
       openNestedModal(detail) {
       this.selectedDetail = detail;
       console.log(this.selectedDetail);
