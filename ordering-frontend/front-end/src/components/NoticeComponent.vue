@@ -2,10 +2,12 @@
   <v-container>
       <v-col cols="12">
         <v-card-text>
+          <v-card-title class="headline grey lighten-2 text-center">
+            공지사항
+          </v-card-title>
           <v-container>
             <v-row justify="center">
               <v-col cols="12">
-                <h1>공지사항</h1>
                 <v-table>
                   <thead>
                     <tr>

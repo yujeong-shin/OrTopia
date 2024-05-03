@@ -117,7 +117,7 @@ export default {
     },
     openSelectCouponModal() {
       if (this.selectedItems.length === 0) {
-        alert('발급 대상자를 선택해주세요.');
+        alert('발급할 아이템을 선택해주세요.');
         return;
       }
       this.fetchAvailableCoupons();

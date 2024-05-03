@@ -1,7 +1,9 @@
 <template>
   <v-dialog v-model="show" persistent max-width="600px">
     <v-card>
-      <v-card-title class="headline">쿠폰 정보 입력</v-card-title>
+      <v-card-title class="headline grey lighten-2 text-center">
+        쿠폰 정보 입력
+      </v-card-title>
       <v-card-text>
         <v-container>
           <v-row>
