@@ -47,11 +47,11 @@ public class PaymentController {
             PayApproveResDto kakaoApprove = paymentService.getApprove(pgToken,email);
             // 결제가 성공하면 redis에 pgToken에 저장.
             redisService.setValues(email,pgToken);
-            return new RedirectView("http://localhost:8081/order/kakao/"+pgToken);
+            return new RedirectView("https://www.yujeong.shop/order/kakao/"+pgToken);
         }
         catch(Exception e){
             e.printStackTrace();
-            return new RedirectView("http://localhost:8081/");
+            return new RedirectView("https://www.yujeong.shop/");
         }
     }
 
@@ -61,7 +61,7 @@ public class PaymentController {
     @GetMapping("/cancel")
     public RedirectView cancel() {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("사용자가 결제를 취소했습니다");
-        return new RedirectView("http://localhost:8081/order/kakao/payCanceled");
+        return new RedirectView("https://www.yujeong.shop/order/kakao/payCanceled");
     }
 
     /**
@@ -70,6 +70,6 @@ public class PaymentController {
     @GetMapping("/fail")
     public RedirectView fail() {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("결제 실패");
-        return new RedirectView("http://localhost:8081/order/kakao/payFailed");
+        return new RedirectView("https://www.yujeong.shop/order/kakao/payFailed");
     }
 }
