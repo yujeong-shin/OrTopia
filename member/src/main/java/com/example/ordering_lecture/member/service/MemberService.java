@@ -137,8 +137,8 @@ public class MemberService {
         likedSellerRepository.deleteAll(likedSellers);
     }
     //판매자를 즐겨찾기한 구매자 목록
-    public List<MemberResponseDto> findBuyersByLikedSeller(Long sellerId) throws OrTopiaException {
-        Seller seller = sellerRepository.findById(sellerId).orElseThrow(
+    public List<MemberResponseDto> findBuyersBySellerEmail(String email) throws OrTopiaException {
+        Seller seller = sellerRepository.findByMemberEmail(email).orElseThrow(
                 () -> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER)
         );
         List<LikedSeller> likedSellers = likedSellerRepository.findBySeller(seller);

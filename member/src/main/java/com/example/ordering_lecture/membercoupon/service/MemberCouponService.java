@@ -1,66 +1,62 @@
 package com.example.ordering_lecture.membercoupon.service;
 
-import com.example.ordering_lecture.coupondetail.domain.CouponDetail;
-import com.example.ordering_lecture.coupondetail.dto.CouponDetailResponseDto;
-import com.example.ordering_lecture.coupondetail.repository.CouponDetailRepository;
+import com.example.ordering_lecture.common.ErrorCode;
+import com.example.ordering_lecture.common.OrTopiaException;
+import com.example.ordering_lecture.coupon.domain.Coupon;
+import com.example.ordering_lecture.coupon.repository.CouponRepository;
+import com.example.ordering_lecture.member.repository.MemberRepository;
 import com.example.ordering_lecture.membercoupon.domain.MemberCoupon;
 import com.example.ordering_lecture.membercoupon.dto.MemberCouponRequestDto;
 import com.example.ordering_lecture.membercoupon.dto.MemberCouponResponseDto;
 import com.example.ordering_lecture.membercoupon.repository.MemberCouponRepository;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class MemberCouponService {
     private final MemberCouponRepository memberCouponRepository;
-    private final CouponDetailRepository couponDetailRepository;
+    private final CouponRepository couponRepository;
+    private final MemberRepository memberRepository;
 
-    public MemberCouponService(MemberCouponRepository memberCouponRepository, CouponDetailRepository couponDetailRepository) {
+    public MemberCouponService(MemberCouponRepository memberCouponRepository, CouponRepository couponRepository, MemberRepository memberRepository) {
         this.memberCouponRepository = memberCouponRepository;
-        this.couponDetailRepository = couponDetailRepository;
+        this.couponRepository = couponRepository;
+        this.memberRepository = memberRepository;
     }
-    public List<MemberCouponResponseDto> createMemberCoupon(MemberCouponRequestDto memberCouponRequestDto) {
-        //TODO:에러메세지 수정
-        CouponDetail couponDetail = couponDetailRepository.findById(memberCouponRequestDto.getCouponDetailId()).orElseThrow();
-        List<MemberCoupon> memberCoupons = new ArrayList<>();
-        for (Long memberId : memberCouponRequestDto.getMemberIdList()) {
-            MemberCoupon memberCoupon = MemberCoupon.builder()
-                    .memberId(memberId)
-                    .couponDetail(couponDetail)
-                    .build();
-            memberCoupons.add(memberCoupon);
-            memberCouponRepository.save(memberCoupon);
-        }
-        return memberCoupons.stream()
+
+    public MemberCouponResponseDto addCoupon(String email, MemberCouponRequestDto request) throws OrTopiaException {
+        Long memberId = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER))
+                .getId();
+        Coupon coupon = couponRepository.findById(request.getCouponId())
+                .orElseThrow(() -> new OrTopiaException(ErrorCode.COUPON_NOT_FOUND));
+        MemberCoupon memberCoupon = MemberCoupon.builder()
+                .memberId(memberId)
+                .coupon(coupon)
+                .build();
+        memberCouponRepository.save(memberCoupon);
+        return MemberCouponResponseDto.toDto(memberCoupon);
+    }
+
+    public List<MemberCouponResponseDto> findAllCouponsByEmail(String email) throws OrTopiaException {
+        Long memberId = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER))
+                .getId();
+        List<MemberCoupon> coupons = memberCouponRepository.findByMemberId(memberId);
+        return coupons.stream()
                 .map(MemberCouponResponseDto::toDto)
                 .collect(Collectors.toList());
     }
-    public List<CouponDetailResponseDto> findCouponDetailsByMemberId(Long memberId) {
-        List<MemberCoupon> memberCoupons = memberCouponRepository.findByMemberId(memberId);
-        return memberCoupons.stream()
-                .map(memberCoupon -> new CouponDetailResponseDto(
-                        memberCoupon.getCouponDetail().getId(),
-                        memberCoupon.getCouponDetail().getName(),
-                        memberCoupon.getCouponDetail().getStartDate(),
-                        memberCoupon.getCouponDetail().getEndDate(),
-                        memberCoupon.getCouponDetail().getRateDiscount(),
-                        memberCoupon.getCouponDetail().getFixDiscount()
-                ))
-                .collect(Collectors.toList());
-    }
-    public List<MemberCouponResponseDto> myCoupons(Long id) {
-        return memberCouponRepository.findByMemberId(id)
-                .stream()
-                .map(a->MemberCouponResponseDto.toDto(a))
-                .collect(Collectors.toList());
-    }
-    @Transactional
-    public void useCoupon(Long memberId, Long couponDetailId) {
-        memberCouponRepository.deleteByMemberIdAndCouponDetailId(memberId, couponDetailId);
+
+    public void useCoupon(String email, Long couponId) throws OrTopiaException {
+        Long memberId = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER))
+                .getId();
+        MemberCoupon coupon = memberCouponRepository.findByMemberIdAndCouponId(memberId, couponId)
+                .orElseThrow(() -> new OrTopiaException(ErrorCode.COUPON_NOT_FOUND));
+
+        memberCouponRepository.delete(coupon);
     }
 }

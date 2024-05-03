@@ -17,6 +17,7 @@ public class CouponDetailResponseDto {
     private String name;
     private String startDate;
     private String endDate;
+    private int firstCome;
     private int rateDiscount;
     private int fixDiscount;
     public static CouponDetailResponseDto toDto(CouponDetail couponDetail){
@@ -25,6 +26,7 @@ public class CouponDetailResponseDto {
                 .name(couponDetail.getName())
                 .startDate(couponDetail.getStartDate())
                 .endDate(couponDetail.getEndDate())
+                .firstCome(couponDetail.getFirstCome())
                 .rateDiscount(couponDetail.getRateDiscount())
                 .fixDiscount(couponDetail.getFixDiscount())
                 .build();
