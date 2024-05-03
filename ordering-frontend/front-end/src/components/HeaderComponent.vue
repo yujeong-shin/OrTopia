@@ -178,6 +178,7 @@ onMounted(() => {
     sse.addEventListener('message', e => { 
       // const obj = JSON.parse(e.data);
       myFeedBack = myFeedBack+1;
+      console.log(myFeedBack);
       console.log(e);
       // this.feedback.push(obj) 
       // console.log(this.feedback[0].type); 
