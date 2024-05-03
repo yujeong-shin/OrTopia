@@ -3,7 +3,9 @@
     <v-row justify="center">
       <v-col cols="12" sm="8" md="6">
         <v-card>
-          <v-card-title class="text-h5">회원가입</v-card-title>
+          <v-card-title class="headline grey lighten-2 text-center">
+            회원가입
+          </v-card-title>
           <v-card-text>
             <v-form>
               <v-text-field
@@ -109,3 +111,9 @@ async function signup() {
   }
 }
 </script>
+
+<style>
+  .v-card-title {
+    font-size: 28px; 
+  }
+</style>
