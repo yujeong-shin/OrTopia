@@ -3,7 +3,9 @@
     <v-row justify="center">
       <v-col cols="12" sm="8" md="4">
         <v-card>
-          <v-card-title class="text-h5">로그인</v-card-title>
+          <v-card-title class="headline grey lighten-2 text-center">
+            로그인
+          </v-card-title>
           <v-card-text>
             <v-form @submit.prevent="doLogin">
               <v-text-field
@@ -118,3 +120,9 @@ export default {
   }
 };
 </script>
+
+<style>
+  .v-card-title {
+    font-size: 28px; 
+  }
+</style>
