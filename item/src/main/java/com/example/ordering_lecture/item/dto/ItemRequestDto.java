@@ -31,8 +31,6 @@ public class ItemRequestDto {
     private int minimumStock;
     private boolean delYN;
     private boolean isBaned;
-//    @NotNull(message =  "EMPTY_ITEM_SELLER")
-    private Long sellerId;
 
     public Item toEntity(String fileUrl, Long SellerId) throws OrTopiaException {
         //TODO : S3 저장 후 나오는 url를 넣어줌

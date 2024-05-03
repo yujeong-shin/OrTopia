@@ -3,6 +3,7 @@ package com.example.ordering_lecture.member.service;
 import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
 import com.example.ordering_lecture.member.domain.BannedSeller;
+import com.example.ordering_lecture.member.domain.LikedSeller;
 import com.example.ordering_lecture.member.domain.Member;
 import com.example.ordering_lecture.member.domain.Seller;
 import com.example.ordering_lecture.member.dto.Buyer.MemberResponseDto;
@@ -119,8 +120,8 @@ public class SellerService {
     public List<String> searchEmailsBySellerId(Long sellerId) {
         Seller seller = sellerRepository.findByMemberId(sellerId)
                 .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER));
-        List<Member> members = likedSellerRepository.findAllBySellerId(seller.getId());
+        List<LikedSeller> members = likedSellerRepository.findAllBySellerId(seller.getId());
         log.info("판매자를 좋아하는 members 조회 성공"+ members.size());
-        return members.stream().map(Member::getEmail).collect(Collectors.toList());
+        return members.stream().map(likedSeller -> likedSeller.getBuyer().getEmail()).collect(Collectors.toList());
     }
 }

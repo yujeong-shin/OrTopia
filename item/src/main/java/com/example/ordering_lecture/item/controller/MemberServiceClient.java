@@ -18,7 +18,7 @@ public interface MemberServiceClient {
     String searchNameByEmail(@PathVariable("email") String email);
 
     // 판매자의 sellerId로 멤버 emails 조회.
-    @GetMapping("/member/search/emails/{sellerId}")
+    @GetMapping("/seller/search/emails/{sellerId}")
     List<String> searchEmailsBySellerId(@PathVariable("sellerId") Long sellerId);
 
     // 판매작의 sellerId로 회사명 조회.

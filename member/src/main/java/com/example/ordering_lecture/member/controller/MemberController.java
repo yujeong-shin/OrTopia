@@ -108,6 +108,8 @@ public class MemberController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("check success", isLiked);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
+    // feincleint
+    // item server 에서 사용
     @GetMapping("/member/search/{email}")
     public Long searchIdByEmail(@PathVariable("email") String email){
         MemberResponseDto memberResponseDto = memberService.findIdByEmail(email);

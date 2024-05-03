@@ -14,5 +14,5 @@ public interface LikedSellerRepository extends JpaRepository<LikedSeller, Long> 
     List<LikedSeller> findByBuyerAndSeller(Member buyer, Seller seller);
     List<LikedSeller> findBySeller(Seller seller);
 
-    List<Member> findAllBySellerId(Long sellerId);
+    List<LikedSeller> findAllBySellerId(Long sellerId);
 }
