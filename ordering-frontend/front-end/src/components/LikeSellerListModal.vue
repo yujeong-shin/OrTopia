@@ -1,11 +1,8 @@
 <template>
   <v-dialog :value="dialog" @input="updateDialog" max-width="1200px">
     <v-card>
-      <v-card-title
-        class="headline grey lighten-2 text-center"
-        style="font-weight: bold; font-size: 1.2em"
-      >
-        단골가게 목록
+      <v-card-title class="headline grey lighten-2 text-center">
+        관심판매자
       </v-card-title>
       <v-divider></v-divider>
       <!-- 머리글 아래 선 추가 -->
