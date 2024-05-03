@@ -24,7 +24,9 @@ function updateLocalStorage(cartItems,totalQuantity){
 
 export default createStore({
     // state : 상태를 의미하는 객체로서 initState를 통해 상태초기화를 하고 있다
-    state: initState,
+    state: {initState, myFeedBack: 0
+
+    },
 
     // mutations는 상태를 변경하는 함수들의 집합
     // vuex에서 커밋이라는 용어는 상태변경을 위해 mutation을 호출하는 과정을 의미
@@ -61,6 +63,9 @@ export default createStore({
         },
         setBuyerId(state, buyerId) {
             state.buyerId = buyerId;  // buyerId 상태 업데이트
+        },
+        incrementMyFeedBack(state) {
+            state.myFeedBack++; // myFeedBack 상태를 1 증가시킵니다.
         }
     },
     // actions를 통해 여러 mutationa을 커밋하거나, 비동기 작업을 진행, 일반적으로 component에서 actions의 method를 호출하고
