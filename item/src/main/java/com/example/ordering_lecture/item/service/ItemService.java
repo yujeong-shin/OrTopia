@@ -377,8 +377,8 @@ public class ItemService {
         List<Object[]> ageAndCountData = itemOptionQuantityRepository.findItemStockBySellerId(startDate, endDate, sellerId);
         List<SellerGraphStockData> result = new ArrayList<>();
         for(Object[] data : ageAndCountData) {
-            System.out.println("data[0] = " + data[0]);
-            System.out.println("data[1] = " + data[1]);
+//            System.out.println("data[0] = " + data[0]);
+//            System.out.println("data[1] = " + data[1]);
             String itemName = itemRepository.findById((Long) data[0]).orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_ITEM)).getName();
             // age, count 저장
             SellerGraphStockData sellerGraphStockData = new SellerGraphStockData(itemName, (Long) data[1]);
@@ -389,11 +389,13 @@ public class ItemService {
 
     public void sendCreateMessage(ItemResponseDto itemResponseDto) {
         List<String> memberEmail = memberServiceClient.searchEmailsBySellerId(itemResponseDto.getSellerId());
+        log.info("받아온 이메일의 사이즈 : "+memberEmail.size());
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
         String nowDate = currentDate.format(formatter);
         String companyName = memberServiceClient.findSellerName(itemResponseDto.getSellerId());
         for(String email : memberEmail){
+            log.info(email+"에게 메시지를 보냅니다.");
             ChannelTopic channel = new ChannelTopic(email);
             String message = nowDate+"_"+email+"_"+companyName+"이 님이 새로운 아이템 "+itemResponseDto.getName()+"을 등록했어요!";
             redisPublisher.publish(channel,message);
