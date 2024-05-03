@@ -46,7 +46,7 @@ public class MailController {
         token.setExpiryDate(30);  // Set the token's expiry time to 30 minutes
         passwordResetTokenRepository.save(token);
 
-        String url = "http://localhost:8081/NewPasswordComponent?token=" + token.getToken();
+        String url = "https://www.yujeong.shop/NewPasswordComponent?token=" + token.getToken();
         mailService.sendMail(email, "비밀번호 재설정 요청", "아래 링크를 클릭하여 비밀번호를 재설정하세요: " + url);
 
         return ResponseEntity.ok("비밀번호 재설정 링크를 이메일로 보냈습니다. 링크는 30분 동안 유효합니다.");
