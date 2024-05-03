@@ -13,9 +13,9 @@ public class CouponDetailUpdateDto {
     private String name;
     private String startDate;
     private String endDate;
+    private int firstCome;
     private int rateDiscount;
     private int fixDiscount;
-    private Long sellerId;
 
     public CouponDetail toUpdate(CouponDetail couponDetail) {
         if (name != null) {
@@ -27,14 +27,14 @@ public class CouponDetailUpdateDto {
         if (endDate != null) {
             couponDetail.updateEndDate(endDate);
         }
+        if (firstCome != 0) {
+            couponDetail.updateFirstCome(firstCome);
+        }
         if (rateDiscount != 0) { // Assuming 0 is an invalid value for discount
             couponDetail.updateRateDiscount(rateDiscount);
         }
         if (fixDiscount != 0) { // Assuming 0 is an invalid value for discount
             couponDetail.updateFixDiscount(fixDiscount);
-        }
-        if (sellerId != null) {
-            couponDetail.updateSellerId(sellerId);
         }
         return couponDetail;
     }

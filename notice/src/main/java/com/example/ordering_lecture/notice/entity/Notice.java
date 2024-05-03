@@ -21,6 +21,9 @@ public class Notice {
     @Lob
     @Column(nullable = false)
     private String contents;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Category category;
     @Column(nullable = false)
     private String imagePath;
     @Column(nullable = false)

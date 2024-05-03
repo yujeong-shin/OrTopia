@@ -1,6 +1,7 @@
 package com.example.ordering_lecture.coupondetail.domain;
 
 import com.example.ordering_lecture.coupon.domain.Coupon;
+import com.example.ordering_lecture.member.domain.Member;
 import com.example.ordering_lecture.membercoupon.domain.MemberCoupon;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,17 +26,20 @@ public class CouponDetail {
     private String startDate;
     @Column(nullable = false)
     private String endDate;
+    @Column(nullable = false)
+    private int firstCome; // 선착순
     @Column
     private int rateDiscount;
     @Column
     private int fixDiscount;
-    @Column(nullable = false)
-    private Long sellerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @OneToMany(mappedBy = "couponDetail",fetch = FetchType.LAZY, orphanRemoval = true,cascade = CascadeType.ALL)
     private List<Coupon> coupons;
 
-    @OneToMany(mappedBy = "couponDetail",fetch = FetchType.LAZY, orphanRemoval = true,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "coupon", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<MemberCoupon> memberCoupons;
     public void updateName(String name) {
         this.name = name;
@@ -48,6 +52,7 @@ public class CouponDetail {
     public void updateEndDate(String endDate) {
         this.endDate = endDate;
     }
+    public void updateFirstCome(int firstCome) {this.firstCome = firstCome; }
 
     public void updateRateDiscount(int rateDiscount) {
         this.rateDiscount = rateDiscount;
@@ -55,9 +60,5 @@ public class CouponDetail {
 
     public void updateFixDiscount(int fixDiscount) {
         this.fixDiscount = fixDiscount;
-    }
-
-    public void updateSellerId(Long sellerId) {
-        this.sellerId = sellerId;
     }
 }

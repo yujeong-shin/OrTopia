@@ -115,5 +115,4 @@ public class SellerController {
         log.info("feinClient 통신 완료");
         return sellerService.searchEmailsBySellerId(sellerId);
     }
-
 }
