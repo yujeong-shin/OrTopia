@@ -316,7 +316,6 @@ export default {
       }
     } catch (error) {
       console.error("공지사항 로딩 실패:", error);
-      alert(error.response.data.error_message);
     }
   },
   },
