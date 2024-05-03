@@ -26,8 +26,8 @@ public class CouponDetailController {
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);
     }
     @GetMapping("/coupondetail")
-    public ResponseEntity<OrTopiaResponse> getAllCouponsBySellerId(@RequestHeader("myEmail") String email) {
-        List<CouponDetailResponseDto> couponDetails = couponDetailService.findAllBySellerId(email);
+    public ResponseEntity<OrTopiaResponse> getCoupon(@RequestHeader("myEmail") String email) {
+        List<CouponDetailResponseDto> couponDetails = couponDetailService.getCouponDetail(email);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", couponDetails);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }

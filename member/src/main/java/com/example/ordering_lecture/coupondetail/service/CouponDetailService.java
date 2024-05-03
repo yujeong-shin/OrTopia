@@ -36,7 +36,7 @@ public class CouponDetailService {
             throw new OrTopiaException(ErrorCode.COUPON_CREATION_FAILED);
         }
     }
-    public List<CouponDetailResponseDto> findAllBySellerId(String email) throws OrTopiaException {
+    public List<CouponDetailResponseDto> getCouponDetail(String email) throws OrTopiaException {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER));
         List<CouponDetail> couponDetails = couponDetailRepository.findAllByMember(member);

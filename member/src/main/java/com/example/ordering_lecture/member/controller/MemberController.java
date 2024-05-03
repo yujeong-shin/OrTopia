@@ -97,7 +97,7 @@ public class MemberController {
     // 즐겨찾기 한 구매자 목록 조회
     @GetMapping("/member/likedByBuyers")
     public ResponseEntity<OrTopiaResponse> findBuyersByLikedSeller(@RequestHeader("myEmail") String email) {
-        List<MemberResponseDto> buyers = memberService.findBuyersByLikedSeller(email);
+        List<MemberResponseDto> buyers = memberService.findBuyersBySellerEmail(email);
         OrTopiaResponse response = new OrTopiaResponse("read success", buyers);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
