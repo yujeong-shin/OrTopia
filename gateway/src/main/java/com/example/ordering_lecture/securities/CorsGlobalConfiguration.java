@@ -13,7 +13,7 @@ public class CorsGlobalConfiguration {
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.addAllowedOrigin("http://localhost:8081"); // 프론트엔드 주소 허용
+        corsConfig.addAllowedOrigin("https://www.yujeong.shop"); // 프론트엔드 주소 허용
         corsConfig.addAllowedMethod("*"); // 모든 HTTP 메소드 허용
         corsConfig.addAllowedHeader("*"); // 모든 헤더 허용
         corsConfig.setAllowCredentials(true); // 크로스 도메인 쿠키 허용

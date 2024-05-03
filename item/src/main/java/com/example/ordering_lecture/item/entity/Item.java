@@ -29,6 +29,7 @@ public class Item {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Category category;
+    @Lob
     @Column(nullable = false)
     private String detail;
     @Column(nullable = false)

@@ -2,6 +2,7 @@ package com.example.ordering_lecture.orderdetail.dto;
 
 import com.example.ordering_lecture.order.dto.OrderResponseDto;
 import com.example.ordering_lecture.orderdetail.entity.OrderDetail;
+import com.example.ordering_lecture.orderdetail.entity.Statue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class OrderDetailResponseDto {
     private Long itemId;
     private int quantity;
     private Long sellerId;
+    private Statue statue;
     private int discountPrice;
     private String options;
     private boolean isReviewed;
@@ -30,6 +32,7 @@ public class OrderDetailResponseDto {
                 .orderingId(orderDetail.getOrdering().getId())
                 .options(orderDetail.getOptions())
                 .itemId(orderDetail.getItemId())
+                .statue(orderDetail.getStatue())
                 .quantity(orderDetail.getQuantity())
                 .sellerId(orderDetail.getSellerId())
                 .discountPrice(orderDetail.getDiscountPrice())

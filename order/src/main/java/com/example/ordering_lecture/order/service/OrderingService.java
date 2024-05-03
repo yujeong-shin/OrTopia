@@ -2,19 +2,19 @@ package com.example.ordering_lecture.order.service;
 
 import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
+import com.example.ordering_lecture.feign.FeignClient;
 import com.example.ordering_lecture.order.dto.*;
 import com.example.ordering_lecture.order.entity.Ordering;
 import com.example.ordering_lecture.order.repository.OrderRepository;
-import com.example.ordering_lecture.orderdetail.dto.OrderDetailRequestDto;
-import com.example.ordering_lecture.orderdetail.dto.OrderDetailResponseDto;
+import com.example.ordering_lecture.orderdetail.dto.*;
 import com.example.ordering_lecture.orderdetail.entity.OrderDetail;
 import com.example.ordering_lecture.orderdetail.repository.OrderDetailRepository;
+import com.example.ordering_lecture.payment.controller.ItemServiceClient;
 import com.example.ordering_lecture.payment.dto.ItemOptionDto;
 import com.example.ordering_lecture.redis.RedisService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,10 +24,14 @@ public class OrderingService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final RedisService redisService;
-    public OrderingService(OrderRepository orderRepository, OrderDetailRepository orderDetailRepository, RedisService redisService) {
+    private final FeignClient feignClient;
+    private final ItemServiceClient itemServiceClient;
+    public OrderingService(OrderRepository orderRepository, OrderDetailRepository orderDetailRepository, RedisService redisService, FeignClient feignClient, ItemServiceClient itemServiceClient) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.redisService = redisService;
+        this.feignClient = feignClient;
+        this.itemServiceClient = itemServiceClient;
     }
 
     @Transactional
@@ -51,12 +55,6 @@ public class OrderingService {
             return OrderResponseDto.toDto(ordering);
         }
         throw new OrTopiaException(ErrorCode.ACCESS_DENIED);
-    }
-
-    public OrderResponseDto updateOrder(OrderUpdateDto orderUpdateDto) {
-        Ordering ordering = orderRepository.findById(orderUpdateDto.getId()).orElseThrow();
-        ordering.updateStatue(orderUpdateDto.getStatue());
-        return OrderResponseDto.toDto(ordering);
     }
 
     public List<OrderResponseDto> showAllOrder() {
@@ -102,30 +100,21 @@ public class OrderingService {
         }
         return orderResponseDtos;
     }
-    // 일별 구매 금액을 위한 데이터
-    public List<BuyerGraphPriceData> getBuyerGraphPriceData(String email) {
-        LocalDateTime endDate = LocalDateTime.now();
-        LocalDateTime startDate = endDate.minusWeeks(2);
-        System.out.println("startDate = " + startDate);
-        System.out.println("endDate = " + endDate);
-        return orderRepository.findSumPriceByDateBetweenAndStatueAndEmail(startDate, endDate, email);
-    }
-    // 일별 구매 건수를 위한 데이터
-    public List<BuyerGraphCountData> getBuyerGraphCountData(String email) {
-        LocalDateTime endDate = LocalDateTime.now();
-        LocalDateTime startDate = endDate.minusWeeks(2);
-        return orderRepository.findCompletedOrdersByEmailAndDateRange(startDate, endDate, email);
-    }
-    // 일별 판매 금액을 위한 데이터
-    public List<SellerGraphPriceData> getSellerGraphPriceData(Long sellerId) {
-        LocalDateTime endDate = LocalDateTime.now();
-        LocalDateTime startDate = endDate.minusWeeks(2);
-        return orderDetailRepository.findSalesData(startDate, endDate, sellerId);
-    }
-    // 일별 판매 건수를 위한 데이터
-    public List<SellerGraphCountData> getSellerGraphCountData(Long sellerId) {
-        LocalDateTime endDate = LocalDateTime.now();
-        LocalDateTime startDate = endDate.minusWeeks(2);
-        return orderDetailRepository.findSalesDataBySellerIdAndDateRange(startDate, endDate, sellerId);
+
+    public List<OrderResponseForSellerDto> findMyAllSales(String email) {
+        Long sellerId = feignClient.searchIdByEmail(email);
+        List<OrderDetail> orderDetails = orderRepository.findAllBySeller(sellerId);
+        if(orderDetails.isEmpty()){
+            throw new OrTopiaException(ErrorCode.NOT_FOUND_ORDERDETAIL);
+        }
+        List<OrderResponseForSellerDto> orderResponseDtos = new ArrayList<>();
+        for(OrderDetail orderDetail : orderDetails) {
+            OrderResponseForSellerDto orderResponseForSellerDto = OrderResponseForSellerDto.toDto(orderDetail);
+            // 상품 id로 상품명 가져오기
+            String itemName = itemServiceClient.findNameById(orderDetail.getItemId());
+            orderResponseForSellerDto.setItemName(itemName);
+            orderResponseDtos.add(orderResponseForSellerDto);
+        }
+        return orderResponseDtos;
     }
 }
