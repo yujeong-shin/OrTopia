@@ -66,7 +66,9 @@
       <template v-if="isLoggedIn">
         <!-- 로그인했을 때 보이는 텍스트들 -->
         <v-btn icon class="alarm-margin top-margin">
-          <v-icon color="black" @click="goToNotifications">mdi-bell</v-icon>
+          <v-badge color="error" :content="myFeedBack">
+            <v-icon color="black" @click="goToNotifications">mdi-bell</v-icon>
+          </v-badge>
         </v-btn>
 
         <v-btn icon class="top-margin">
@@ -136,10 +138,12 @@
 import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import {EventSourcePolyfill } from 'event-source-polyfill';
 
 const router = useRouter();
 const store = useStore();
 const totalQuantity = computed(() => store.getters.getTotalQuantity);
+let myFeedBack = 0;
 const isLoggedIn = ref(false);
 const isSeller = ref(false); // 판매자인지 확인하는 ref 추가
 const search = ref(""); // ref로 search 변수를 생성합니다.
@@ -151,11 +155,34 @@ const searchAndNavigate = () => {
     window.location.href = url;
   }
 };
+
 onMounted(() => {
   const token = localStorage.getItem("accessToken");
   const role = localStorage.getItem("role"); // localStorage에서 사용자 역할 가져오기
   isLoggedIn.value = !!token;
   isSeller.value = role === "SELLER"; // 사용자 역할이 판매자인 경우 true 설정
+  
+  if(localStorage.getItem('accessToken') != null){
+      const token = localStorage.getItem('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken');
+      var sse = new EventSourcePolyfill(`${process.env.VUE_APP_API_BASE_URL}/ortopia-notice-service/connect`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "X-Refresh-Token": `${refreshToken}`,
+        }
+      });
+    sse.addEventListener('connect', (e) => {
+    const { data: receivedConnectData } = e;
+    console.log('connect event data: ',receivedConnectData);  // "connected!"
+    });
+    sse.addEventListener('message', e => { 
+      // const obj = JSON.parse(e.data);
+      myFeedBack = myFeedBack+1;
+      console.log(e);
+      // this.feedback.push(obj) 
+      // console.log(this.feedback[0].type); 
+    });
+    }
 });
 const handleButtonClick = (category) => {
   const url = `/search/${category}`;
