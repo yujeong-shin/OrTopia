@@ -136,4 +136,10 @@ public class MemberController {
         MemberResponseDto memberResponseDto = memberService.findIdByEmail(email);
         return memberResponseDto.getAge();
     }
+    // 사용자의 이메일로 id를 조회
+    // item server 에서 사용
+    @GetMapping("/member/search/id/{email}")
+    Long findMemberIdByEmail(@PathVariable("email") String buyerEmail){
+        return memberService.findIdByEmail(buyerEmail).getId();
+    }
 }

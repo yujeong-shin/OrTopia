@@ -141,7 +141,7 @@ public class ItemController {
     @GetMapping("/stock/seller")
     public ResponseEntity<OrTopiaResponse> eachItemStockBySeller(@RequestHeader("myEmail") String email){
         Long sellerId = memberServiceClient.searchIdByEmail(email);
-        System.out.println("sellerId = " + sellerId);
+//        System.out.println("sellerId = " + sellerId);
         List<SellerGraphStockData> sellerGraphStockData = itemService.getEachItemStockData(sellerId);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", sellerGraphStockData);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);

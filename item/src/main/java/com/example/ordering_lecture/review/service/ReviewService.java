@@ -58,10 +58,12 @@ public class ReviewService {
         } catch (IOException e) {
             throw new OrTopiaException(ErrorCode.S3_SERVER_ERROR);
         }
-        Review review = reviewRequestDto.toEntity(item,fileUrl);
+        Long buyerId = memberServiceClient.findMemberIdByEmail(reviewRequestDto.getBuyerEmail());
+        Review review = reviewRequestDto.toEntity(item,fileUrl,buyerId);
         reviewRepository.save(review);
         // 리뷰 작성시 Item 리뷰 수 , 총점수 업데이트.
         item.updateScore(reviewRequestDto.getScore());
+
         //TODO : 추후 카프카로 변경. 주문디테일 테이블에 리뷰 작성 표시.
         orderServiceClient.checkReview(reviewRequestDto.getOrderDetailId());
         return ReviewResponseDto.toDto(review,null);

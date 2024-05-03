@@ -24,4 +24,8 @@ public interface MemberServiceClient {
     // 판매작의 sellerId로 회사명 조회.
     @GetMapping("/seller/noLogin/fein/{id}")
     String findSellerName(@PathVariable Long id);
+
+    // 구매자의 id를 이메일로 조회
+    @GetMapping("/member/search/id/{email}")
+    Long findMemberIdByEmail(@PathVariable("email") String buyerEmail);
 }

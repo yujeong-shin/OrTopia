@@ -28,6 +28,8 @@ public class Review {
     @Column(nullable = false)
     private String buyerEmail;
     @Column
+    private Long buyerId;
+    @Column
     private String imagePath;
     @JoinColumn(name="item_id",nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)

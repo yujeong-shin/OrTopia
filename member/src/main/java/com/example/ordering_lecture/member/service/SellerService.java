@@ -112,13 +112,15 @@ public class SellerService {
 
     public SellerResponseDto findByMemberId(Long id) {
         Seller seller = sellerRepository.findByMemberId(id)
-                .orElseThrow(() -> new IllegalArgumentException("판매자를 찾지 못했습니다."));
+                .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER));
         return SellerResponseDto.toDto(seller);
     }
 
     public List<String> searchEmailsBySellerId(Long sellerId) {
-        List<Member> members = likedSellerRepository.findAllBySellerId(sellerId);
-        log.info("판매자를 좋아하는 members 조회 성공");
+        Seller seller = sellerRepository.findByMemberId(sellerId)
+                .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER));
+        List<Member> members = likedSellerRepository.findAllBySellerId(seller.getId());
+        log.info("판매자를 좋아하는 members 조회 성공"+ members.size());
         return members.stream().map(Member::getEmail).collect(Collectors.toList());
     }
 }

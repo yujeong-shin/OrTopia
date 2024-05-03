@@ -25,8 +25,9 @@ public class ReviewRequestDto {
     private Long orderDetailId;
     private MultipartFile imagePath;
 
-    public Review toEntity(Item item,String imagePath){
+    public Review toEntity(Item item,String imagePath,Long buyerId){
         return Review.builder()
+                .buyerId(buyerId)
                 .score(this.score)
                 .content(this.content)
                 .orderDetailId(orderDetailId)
