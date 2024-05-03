@@ -396,7 +396,7 @@ export default {
         }
       }
     },
-    async getSellerInfo(sellerId) {
+  async getSellerInfo(sellerId) {
   const token = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
   try {
@@ -406,6 +406,7 @@ export default {
         "X-Refresh-Token": `${refreshToken}`,
       }
     });
+    console.log(response);
     this.seller = response.data.result;
   } catch (error) {
     console.error("판매자 정보 가져오기 실패:", error);
