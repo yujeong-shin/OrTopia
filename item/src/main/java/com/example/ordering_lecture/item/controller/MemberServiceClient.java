@@ -22,6 +22,6 @@ public interface MemberServiceClient {
     List<String> searchEmailsBySellerId(@PathVariable("sellerId") Long sellerId);
 
     // 판매작의 sellerId로 회사명 조회.
-    @GetMapping("/seller/noLogin/{id}")
+    @GetMapping("/seller/noLogin/fein/{id}")
     String findSellerName(@PathVariable Long id);
 }
