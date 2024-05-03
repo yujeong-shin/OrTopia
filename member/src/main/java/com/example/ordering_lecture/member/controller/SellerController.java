@@ -34,10 +34,19 @@ public class SellerController {
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.CREATED);
     }
     // 판매자 상세조회
+    // seller 가 로그인했을때
     @GetMapping("/seller")
     public ResponseEntity<OrTopiaResponse> findSeller(@RequestHeader("myEmail") String email){
         MemberResponseDto memberResponseDto = memberService.findIdByEmail(email);
         SellerResponseDto sellerResponseDto = sellerService.findByMemberId(memberResponseDto.getId());
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", sellerResponseDto);
+        return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
+    }
+    // 판매자 상세조회
+    // 비로그인 한 사람이 판매자 이름을 확인 할때.
+    @GetMapping("/seller/noLogin/{id}")
+    public ResponseEntity<OrTopiaResponse> findSeller(@PathVariable Long id){
+        SellerResponseDto sellerResponseDto = sellerService.findByMemberId(id);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", sellerResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
