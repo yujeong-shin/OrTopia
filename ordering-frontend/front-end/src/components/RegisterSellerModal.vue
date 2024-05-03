@@ -7,7 +7,6 @@
       <v-row justify="center">
         <v-col cols="12" sm="8" md="6">
           <v-card>
-            <v-card-title class="text-h5">판매자 등록</v-card-title>
             <v-card-text>
               <v-form
                 ref="form"
