@@ -133,7 +133,7 @@ export default {
         console.log("Seller registered successfully", response.data);
         localStorage.setItem("role", "SELLER");
         alert("판매자 등록 성공!");
-        window.location.href = "/";
+        window.location.href = "/seller";
       } catch (error) {
         console.error("판매자 등록 오류:", error);
         alert(`등록 실패: ${error.response.data.message}`);
