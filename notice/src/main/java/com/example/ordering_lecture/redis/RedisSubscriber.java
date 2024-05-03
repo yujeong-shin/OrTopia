@@ -24,7 +24,7 @@ public class RedisSubscriber implements MessageListener {
             String[] strings = message.toString().split("_");
             String date =strings[0];
             String email = strings[1];
-            String context = date+"_"+strings[2];
+            String context = date+"_"+strings[2]+"_"+strings[3];
             SseEmitter emitter =alarmRepository.get(email);
             emitter.send(SseEmitter.event().name("message").data(context));
         } catch (Exception e) {
