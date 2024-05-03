@@ -146,7 +146,11 @@ export default {
     async getItems() {
       try {
         const data = await axios.get(
-          `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/items`
+          `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/items`,{
+          headers: {
+            myEmail: "noLogin",
+          }
+        }
         );
         const key = this.$route.params.value;
         this.itemList = data.data.result.filter(item => item.name.includes(key) || item.category.includes(key));
