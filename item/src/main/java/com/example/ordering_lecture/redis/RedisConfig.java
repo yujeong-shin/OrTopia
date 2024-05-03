@@ -63,6 +63,19 @@ public class RedisConfig {
         return redisTemplate;
     }
 
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory6() {
+        return createConnectionFactoryWith(6);
+    }
+    @Bean
+    public RedisTemplate<Long,Object> redisTemplate6() {
+        RedisTemplate<Long, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setConnectionFactory(redisConnectionFactory6());
+        return redisTemplate;
+    }
+
     public LettuceConnectionFactory createConnectionFactoryWith(int index) {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);

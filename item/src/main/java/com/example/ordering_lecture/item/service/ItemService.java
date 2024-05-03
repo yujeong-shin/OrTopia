@@ -9,17 +9,21 @@ import com.example.ordering_lecture.item.controller.MemberServiceClient;
 import com.example.ordering_lecture.item.dto.*;
 import com.example.ordering_lecture.item.entity.*;
 import com.example.ordering_lecture.item.repository.*;
+import com.example.ordering_lecture.redis.RedisPublisher;
 import com.example.ordering_lecture.redis.RedisService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +41,8 @@ public class ItemService {
     private final ItemOptionRepository itemOptionRepository;
     private final ItemOptionQuantityRepository itemOptionQuantityRepository;
     private final LoveItemRepository loveItemRepository;
-    public ItemService(ItemRepository itemRepository, RedisService redisService, AmazonS3Client amazonS3Client, MemberServiceClient memberServiceClient, ItemOptionDetailRepository itemOptionDetailRepository, ItemOptionRepository itemOptionRepository, ItemOptionQuantityRepository itemOptionQuantityRepository, LoveItemRepository loveItemRepository) {
+    private final RedisPublisher redisPublisher;
+    public ItemService(ItemRepository itemRepository, RedisService redisService, AmazonS3Client amazonS3Client, MemberServiceClient memberServiceClient, ItemOptionDetailRepository itemOptionDetailRepository, ItemOptionRepository itemOptionRepository, ItemOptionQuantityRepository itemOptionQuantityRepository, LoveItemRepository loveItemRepository, RedisPublisher redisPublisher) {
         this.itemRepository = itemRepository;
         this.redisService = redisService;
         this.amazonS3Client = amazonS3Client;
@@ -46,6 +51,7 @@ public class ItemService {
         this.itemOptionRepository = itemOptionRepository;
         this.itemOptionQuantityRepository = itemOptionQuantityRepository;
         this.loveItemRepository = loveItemRepository;
+        this.redisPublisher = redisPublisher;
     }
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -379,5 +385,19 @@ public class ItemService {
             result.add(sellerGraphStockData);
         }
         return result;
+    }
+
+    public void sendCreateMessage(ItemResponseDto itemResponseDto) {
+        List<String> memberEmail = memberServiceClient.searchEmailsBySellerId(itemResponseDto.getSellerId());
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+        String nowDate = currentDate.format(formatter);
+        String companyName = memberServiceClient.findSellerName(itemResponseDto.getSellerId());
+        for(String email : memberEmail){
+            ChannelTopic channel = new ChannelTopic(email);
+            String message = nowDate+"_"+email+"_"+companyName+"이 님이 새로운 아이템 "+itemResponseDto.getName()+"을 등록했어요!";
+            redisPublisher.publish(channel,message);
+            log.info(email+"에게 성공적으로 알람을 발송 했습니다.");
+        }
     }
 }

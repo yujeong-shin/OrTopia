@@ -8,24 +8,30 @@ import com.example.ordering_lecture.member.domain.Seller;
 import com.example.ordering_lecture.member.dto.Buyer.MemberResponseDto;
 import com.example.ordering_lecture.member.dto.Seller.*;
 import com.example.ordering_lecture.member.repository.BannedSellerRepository;
+import com.example.ordering_lecture.member.repository.LikedSellerRepository;
 import com.example.ordering_lecture.member.repository.MemberRepository;
 import com.example.ordering_lecture.member.repository.SellerRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class SellerService {
     private final SellerRepository sellerRepository;
     private final MemberRepository memberRepository;
     private final BannedSellerRepository bannedSellerRepository;
+    private final LikedSellerRepository likedSellerRepository;
 
-    public SellerService(SellerRepository sellerRepository, MemberRepository memberRepository, BannedSellerRepository bannedSellerRepository) {
+    public SellerService(SellerRepository sellerRepository, MemberRepository memberRepository, BannedSellerRepository bannedSellerRepository, LikedSellerRepository likedSellerRepository) {
         this.sellerRepository = sellerRepository;
         this.memberRepository = memberRepository;
         this.bannedSellerRepository = bannedSellerRepository;
+        this.likedSellerRepository = likedSellerRepository;
     }
 
     public SellerResponseDto createSeller(String email, SellerRequestDto sellerRequestDto) throws OrTopiaException{
@@ -108,5 +114,11 @@ public class SellerService {
         Seller seller = sellerRepository.findByMemberId(id)
                 .orElseThrow(() -> new IllegalArgumentException("판매자를 찾지 못했습니다."));
         return SellerResponseDto.toDto(seller);
+    }
+
+    public List<String> searchEmailsBySellerId(Long sellerId) {
+        List<Member> members = likedSellerRepository.findAllBySellerId(sellerId);
+        log.info("판매자를 좋아하는 members 조회 성공");
+        return members.stream().map(Member::getEmail).collect(Collectors.toList());
     }
 }

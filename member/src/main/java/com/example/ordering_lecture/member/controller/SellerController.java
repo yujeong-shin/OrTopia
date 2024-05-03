@@ -5,6 +5,7 @@ import com.example.ordering_lecture.member.dto.Buyer.MemberResponseDto;
 import com.example.ordering_lecture.member.dto.Seller.*;
 import com.example.ordering_lecture.member.service.MemberService;
 import com.example.ordering_lecture.member.service.SellerService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Slf4j
 public class SellerController {
     @Autowired
     private final SellerService sellerService;
@@ -49,6 +51,13 @@ public class SellerController {
         SellerResponseDto sellerResponseDto = sellerService.findByMemberId(id);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", sellerResponseDto);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
+    }
+    // 판매자 이름 조회 (Item server 에서 사용)
+    // 판매자 이름을 확인 할때.
+    @GetMapping("/seller/noLogin/{id}")
+    public String findSellerName(@PathVariable Long id){
+        SellerResponseDto sellerResponseDto = sellerService.findByMemberId(id);
+        return sellerResponseDto.getCompanyName();
     }
     // 판매자 전체조회
     @GetMapping("/seller/All")
@@ -100,4 +109,11 @@ public class SellerController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", bannedSellerResponseDtos);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
+    // 판매자의 sellerId로 멤버 emails 조회.
+    @GetMapping("/member/search/emails/{sellerId}")
+    List<String> searchEmailsBySellerId(@PathVariable("sellerId") Long sellerId){
+        log.info("feinClient 통신 완료");
+        return sellerService.searchEmailsBySellerId(sellerId);
+    }
+
 }
