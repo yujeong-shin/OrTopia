@@ -143,7 +143,7 @@ import {EventSourcePolyfill } from 'event-source-polyfill';
 const router = useRouter();
 const store = useStore();
 const totalQuantity = computed(() => store.getters.getTotalQuantity);
-const myFeedBack = store.state.myFeedBack; 
+let myFeedBack = localStorage.getItem("alarm");
 const isLoggedIn = ref(false);
 const isSeller = ref(false); // 판매자인지 확인하는 ref 추가
 const search = ref(""); // ref로 search 변수를 생성합니다.
@@ -176,12 +176,10 @@ onMounted(() => {
     console.log('connect event data: ',receivedConnectData);  // "connected!"
     });
     sse.addEventListener('message', e => { 
-      // const obj = JSON.parse(e.data);
-      store.commit('incrementMyFeedBack');
+      myFeedBack++;
+      localStorage.setItem('alarm', myFeedBack);
       console.log(myFeedBack);
       console.log(e);
-      // this.feedback.push(obj) 
-      // console.log(this.feedback[0].type); 
     });
     }
 });

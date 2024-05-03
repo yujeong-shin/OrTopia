@@ -97,6 +97,7 @@ export default {
           const role = decoded.role;
           const email = decoded.sub;
           localStorage.setItem('email', email);
+          localStorage.setItem('alarm', 0);
           localStorage.setItem('accessToken', accessToken);
           localStorage.setItem('role', role);
           localStorage.setItem('refreshToken', refreshToken);
