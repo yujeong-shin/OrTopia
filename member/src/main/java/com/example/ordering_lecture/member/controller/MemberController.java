@@ -20,7 +20,6 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@Slf4j
 public class MemberController {
     @Autowired
     private final MemberService memberService;
@@ -97,16 +96,15 @@ public class MemberController {
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
     // 즐겨찾기 한 구매자 목록 조회
-    @GetMapping("/member/likedBySeller/{sellerId}")
-    public ResponseEntity<OrTopiaResponse> findBuyersByLikedSeller(@PathVariable Long sellerId) {
-        List<MemberResponseDto> buyers = memberService.findBuyersByLikedSeller(sellerId);
+    @GetMapping("/member/likedByBuyers")
+    public ResponseEntity<OrTopiaResponse> findBuyersByLikedSeller(@RequestHeader("myEmail") String email) {
+        List<MemberResponseDto> buyers = memberService.findBuyersBySellerEmail(email);
         OrTopiaResponse response = new OrTopiaResponse("read success", buyers);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @GetMapping("/member/checkLiked/{sellerId}")
     public ResponseEntity<OrTopiaResponse> checkIfLikedBySeller(@RequestHeader("myEmail") String buyerEmail, @PathVariable Long sellerId) {
         boolean isLiked = memberService.isSellerLikedByBuyer(buyerEmail, sellerId);
-        log.info("Checking if sellerId {} is liked by {}", sellerId, buyerEmail);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("check success", isLiked);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }

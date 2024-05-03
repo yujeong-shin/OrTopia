@@ -29,9 +29,13 @@ public enum ErrorCode {
     ALREADY_LIKED_SELLER("M23","이미 좋아요한 판매자입니다."),
     NOT_FOUND_ADDRESS("A1", "해당 주소가 없습니다."),
     NOT_FOUND_ADDRESS_BY_EMAIL("A2", "해당 이메일로 등록된 주소가 없습니다."),
-    ADDRESS_IS_ESSENTIAL("A3", "주소 정보를 입력해주세요");
-
-
+    ADDRESS_IS_ESSENTIAL("A3", "주소 정보를 입력해주세요"),
+    COUPON_DETAIL_IS_ESSENTIAL("C1", "쿠폰 상세 정보를 입력해주세요"),
+    INVALID_SELLER_ID("C2", "유효하지 않은 판매자 ID입니다"),
+    COUPON_NOT_FOUND("C3", "해당 쿠폰이 없습니다"),
+    COUPON_ALREADY_DELETED("C4", "이미 삭제된 쿠폰입니다"),
+    COUPON_UPDATE_FAILED("C5", "쿠폰 업데이트를 실패했습니다"),
+    COUPON_CREATION_FAILED("C6", "쿠폰 생성을 실패했습니다");
 
 
     private final String code;

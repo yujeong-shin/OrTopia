@@ -91,4 +91,10 @@ public class SellerController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", bannedSellerResponseDtos);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
+    @GetMapping("/seller/{id}")
+    public ResponseEntity<OrTopiaResponse> findSeller(@PathVariable Long id){
+        SellerResponseDto sellerResponseDto = sellerService.findById(id);
+        OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", sellerResponseDto);
+        return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
+    }
 }

@@ -13,13 +13,15 @@ import lombok.NoArgsConstructor;
 public class MemberCouponResponseDto {
     private Long id;
     private Long memberId;
-    private Long couponDetailId;
+    private Long couponId;
+    private String couponDetail;
 
-    public static MemberCouponResponseDto toDto(MemberCoupon memberCoupon){
+    public static MemberCouponResponseDto toDto(MemberCoupon memberCoupon) {
         return MemberCouponResponseDto.builder()
                 .id(memberCoupon.getId())
                 .memberId(memberCoupon.getMemberId())
-                .couponDetailId(memberCoupon.getCouponDetail().getId())
+                .couponId(memberCoupon.getCoupon().getId())
+                .couponDetail(memberCoupon.getCoupon().getCouponDetail().getName())
                 .build();
     }
 }

@@ -1,15 +1,18 @@
 package com.example.ordering_lecture.coupon.controller;
 
+import com.example.ordering_lecture.common.OrTopiaResponse;
 import com.example.ordering_lecture.coupon.dto.CouponRequestDto;
+import com.example.ordering_lecture.coupon.dto.CouponResponseDto;
 import com.example.ordering_lecture.coupon.service.CouponService;
 import com.example.ordering_lecture.coupondetail.dto.CouponDetailRequestDto;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.ordering_lecture.coupondetail.dto.CouponDetailResponseDto;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/member_server")
 public class CouponController {
     private final CouponService couponService;
 
@@ -17,7 +20,14 @@ public class CouponController {
         this.couponService = couponService;
     }
     @PostMapping("/coupon/create")
-    public Object createCoupon(@RequestBody CouponRequestDto couponRequestDto){
-        return couponService.createCoupon(couponRequestDto);
+    public ResponseEntity<OrTopiaResponse> createCoupon(@RequestBody CouponRequestDto couponRequestDto) {
+        List<CouponResponseDto> couponResponseDtos = couponService.createCoupon(couponRequestDto);
+        return new ResponseEntity<>(new OrTopiaResponse("create success", couponResponseDtos), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/coupon/{itemId}")
+    public ResponseEntity<OrTopiaResponse> getCoupon(@PathVariable Long itemId) {
+        List<CouponResponseDto> couponResponseDtos = couponService.getCoupon(itemId);
+        return new ResponseEntity<>(new OrTopiaResponse("read success", couponResponseDtos), HttpStatus.OK);
     }
 }
