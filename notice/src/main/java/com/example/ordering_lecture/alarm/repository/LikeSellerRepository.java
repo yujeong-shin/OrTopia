@@ -2,23 +2,20 @@ package com.example.ordering_lecture.alarm.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 @RequiredArgsConstructor
 public class LikeSellerRepository {
-    private final Map<String, List<String>> sellerLikeInfo = new ConcurrentHashMap<>();
+    private final Map<String, Set<String>> sellerLikeInfo = new ConcurrentHashMap<>();
 
     public void save(String sellerEmail, String memberEmail) {
         if(sellerLikeInfo.containsKey(sellerEmail)){
             sellerLikeInfo.get(sellerEmail).add(memberEmail);
         }else{
-            sellerLikeInfo.put(sellerEmail,new ArrayList<>());
+            sellerLikeInfo.put(sellerEmail,new HashSet<>());
             sellerLikeInfo.get(sellerEmail).add(memberEmail);
         }
     }
@@ -27,7 +24,7 @@ public class LikeSellerRepository {
         sellerLikeInfo.remove(sellerEmail);
     }
 
-    public List<String> get(String sellerEmail) {
+    public Set<String> get(String sellerEmail) {
         return sellerLikeInfo.get(sellerEmail);
     }
 

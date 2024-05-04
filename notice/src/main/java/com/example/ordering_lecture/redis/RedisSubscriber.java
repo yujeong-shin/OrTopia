@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -28,10 +29,11 @@ public class RedisSubscriber implements MessageListener {
             String[] strings = message.toString().split("_");
             String date =strings[0];
             String sellerEmail = strings[1];
-            List<String> memberEmails = likeSellerRepository.get(sellerEmail);
+            Set<String> memberEmails = likeSellerRepository.get(sellerEmail);
             String context = date+"_"+strings[2]+"_"+strings[3];
             for(String memberEmail : memberEmails) {
                 SseEmitter emitter = alarmRepository.get(memberEmail);
+                log.info(memberEmail+"에게 알람을 보냅니다.");
                 emitter.send(SseEmitter.event().name("message").data(context));
             }
         } catch (Exception e) {
