@@ -27,7 +27,7 @@ public class ItemController {
     @PostMapping("/create")
     public ResponseEntity<OrTopiaResponse> createItem(@Valid @ModelAttribute ItemRequestDto itemRequestDto, @RequestPart(name="optionList")List<OptionRequestDto> optionRequestDtos, @RequestHeader("myEmail") String email){
         ItemResponseDto itemResponseDto = itemService.createItem(itemRequestDto,optionRequestDtos,email);
-        itemService.sendCreateMessage(itemResponseDto);
+        itemService.sendCreateMessage(itemResponseDto,email);
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("create success",itemResponseDto);
         return new ResponseEntity<>(orTopiaResponse,HttpStatus.CREATED);
     }

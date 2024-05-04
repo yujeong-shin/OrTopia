@@ -387,19 +387,17 @@ public class ItemService {
         return result;
     }
 
-    public void sendCreateMessage(ItemResponseDto itemResponseDto) {
-        List<String> memberEmail = memberServiceClient.searchEmailsBySellerId(itemResponseDto.getSellerId());
-        log.info("받아온 이메일의 사이즈 : "+memberEmail.size());
+    public void sendCreateMessage(ItemResponseDto itemResponseDto,String email) {
+//        List<String> memberEmail = memberServiceClient.searchEmailsBySellerId(itemResponseDto.getSellerId());
+//        log.info("받아온 이메일의 사이즈 : "+memberEmail.size());
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
         String nowDate = currentDate.format(formatter);
         String companyName = memberServiceClient.findSellerName(itemResponseDto.getSellerId());
-        for(String email : memberEmail){
-            log.info(email+"에게 메시지를 보냅니다.");
-            ChannelTopic channel = new ChannelTopic(email);
-            String message = nowDate+"_"+email+"_"+companyName+"이 님이 새로운 아이템 "+itemResponseDto.getName()+"을 등록했어요!"+"_"+"itemId:"+itemResponseDto.getId();
-            redisPublisher.publish(channel,message);
-            log.info(email+"에게 성공적으로 알람을 발송 했습니다.");
-        }
+        log.info(email+"채널에 메시지를 보냅니다.");
+        ChannelTopic channel = new ChannelTopic(email);
+        String message = nowDate+"_"+email+"_"+companyName+"이 님이 새로운 아이템 "+itemResponseDto.getName()+"을 등록했어요!"+"_"+"itemId:"+itemResponseDto.getId();
+        redisPublisher.publish(channel,message);
+        log.info(email+"채널에 성공적으로 알람을 발송 했습니다.");
     }
 }

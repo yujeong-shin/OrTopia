@@ -1,15 +1,20 @@
 package com.example.ordering_lecture.alarm.service;
 
 import com.example.ordering_lecture.alarm.repository.AlarmRepository;
+import com.example.ordering_lecture.alarm.repository.LikeSellerRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.util.List;
 
 @Component
 public class AlarmService {
     private final AlarmRepository alarmRepository;
+    private final LikeSellerRepository likeSellerRepository;
 
-    public AlarmService(AlarmRepository alarmRepository) {
+    public AlarmService(AlarmRepository alarmRepository, LikeSellerRepository likeSellerRepository) {
         this.alarmRepository = alarmRepository;
+        this.likeSellerRepository = likeSellerRepository;
     }
 
     public SseEmitter add(String email, SseEmitter emitter){
@@ -29,5 +34,11 @@ public class AlarmService {
 
     boolean containKey(String email){
         return alarmRepository.containKey(email);
+    }
+
+    public void addSellerData(String email, List<String> sellerEmails) {
+        for(String sellerEmail : sellerEmails){
+            likeSellerRepository.save(sellerEmail,email);
+        }
     }
 }
