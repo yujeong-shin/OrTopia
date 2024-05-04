@@ -14,14 +14,17 @@ import com.example.ordering_lecture.member.repository.LikedSellerRepository;
 import com.example.ordering_lecture.member.repository.MemberRepository;
 import com.example.ordering_lecture.member.repository.SellerRepository;
 import com.example.ordering_lecture.securities.JwtTokenProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
@@ -186,5 +189,25 @@ public class MemberService {
                 ()-> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
                 );
         return member.getName();
+    }
+
+    public List<String> findSellerEmailsbyMemberEmail(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(
+                ()-> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
+        );
+        List<LikedSeller> likedSellers = likedSellerRepository.findAllByBuyerId(member.getId());
+        if(likedSellers.isEmpty()){
+            log.info("현재 팔로우 하고 있는 판매자가 없습니다.");
+            return new ArrayList<>();
+        }
+        List<String> sellersEmails = new ArrayList<>();
+        for(LikedSeller likedSeller : likedSellers){
+            Seller seller = sellerRepository.findById(likedSeller.getSeller().getId()).orElseThrow(
+                    ()-> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER)
+                    );
+            log.info("팔로우 하는 seller 찾기 성공");
+            sellersEmails.add(seller.getMember().getEmail());
+        }
+        return sellersEmails;
     }
 }

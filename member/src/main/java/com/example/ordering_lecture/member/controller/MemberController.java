@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @RestController
 public class MemberController {
     @Autowired
@@ -143,5 +144,13 @@ public class MemberController {
     @GetMapping("/member/search/id/{email}")
     Long findMemberIdByEmail(@PathVariable("email") String buyerEmail){
         return memberService.findIdByEmail(buyerEmail).getId();
+    }
+
+    // 구매자의 email로 자신이 팔로우하는 판매자의 이메일을 검색.
+    // notice server 에서 사용
+    @GetMapping("/member/search/seller/emails/{email}")
+    List<String> searchEmailsBySellerId(@PathVariable("email") String email){
+        log.info("feign 통신 성공");
+        return memberService.findSellerEmailsbyMemberEmail(email);
     }
 }
