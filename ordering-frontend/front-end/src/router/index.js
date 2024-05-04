@@ -12,6 +12,7 @@ import NoticeDetail from "@/components/NoticeDetail.vue";
 import SellerComponent from "@/components/SellerComponent.vue";
 import CouponComponent from "@/components/CouponComponent.vue";
 import SearchItemComponent from "@/components/SearchItemComponent.vue";
+import MyAlarmComponent from "@/components/MyAlarmComponent.vue";
 
 
 const routes = [
@@ -24,6 +25,11 @@ const routes = [
     path: "/notice",
     name: "Notice",
     component: NoticeComponent,
+  },
+  {
+    path: "/myAlarm",
+    name: "Alarm",
+    component: MyAlarmComponent,
   },
   {
     path: "/item/:id",
