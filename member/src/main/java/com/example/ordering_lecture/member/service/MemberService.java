@@ -214,4 +214,20 @@ public class MemberService {
         }
         return likedSellers.stream().map(LikeSellerResponseDto::toDto).collect(Collectors.toList());
     }
+
+    // 지난 eventId 전달 후 최신 eventId로 업데이트.
+    public void updateEventId(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(
+                ()-> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
+        );
+        List<LikedSeller> likedSellers = likedSellerRepository.findAllByBuyerId(member.getId());
+        if(likedSellers.isEmpty()){
+            log.info("현재 팔로우 하고 있는 판매자가 없습니다.");
+            return;
+        }
+        for(LikedSeller likedSeller : likedSellers){
+            likedSeller.updateEventId(likedSeller.getSeller().getEventId());
+            likedSellerRepository.save(likedSeller);
+        }
+    }
 }

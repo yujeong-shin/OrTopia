@@ -152,6 +152,8 @@ public class MemberController {
     @GetMapping("/member/search/seller/emails/{email}")
     List<LikeSellerResponseDto> searchEmailsBySellerId(@PathVariable("email") String email){
         log.info("feign 통신 성공");
-        return memberService.findSellerEmailsbyMemberEmail(email);
+        List<LikeSellerResponseDto> likeSellerResponseDtos =memberService.findSellerEmailsbyMemberEmail(email);
+        memberService.updateEventId(email);
+        return likeSellerResponseDtos;
     }
 }
