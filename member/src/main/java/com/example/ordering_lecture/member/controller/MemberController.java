@@ -156,4 +156,11 @@ public class MemberController {
         memberService.updateEventId(email);
         return likeSellerResponseDtos;
     }
+
+    // 알람을 보낼 시 eventId 값 업데이트.
+    // notice server 에서 사용
+    @PostMapping("/member/update/eventId/{buyerEmail}")
+    void updateEventId(@PathVariable("buyerEmail") String buyerEmail){
+        memberService.updateEventId(buyerEmail);
+    }
 }
