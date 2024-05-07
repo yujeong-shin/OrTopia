@@ -208,10 +208,6 @@ public class MemberService {
             log.info("현재 팔로우 하고 있는 판매자가 없습니다.");
             return new ArrayList<>();
         }
-        for(LikedSeller likedSeller : likedSellers){
-            likedSeller.updateEventId(likedSeller.getSeller().getEventId());
-            likedSellerRepository.save(likedSeller);
-        }
         return likedSellers.stream().map(LikeSellerResponseDto::toDto).collect(Collectors.toList());
     }
 
