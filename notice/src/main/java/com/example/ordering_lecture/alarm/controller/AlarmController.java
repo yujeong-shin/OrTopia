@@ -65,6 +65,7 @@ public class AlarmController {
             List<String> lastEvents = redisService.getValues(likeSellerResponseDto.getSellerEmail());
             for(String lastEvent : lastEvents){
                 String[] strings = lastEvent.split("_");
+                log.info(strings[0]+" 못받은 eventID");
                 if(Long.parseLong(strings[0])<likeSellerResponseDto.getEventId()){
                     // message send
                     try{
