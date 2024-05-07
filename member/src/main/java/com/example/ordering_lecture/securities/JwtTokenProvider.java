@@ -17,7 +17,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 @Log4j2
 public class JwtTokenProvider {
-    private final RedisTemplate<String, String> redisTemplate0;
+
+    private final RedisTemplate<String, Object> redisTemplate0;
 
     @Value("${jwt.secretKey}")
     private String secretKey;
@@ -28,7 +29,7 @@ public class JwtTokenProvider {
     @Value("${jwt.token.refresh-expiration-time}")
     private long refreshExpirationTime;
 
-    public JwtTokenProvider(RedisTemplate<String, String> redisTemplate0) {
+    public JwtTokenProvider(RedisTemplate<String, Object> redisTemplate0) {
         this.redisTemplate0 = redisTemplate0;
     }
 
