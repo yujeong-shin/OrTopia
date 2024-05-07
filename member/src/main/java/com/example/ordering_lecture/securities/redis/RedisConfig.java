@@ -46,8 +46,8 @@ public class RedisConfig {
         return createConnectionFactoryWith(6);
     }
     @Bean
-    public RedisTemplate<Long,Object> redisTemplate6() {
-        RedisTemplate<Long, Object> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String,String> redisTemplate6() {
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory6());
