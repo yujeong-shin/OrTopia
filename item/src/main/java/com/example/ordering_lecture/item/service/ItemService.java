@@ -398,6 +398,7 @@ public class ItemService {
         ChannelTopic channel = new ChannelTopic(email);
         String message = sellerResponseForEventDto.getEventId()+"_"+nowDate+"_"+email+"_"+sellerResponseForEventDto.getCompanyName()+"이 님이 새로운 아이템 "+itemResponseDto.getName()+"을 등록했어요!"+"_"+"itemId:"+itemResponseDto.getId();
         redisPublisher.publish(channel,message);
+        redisService.setValuesLasEvent(email,message);
         log.info(email+"채널에 성공적으로 알람을 발송 했습니다.");
     }
 }
