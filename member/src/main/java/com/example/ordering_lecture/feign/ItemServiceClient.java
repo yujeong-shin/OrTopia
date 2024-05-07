@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @FeignClient(name = "ortopia-item-service", url ="http://ortopia-item-service.default.svc.cluster.local")
 public interface ItemServiceClient {
 
-    @PostMapping("/{itemId}/itemName")
-    public String findNameById(@PathVariable Long itemId);
+    @PostMapping("item/{itemId}/itemName")
+    String findNameById(@PathVariable(name="itemId") Long itemId);
 }
