@@ -69,13 +69,13 @@ public class AlarmController {
                 if(Long.parseLong(strings[0])<likeSellerResponseDto.getEventId()){
                     // message send
                     try{
+                        log.info("못받은 메시지를 전송합니다.");
                         emitter.send(SseEmitter.event().name("message").data( strings[1]+"_"+strings[3]+"_"+strings[4]));
                     }catch (IOException e){
                         new OrTopiaException(ErrorCode.SSE_MESSAGE_SEND_ERROR);
                     }
                 }
             }
-
         }
         return ResponseEntity.ok(emitter);
     }

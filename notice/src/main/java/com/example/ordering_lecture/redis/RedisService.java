@@ -1,6 +1,7 @@
 package com.example.ordering_lecture.redis;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -8,10 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class RedisService {
 
+    @Qualifier("7")
     private final RedisTemplate<String,String> redisTemplate7;
+
+    public RedisService(RedisTemplate<String, String> redisTemplate7) {
+        this.redisTemplate7 = redisTemplate7;
+    }
 
 
     @Transactional(readOnly = true)
