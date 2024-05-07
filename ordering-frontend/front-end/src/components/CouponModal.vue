@@ -1,19 +1,18 @@
 <template>
   <v-dialog v-model="dialog" max-width="600px">
     <v-card>
-      <v-card-title class="text-h5">나의 쿠폰</v-card-title>
+      <v-card-title class="headline grey lighten-2 text-center">
+        나의 쿠폰
+      </v-card-title>
       <v-card-text>
         <v-list dense>
           <v-list-item-group>
             <v-list-item v-for="item in coupons" :key="item.id">
               <v-list-item-content>
-                <v-list-item-title>{{ item.couponDetail.name }}</v-list-item-title>
-                <v-list-item-subtitle>유효 기간: {{ item.couponDetail.startDate }} - {{ item.couponDetail.endDate }}</v-list-item-subtitle>
-                <v-list-item-subtitle v-if="item.couponDetail.rateDiscount > 0">
-                  할인율: {{ item.couponDetail.rateDiscount }}%
-                </v-list-item-subtitle>
-                <v-list-item-subtitle v-if="item.couponDetail.fixDiscount > 0">
-                  할인액: {{ item.couponDetail.fixDiscount }}원
+                <v-list-item-title>{{ item.couponName }}</v-list-item-title>
+                <v-list-item-subtitle>유효 기간: {{ item.startDate }} - {{ item.endDate }}</v-list-item-subtitle>
+                <v-list-item-subtitle v-if="item.discount > 0">
+                  할인: {{ item.discount }}{{ item.rateDiscount ? '%' : '원' }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -58,13 +57,13 @@ export default {
       const token = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
       try {
-        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/mycoupons`, {
+        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member/coupons`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "X-Refresh-Token": `${refreshToken}`,
           },
         });
-        this.coupons = response.data.result; // 서버 응답에 따라 결과 배열을 저장
+        this.coupons = response.data.result;
         console.log("Loaded coupons:", this.coupons);
       } catch (e) {
         console.error("Failed to fetch coupons:", e);
