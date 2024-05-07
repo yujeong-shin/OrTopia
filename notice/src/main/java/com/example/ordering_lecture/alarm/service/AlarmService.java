@@ -41,4 +41,12 @@ public class AlarmService {
             likeSellerRepository.save(sellerEmail,email);
         }
     }
+
+    public void addSeller(String sellerEmail, String buyerEmail) {
+        likeSellerRepository.save(sellerEmail,buyerEmail);
+    }
+
+    public void removeSeller(String sellerEmail, String buyerEmail) {
+        likeSellerRepository.deleteByEmail(buyerEmail,sellerEmail);
+    }
 }

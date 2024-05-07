@@ -40,21 +40,4 @@ public class RedisConfig {
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
-    @Bean
-    LettuceConnectionFactory connectionFactory6() { return createConnectionFactoryWith(6); }
-    @Bean
-    public RedisMessageListenerContainer redisMessageListener() {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory6());
-        return container;
-    }
-    @Bean
-    public RedisTemplate<String, String> redisTemplate6() {
-        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(connectionFactory6());
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
-        return redisTemplate;
-    }
-
 }

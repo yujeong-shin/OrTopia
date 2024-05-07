@@ -20,8 +20,8 @@ public class LikeSellerRepository {
         }
     }
 
-    public void deleteByEmail(String sellerEmail) {
-        sellerLikeInfo.remove(sellerEmail);
+    public void deleteByEmail(String buyerEmail ,String sellerEmail) {
+        sellerLikeInfo.get(buyerEmail).remove(sellerEmail);
     }
 
     public Set<String> get(String sellerEmail) {

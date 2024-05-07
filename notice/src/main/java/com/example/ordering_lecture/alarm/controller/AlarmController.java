@@ -13,14 +13,11 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -61,5 +58,21 @@ public class AlarmController {
             log.info(email+"=> subscribe "+sellerEmail);
         }
         return ResponseEntity.ok(emitter);
+    }
+    @PostMapping("alarm/subscribe/{sellerEmail}/{buyerEmail}")
+    public String subscribeSellerEmail(@PathVariable("sellerEmail")String sellerEmail,@PathVariable("buyerEmail")String buyerEmail){
+        ChannelTopic channelTopic = new ChannelTopic(sellerEmail);
+        redisMessageListener.addMessageListener(redisSubscriber,channelTopic);
+        log.info(sellerEmail+"채널 구독 성공");
+        alarmService.addSeller(sellerEmail,buyerEmail);
+        return "success subscribe";
+    }
+    @PostMapping("alarm/unsubscribe/{sellerEmail}/{buyerEmail}")
+    public String unsubscribeSellerEmail(@PathVariable("sellerEmail")String sellerEmail,@PathVariable("buyerEmail")String buyerEmail){
+        ChannelTopic channelTopic = new ChannelTopic(sellerEmail);
+        redisMessageListener.removeMessageListener(redisSubscriber,channelTopic);
+        log.info(sellerEmail+"채널 구독취소 성공");
+        alarmService.removeSeller(sellerEmail,buyerEmail);
+        return "success unsubscribe";
     }
 }
