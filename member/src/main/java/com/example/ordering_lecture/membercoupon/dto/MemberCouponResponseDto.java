@@ -14,14 +14,22 @@ public class MemberCouponResponseDto {
     private Long id;
     private Long memberId;
     private Long couponId;
-    private String couponDetail;
+    private String couponName;
+    private String startDate;
+    private String endDate;
+    private int discount;
 
     public static MemberCouponResponseDto toDto(MemberCoupon memberCoupon) {
         return MemberCouponResponseDto.builder()
                 .id(memberCoupon.getId())
                 .memberId(memberCoupon.getMemberId())
                 .couponId(memberCoupon.getCoupon().getId())
-                .couponDetail(memberCoupon.getCoupon().getCouponDetail().getName())
+                .couponName(memberCoupon.getCoupon().getCouponDetail().getName())
+                .startDate(memberCoupon.getCoupon().getCouponDetail().getStartDate())
+                .endDate(memberCoupon.getCoupon().getCouponDetail().getEndDate())
+                .discount(memberCoupon.getCoupon().getCouponDetail().getRateDiscount() != 0 ?
+                        memberCoupon.getCoupon().getCouponDetail().getRateDiscount() :
+                        memberCoupon.getCoupon().getCouponDetail().getFixDiscount())
                 .build();
     }
 }
