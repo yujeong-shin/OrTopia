@@ -9,6 +9,7 @@ import com.example.ordering_lecture.coupon.repository.CouponRepository;
 import com.example.ordering_lecture.coupondetail.domain.CouponDetail;
 import com.example.ordering_lecture.coupondetail.dto.CouponDetailRequestDto;
 import com.example.ordering_lecture.coupondetail.repository.CouponDetailRepository;
+import com.example.ordering_lecture.feign.ItemServiceClient;
 import com.example.ordering_lecture.member.domain.Member;
 import com.example.ordering_lecture.member.domain.Seller;
 import com.example.ordering_lecture.member.repository.MemberRepository;
@@ -33,13 +34,15 @@ public class CouponService {
     private final MemberRepository memberRepository;
     private final SellerRepository sellerRepository;
     private final RedisPublisher redisPublisher;
+    private final ItemServiceClient itemServiceClient;
 
-    public CouponService(CouponRepository couponRepository, CouponDetailRepository couponDetailRepository, MemberRepository memberRepository, SellerRepository sellerRepository, RedisPublisher redisPublisher) {
+    public CouponService(CouponRepository couponRepository, CouponDetailRepository couponDetailRepository, MemberRepository memberRepository, SellerRepository sellerRepository, RedisPublisher redisPublisher, ItemServiceClient itemServiceClient) {
         this.couponRepository = couponRepository;
         this.couponDetailRepository = couponDetailRepository;
         this.memberRepository = memberRepository;
         this.sellerRepository = sellerRepository;
         this.redisPublisher = redisPublisher;
+        this.itemServiceClient = itemServiceClient;
     }
 
     public List<CouponResponseDto> createCoupon(CouponRequestDto couponRequestDto) throws OrTopiaException {
@@ -80,7 +83,8 @@ public class CouponService {
         log.info(email+"채널에 메시지를 보냅니다.");
         ChannelTopic channel = new ChannelTopic(email);
         for(CouponResponseDto couponResponseDto : couponResponseDtos) {
-            String message = nowDate + "_" + email + "_" + companyName + "이 님이 새로운 아이템 " + couponResponseDto.getItemId() + "을 등록했어요!" + "_" + "itemId:" + couponResponseDto.getItemId();
+            String itemName = itemServiceClient.findNameById(couponResponseDto.getItemId());
+            String message = nowDate + "_" + email + "_" + companyName + "이 님이 " + itemName + "에 쿠폰을 등록했어요!" + "_" + "itemId:" + couponResponseDto.getItemId();
             redisPublisher.publish(channel, message);
             log.info(email + "채널에 성공적으로 알람을 발송 했습니다.");
         }

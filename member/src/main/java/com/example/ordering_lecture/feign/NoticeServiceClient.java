@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
-@FeignClient(name = "notice-member-service", url ="http://ortopia-notice-service.default.svc.cluster.local")
+@FeignClient(name = "ortopia-notice-service", url ="http://ortopia-notice-service.default.svc.cluster.local")
 public interface NoticeServiceClient {
 
     // 즐겨찾기 시 해당 채널을 구독.
