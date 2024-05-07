@@ -223,7 +223,7 @@ export default {
         window.location.href = "/";
       } catch (error) {
         console.error("Error registering the item", error);
-        alert("Error registering the item");
+        alert(error.response.data.message);
       }
     },
     addOption() {

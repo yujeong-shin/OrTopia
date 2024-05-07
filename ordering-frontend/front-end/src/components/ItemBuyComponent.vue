@@ -204,7 +204,7 @@
         addressId:'',
         address:'',
         addressDetail:'',
-        request:'',
+        request:'잘 부탁 드립니다',
         zipcode:' ',
         myItems: JSON.parse(localStorage.getItem('buyItem')),// 로컬 스토리지에 저장되어 있는 선택한 아이템 불러오기
         totalPrice:0, // 상품 금액
@@ -244,7 +244,7 @@
         const token = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
         const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
-        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member/${localStorage.getItem('email')}`, { headers });
+        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member`, { headers });
         console.log(response);
         this.defaultName = response.data.result.name;
         this.defaultPhoneNumber = response.data.result.phoneNumber;
@@ -269,6 +269,12 @@
       async kakaoPay() {
         const token = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
+        const { name, phoneNumber, addressId, address, addressDetail, request, zipcode } = this; // 구조 분해 할당으로 필수값 가져오기
+          // 필수값 체크
+        if (!name || !phoneNumber || !addressId || !address || !addressDetail || !zipcode || !request) {
+          alert('받는 사람 정보를 모두 입력해주세요.');
+          return;
+        }
         try {
           const itemList = this.myItems.map(item => ({ id: item.id, count: item.count, name : item.name, options:item.options }));
           const body = { price: this.price, itemDtoList: itemList }; // itemList을 itemDtoList로 변경
