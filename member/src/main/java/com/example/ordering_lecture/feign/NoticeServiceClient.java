@@ -11,10 +11,11 @@ import java.util.List;
 @FeignClient(name = "notice-member-service", url ="http://ortopia-notice-service.default.svc.cluster.local")
 public interface NoticeServiceClient {
 
-    // 구매자의 email로 자신이 팔로우하는 판매자의 이메일을 검색.
+    // 즐겨찾기 시 해당 채널을 구독.
     @PostMapping("alarm/subscribe/{sellerEmail}/{buyerEmail}")
      String subscribeSellerEmail(@PathVariable("sellerEmail") String sellerEmail,@PathVariable("buyerEmail") String buyerEmail);
 
+    // 즐겨찾기 시 해당 채널을 구독.
     @PostMapping("alarm/unsubscribe/{sellerEmail}/{buyerEmail}")
      String unsubscribeSellerEmail(@PathVariable("sellerEmail")String sellerEmail,@PathVariable("buyerEmail")String buyerEmail);
 }
