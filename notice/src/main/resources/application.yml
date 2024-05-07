@@ -11,6 +11,7 @@ spring:
   application:
     name: notice-service
   jpa:
+    open-in-view: false
     database: mysql
     database-platform: org.hibernate.dialect.MariaDBDialect
     generate-ddl: true
