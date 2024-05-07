@@ -14,10 +14,12 @@ public class SellerResponseDto {
     private BusinessType businessType;
     private Long totalScore;
     private Long memberID;
+    private Long eventId;
 
     public static SellerResponseDto toDto(Seller seller) {
         return SellerResponseDto.builder()
                 .id(seller.getId())
+                .eventId(seller.getEventId())
                 .businessNumber(seller.getBusinessNumber())
                 .companyName(seller.getCompanyName())
                 .businessType(seller.getBusinessType())

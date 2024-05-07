@@ -111,7 +111,7 @@ public class SellerController {
     }
     // 판매자의 sellerId로 멤버 emails 조회.
     @GetMapping("/seller/search/emails/{sellerId}")
-    List<String> searchEmailsBySellerId(@PathVariable("sellerId") Long sellerId){
+    List<LikeSellerResponseDto> searchEmailsBySellerId(@PathVariable("sellerId") Long sellerId){
         log.info("feinClient 통신 완료");
         return sellerService.searchEmailsBySellerId(sellerId);
     }

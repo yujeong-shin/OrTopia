@@ -15,6 +15,7 @@ import com.example.ordering_lecture.member.domain.Seller;
 import com.example.ordering_lecture.member.repository.MemberRepository;
 import com.example.ordering_lecture.member.repository.SellerRepository;
 import com.example.ordering_lecture.securities.redis.RedisPublisher;
+import com.example.ordering_lecture.securities.redis.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
@@ -35,14 +36,16 @@ public class CouponService {
     private final SellerRepository sellerRepository;
     private final RedisPublisher redisPublisher;
     private final ItemServiceClient itemServiceClient;
+    private final RedisService redisService;
 
-    public CouponService(CouponRepository couponRepository, CouponDetailRepository couponDetailRepository, MemberRepository memberRepository, SellerRepository sellerRepository, RedisPublisher redisPublisher, ItemServiceClient itemServiceClient) {
+    public CouponService(CouponRepository couponRepository, CouponDetailRepository couponDetailRepository, MemberRepository memberRepository, SellerRepository sellerRepository, RedisPublisher redisPublisher, ItemServiceClient itemServiceClient, RedisService redisService) {
         this.couponRepository = couponRepository;
         this.couponDetailRepository = couponDetailRepository;
         this.memberRepository = memberRepository;
         this.sellerRepository = sellerRepository;
         this.redisPublisher = redisPublisher;
         this.itemServiceClient = itemServiceClient;
+        this.redisService = redisService;
     }
 
     public List<CouponResponseDto> createCoupon(CouponRequestDto couponRequestDto) throws OrTopiaException {
@@ -68,7 +71,7 @@ public class CouponService {
                 .map(coupon -> CouponResponseDto.toDto(coupon, coupon.getCouponDetail()))
                 .collect(Collectors.toList());
     }
-
+    @Transactional
     public void createMessage(String email, List<CouponResponseDto> couponResponseDtos) {
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
@@ -84,8 +87,11 @@ public class CouponService {
         ChannelTopic channel = new ChannelTopic(email);
         for(CouponResponseDto couponResponseDto : couponResponseDtos) {
             String itemName = itemServiceClient.findNameById(couponResponseDto.getItemId());
-            String message = nowDate + "_" + email + "_" + companyName + "이 님이 " + itemName + "에 쿠폰을 등록했어요!" + "_" + "itemId:" + couponResponseDto.getItemId();
+            String message = seller.getEventId()+"_"+nowDate + "_" + email + "_" + companyName + "이 님이 " + itemName + "에 쿠폰을 등록했어요!" + "_" + "itemId:" + couponResponseDto.getItemId();
+            seller.updateEventId();
             redisPublisher.publish(channel, message);
+            // 알람메시지 캐싱
+            redisService.setValues(email,message);
             log.info(email + "채널에 성공적으로 알람을 발송 했습니다.");
         }
     }

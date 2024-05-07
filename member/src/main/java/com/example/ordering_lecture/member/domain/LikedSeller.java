@@ -29,4 +29,12 @@ public class LikedSeller {
 
     @CreationTimestamp
     private LocalDateTime createdTime;
+
+    @Column
+    @Builder.Default
+    private Long eventId = 0L;
+
+    public void updateEventId(Long eventId){
+        this.eventId = eventId;
+    }
 }

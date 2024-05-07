@@ -33,6 +33,10 @@ public class Seller {
     @Builder.Default
     private Long totalScore = 0L;
 
+    @Column
+    @Builder.Default
+    private Long eventId = 0L;
+
     @Column(nullable = false)
     @Builder.Default
     private boolean delYN = false;
@@ -63,5 +67,8 @@ public class Seller {
     }
     public void deleteSeller(){
         this.delYN = true;
+    }
+    public void updateEventId(){
+        this.eventId++;
     }
 }

@@ -54,4 +54,18 @@ public class RedisConfig {
         return redisTemplate;
     }
 
+    // 알람 캐싱 채널
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory7() {
+        return createConnectionFactoryWith(7);
+    }
+    @Bean
+    public RedisTemplate<String,String> redisTemplate7() {
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setConnectionFactory(redisConnectionFactory7());
+        return redisTemplate;
+    }
+
 }

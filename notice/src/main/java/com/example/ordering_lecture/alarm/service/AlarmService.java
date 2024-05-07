@@ -1,5 +1,6 @@
 package com.example.ordering_lecture.alarm.service;
 
+import com.example.ordering_lecture.alarm.dto.LikeSellerResponseDto;
 import com.example.ordering_lecture.alarm.repository.AlarmRepository;
 import com.example.ordering_lecture.alarm.repository.LikeSellerRepository;
 import org.springframework.stereotype.Component;
@@ -36,9 +37,9 @@ public class AlarmService {
         return alarmRepository.containKey(email);
     }
 
-    public void addSellerData(String email, List<String> sellerEmails) {
-        for(String sellerEmail : sellerEmails){
-            likeSellerRepository.save(sellerEmail,email);
+    public void addSellerData(String email, List<LikeSellerResponseDto> sellerEmails) {
+        for(LikeSellerResponseDto likeSellerResponseDto : sellerEmails){
+            likeSellerRepository.save(likeSellerResponseDto.getSellerEmail(),email);
         }
     }
 

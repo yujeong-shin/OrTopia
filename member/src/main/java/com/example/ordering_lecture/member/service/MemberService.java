@@ -107,6 +107,7 @@ public class MemberService {
         LikedSeller likedSeller = LikedSeller.builder()
                 .buyer(buyer)
                 .seller(seller)
+                .eventId(seller.getEventId())
                 .build();
         System.out.println(likedSeller.getBuyer().getEmail());
         System.out.println(likedSeller.getSeller().getId());
