@@ -153,7 +153,6 @@ public class MemberController {
     List<LikeSellerResponseDto> searchEmailsBySellerId(@PathVariable("email") String email){
         log.info("feign 통신 성공");
         List<LikeSellerResponseDto> likeSellerResponseDtos =memberService.findSellerEmailsbyMemberEmail(email);
-        memberService.updateEventId(email);
         return likeSellerResponseDtos;
     }
 }
