@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -183,7 +182,6 @@ public class MemberService {
         if (!passwordEncoder.matches(memberLoginReqDto.getPassword(), member.getPassword())) {
             throw new IllegalArgumentException("유효하지 않은 이메일 입니다.");
         }
-
         String accessToken = jwtTokenProvider.createAccessToken(member.getEmail(), member.getRole().toString());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail(), member.getRole().toString());
 

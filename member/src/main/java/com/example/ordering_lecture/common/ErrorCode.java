@@ -35,7 +35,8 @@ public enum ErrorCode {
     COUPON_NOT_FOUND("C3", "해당 쿠폰이 없습니다"),
     COUPON_ALREADY_DELETED("C4", "이미 삭제된 쿠폰입니다"),
     COUPON_UPDATE_FAILED("C5", "쿠폰 업데이트를 실패했습니다"),
-    COUPON_CREATION_FAILED("C6", "쿠폰 생성을 실패했습니다");
+    COUPON_CREATION_FAILED("C6", "쿠폰 생성을 실패했습니다"),
+    SSE_MESSAGE_SEND_ERROR("M24","해당 redis 채널을 찾지 못했습니다." );
 
 
     private final String code;
