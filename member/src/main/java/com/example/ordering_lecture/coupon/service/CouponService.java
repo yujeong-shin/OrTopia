@@ -81,6 +81,7 @@ public class CouponService {
         Seller seller = sellerRepository.findByMemberId(sellerMember.getId()).orElseThrow(
                 ()-> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER)
         );
+        seller.updateEventId();
         String companyName = seller.getCompanyName();
         log.info(email+"채널에 메시지를 보냅니다.");
         ChannelTopic channel = new ChannelTopic(email);

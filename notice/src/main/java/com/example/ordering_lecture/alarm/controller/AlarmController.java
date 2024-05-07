@@ -66,7 +66,7 @@ public class AlarmController {
             for(String lastEvent : lastEvents){
                 String[] strings = lastEvent.split("_");
                 log.info(strings[0]+" 못받은 eventID");
-                if(Long.parseLong(strings[0])<likeSellerResponseDto.getEventId()){
+                if(Long.parseLong(strings[0])>likeSellerResponseDto.getEventId()){
                     // message send
                     try{
                         log.info("못받은 메시지를 전송합니다.");

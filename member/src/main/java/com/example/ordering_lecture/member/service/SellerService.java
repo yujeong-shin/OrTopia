@@ -111,6 +111,7 @@ public class SellerService {
         return bannedSellerResponseDtos;
     }
 
+    @Transactional
     public SellerResponseDto findByMemberId(Long id) {
         Seller seller = sellerRepository.findByMemberId(id)
                 .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER));
