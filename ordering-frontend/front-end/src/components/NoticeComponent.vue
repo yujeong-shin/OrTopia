@@ -1,44 +1,44 @@
 <template>
   <v-container>
-      <v-col cols="12">
-        <v-card-text>
-          <v-card-title class="headline grey lighten-2 text-center">
-            공지사항
-          </v-card-title>
-          <v-container>
-            <v-row justify="center">
-              <v-col cols="12">
-                <v-table>
-                  <thead>
-                    <tr>
-                      <th class="text-center">번호</th>
-                      <th class="text-center">카테고리</th>
-                      <th class="text-center">시작일</th>
-                      <th class="text-center">종료일</th>
-                      <th class="text-center">제목</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(notice, index) in paginatedNotices" :key="index" @click="goToNoticeDetail(notice.id)">
-                      <td class="text-center">{{ notice.id }}</td>
-                      <td class="text-center">{{ notice.category }}</td>
-                      <td class="text-center">{{ notice.startDate }}</td>
-                      <td class="text-center">{{ notice.endDate }}</td>
-                      <td class="text-center">{{ notice.name }}</td>
-                    </tr>
-                  </tbody>
-                </v-table>
-              </v-col>
-            </v-row>
-            <v-list>
-              <v-btn @click="showModal = true">글쓰기</v-btn>
-              <EditorModal v-model="showModal" />
-            </v-list>
-          </v-container>
-        </v-card-text>
-        <v-pagination v-model="page" :length="totalPages" circle></v-pagination>
-      </v-col>
-      </v-container>
+    <v-col cols="12">
+      <v-card-text>
+        <v-card-title class="headline grey lighten-2 text-center">
+          공지사항
+        </v-card-title>
+        <v-container>
+          <v-row justify="center">
+            <v-col cols="12">
+              <v-table>
+                <thead>
+                  <tr>
+                    <th class="text-center">번호</th>
+                    <th class="text-center">카테고리</th>
+                    <th class="text-center">시작일</th>
+                    <th class="text-center">종료일</th>
+                    <th class="text-center">제목</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(notice, index) in paginatedNotices" :key="index" @click="goToNoticeDetail(notice.id)">
+                    <td class="text-center">{{ notice.id }}</td>
+                    <td class="text-center">{{ notice.category }}</td>
+                    <td class="text-center">{{ notice.startDate }}</td>
+                    <td class="text-center">{{ notice.endDate }}</td>
+                    <td class="text-center">{{ notice.name }}</td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </v-col>
+          </v-row>
+          <v-list>
+            <v-btn v-if="isAdmin" @click="showModal = true">글쓰기</v-btn>
+            <EditorModal v-model="showModal" />
+          </v-list>
+        </v-container>
+      </v-card-text>
+      <v-pagination v-model="page" :length="totalPages" circle></v-pagination>
+    </v-col>
+  </v-container>
 </template>
 
 <script>
@@ -57,17 +57,16 @@ export default {
     const notices = ref([]);
     const page = ref(1);
     const noticesPerPage = 5;
+    const isAdmin = ref(localStorage.getItem('role') === 'ADMIN'); 
 
     const goToNoticeDetail = (id) => {
       router.push({ name: 'NoticeDetail', params: { id } });
     };
 
-    // 서버에서 공지사항 데이터를 불러오는 함수
     const fetchNotices = async () => {
       try {
         const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-notice-service/notices`);
         if (Array.isArray(response.data.result)) {
-          // 삭제 되지 않은 공지만 불러옴. 실패
           notices.value = response.data.result;
         } 
       } catch (error) {
@@ -87,11 +86,6 @@ export default {
       return Array.isArray(notices.value) ? notices.value.slice(start, end) : [];
     });
 
-    // 모달을 닫는 메소드
-    const close = () => {
-      showModal.value = false;
-    };
-
     return {
       showModal,
       notices,
@@ -99,7 +93,7 @@ export default {
       totalPages,
       paginatedNotices,
       goToNoticeDetail,
-      close,
+      isAdmin, 
     };
   },
 };
