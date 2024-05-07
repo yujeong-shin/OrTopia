@@ -23,14 +23,6 @@ public class RedisConfig {
     @Value("${spring.redis.host}")
     private String host;
 
-    // Redis pub/sub 세팅.
-    public LettuceConnectionFactory createConnectionFactoryWith(int index) {
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName(host);
-        redisStandaloneConfiguration.setPort(port);
-        redisStandaloneConfiguration.setDatabase(index);
-        return new LettuceConnectionFactory(redisStandaloneConfiguration);
-    }
     @Bean
     @Primary
     LettuceConnectionFactory connectionFactory() { return createConnectionFactoryWith(6); }
@@ -57,13 +49,23 @@ public class RedisConfig {
     public RedisConnectionFactory redisConnectionFactory7() {
         return createConnectionFactoryWith(7);
     }
+
     @Bean
     @Qualifier("7")
-    public RedisTemplate<String,String> redisTemplate7(@Qualifier("7") RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String,Object> redisTemplate7(@Qualifier("7") RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(connectionFactory);
         return redisTemplate;
+    }
+
+    // Redis pub/sub 세팅.
+    public LettuceConnectionFactory createConnectionFactoryWith(int index) {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(host);
+        redisStandaloneConfiguration.setPort(port);
+        redisStandaloneConfiguration.setDatabase(index);
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 }
