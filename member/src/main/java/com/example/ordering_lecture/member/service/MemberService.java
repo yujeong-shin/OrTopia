@@ -13,8 +13,11 @@ import com.example.ordering_lecture.member.dto.Seller.SellerResponseDto;
 import com.example.ordering_lecture.member.repository.LikedSellerRepository;
 import com.example.ordering_lecture.member.repository.MemberRepository;
 import com.example.ordering_lecture.member.repository.SellerRepository;
+import com.example.ordering_lecture.redis.RedisSubscriber;
 import com.example.ordering_lecture.securities.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -29,12 +32,16 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final SellerRepository sellerRepository;
+    private final RedisSubscriber redisSubscriber;
+    private final RedisMessageListenerContainer redisMessageListener;
     private final LikedSellerRepository likedSellerRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, SellerRepository sellerRepository, LikedSellerRepository likedSellerRepository, JwtTokenProvider jwtTokenProvider){
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, SellerRepository sellerRepository, RedisSubscriber redisSubscriber, RedisMessageListenerContainer redisMessageListener, LikedSellerRepository likedSellerRepository, JwtTokenProvider jwtTokenProvider){
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.sellerRepository = sellerRepository;
+        this.redisSubscriber = redisSubscriber;
+        this.redisMessageListener = redisMessageListener;
         this.likedSellerRepository = likedSellerRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -102,7 +109,6 @@ public class MemberService {
         if (!existingLikes.isEmpty()) {
             throw new OrTopiaException(ErrorCode.ALREADY_LIKED_SELLER);
         }
-
         LikedSeller likedSeller = LikedSeller.builder()
                 .buyer(buyer)
                 .seller(seller)
@@ -110,6 +116,10 @@ public class MemberService {
         System.out.println(likedSeller.getBuyer().getEmail());
         System.out.println(likedSeller.getSeller().getId());
         likedSellerRepository.save(likedSeller);
+        // 좋아요 시 판매자 이메일 구독.
+        log.info(seller.getMember().getEmail()+"에 구독을 시작했습니다.");
+        ChannelTopic channel = new ChannelTopic(seller.getMember().getEmail());
+        redisMessageListener.addMessageListener(redisSubscriber, channel);
         return MemberLikeSellerResponseDto.toDto(likedSeller);
     }
     //구매자가 즐겨찾기한 판매자 목록
@@ -138,6 +148,8 @@ public class MemberService {
             throw new OrTopiaException(ErrorCode.NOT_FOUND_LIKED_SELLER); // 오류 코드 확인
         }
         likedSellerRepository.deleteAll(likedSellers);
+        ChannelTopic topic = new ChannelTopic(seller.getMember().getEmail());
+        redisMessageListener.removeMessageListener(redisSubscriber,topic);
     }
     //판매자를 즐겨찾기한 구매자 목록
     public List<MemberResponseDto> findBuyersBySellerEmail(String email) throws OrTopiaException {
