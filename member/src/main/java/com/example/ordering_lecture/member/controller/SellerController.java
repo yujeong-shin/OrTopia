@@ -55,9 +55,9 @@ public class SellerController {
     // 판매자 이름 조회 (Item server 에서 사용)
     // 판매자 이름을 확인 할때.
     @GetMapping("/seller/noLogin/fein/{id}")
-    public String findSellerName(@PathVariable Long id){
+    public SellerResponseForEventDto findSellerName(@PathVariable Long id){
         SellerResponseDto sellerResponseDto = sellerService.findByMemberId(id);
-        return sellerResponseDto.getCompanyName();
+        return new SellerResponseForEventDto(sellerResponseDto.getCompanyName(), sellerResponseDto.getEventId());
     }
     // 판매자 전체조회
     @GetMapping("/seller/All")

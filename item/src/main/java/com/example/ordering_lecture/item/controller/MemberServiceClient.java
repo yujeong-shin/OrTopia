@@ -1,6 +1,7 @@
 package com.example.ordering_lecture.item.controller;
 
 import com.example.ordering_lecture.common.OrTopiaResponse;
+import com.example.ordering_lecture.item.dto.SellerResponseForEventDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public interface MemberServiceClient {
 
     // 판매작의 sellerId로 회사명 조회.
     @GetMapping("/seller/noLogin/fein/{id}")
-    String findSellerName(@PathVariable Long id);
+    SellerResponseForEventDto findSellerName(@PathVariable Long id);
 
     // 구매자의 id를 이메일로 조회
     @GetMapping("/member/search/id/{email}")

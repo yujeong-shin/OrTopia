@@ -59,7 +59,7 @@ public class AlarmController {
         for(LikeSellerResponseDto likeSellerResponseDto : sellerEmails){
             ChannelTopic channel = new ChannelTopic(likeSellerResponseDto.getSellerEmail());
             redisMessageListener.addMessageListener(redisSubscriber, channel);
-            log.info(email+"=> subscribe "+likeSellerResponseDto.getSellerEmail());
+            log.info(email+ "=> subscribe "+likeSellerResponseDto.getSellerEmail());
         }
         // 못받은 메시지 확인
         for(LikeSellerResponseDto likeSellerResponseDto : sellerEmails){
