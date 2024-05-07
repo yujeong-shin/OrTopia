@@ -24,9 +24,7 @@ function updateLocalStorage(cartItems,totalQuantity){
 
 export default createStore({
     // state : 상태를 의미하는 객체로서 initState를 통해 상태초기화를 하고 있다
-    state: {initState
-
-    },
+    state: initState,
 
     // mutations는 상태를 변경하는 함수들의 집합
     // vuex에서 커밋이라는 용어는 상태변경을 위해 mutation을 호출하는 과정을 의미
