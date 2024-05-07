@@ -1,8 +1,10 @@
 package com.example.ordering_lecture.securities.redis;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -20,10 +22,12 @@ public class RedisConfig {
     private String host;
 
     @Bean
+    @Primary
     public RedisConnectionFactory redisConnectionFactory0() {
         return createConnectionFactoryWith(0);
     }
     @Bean
+    @Primary
     public RedisTemplate<String, Object> redisTemplate0() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
@@ -33,10 +37,12 @@ public class RedisConfig {
     }
     // 알람 pub/sub 채널
     @Bean
+    @Qualifier("6")
     public RedisConnectionFactory redisConnectionFactory6() {
         return createConnectionFactoryWith(6);
     }
     @Bean
+    @Qualifier("6")
     public RedisTemplate<String,String> redisTemplate6() {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new GenericJackson2JsonRedisSerializer());
@@ -46,10 +52,12 @@ public class RedisConfig {
     }
     // 알람 캐싱 채널
     @Bean
+    @Qualifier("7")
     public RedisConnectionFactory redisConnectionFactory7() {
         return createConnectionFactoryWith(7);
     }
     @Bean
+    @Qualifier("7")
     public RedisTemplate<String,String> redisTemplate7() {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new GenericJackson2JsonRedisSerializer());
