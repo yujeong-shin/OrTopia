@@ -17,7 +17,7 @@ public class LikeSellerResponseDto {
     public static LikeSellerResponseDto toDto(LikedSeller likeSeller){
         return LikeSellerResponseDto.builder()
                 .eventId(likeSeller.getSeller().getEventId())
-                .sellerEmail(likeSeller.getBuyer().getEmail())
+                .sellerEmail(likeSeller.getSeller().getMember().getEmail())
                 .build();
     }
 }

@@ -58,7 +58,6 @@ public class JwtTokenProvider {
         // Redis에 리프레시 토큰 저장 (이메일을 키로 사용)
         String redisKey = "RT:" + email;
         redisTemplate0.opsForValue().set(redisKey, refreshToken, refreshExpirationTime, TimeUnit.MILLISECONDS);
-
         return refreshToken;
     }
 
