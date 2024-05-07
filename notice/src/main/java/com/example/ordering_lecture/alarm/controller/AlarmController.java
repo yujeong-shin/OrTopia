@@ -54,7 +54,6 @@ public class AlarmController {
         // 내가 좋아요 팔로우한 구매자들의 이메일 목록
         List<LikeSellerResponseDto> sellerEmails = memberServiceClient.searchEmailsBySellerId(email);
         alarmService.addSellerData(email,sellerEmails);
-
         // 내가 좋아요 한 구매자 채널의 구독.
         for(LikeSellerResponseDto likeSellerResponseDto : sellerEmails){
             ChannelTopic channel = new ChannelTopic(likeSellerResponseDto.getSellerEmail());

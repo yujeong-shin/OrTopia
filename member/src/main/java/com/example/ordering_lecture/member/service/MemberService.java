@@ -208,15 +208,10 @@ public class MemberService {
             log.info("현재 팔로우 하고 있는 판매자가 없습니다.");
             return new ArrayList<>();
         }
-//        List<LikeSellerResponseDto> sellersEmails = new ArrayList<>();
+        for(LikedSeller likedSeller : likedSellers){
+            likedSeller.updateEventId(likedSeller.getSeller().getEventId());
+            likedSellerRepository.save(likedSeller);
+        }
         return likedSellers.stream().map(LikeSellerResponseDto::toDto).collect(Collectors.toList());
-//        for(LikedSeller likedSeller : likedSellers){
-//            Seller seller = sellerRepository.findById(likedSeller.getSeller().getId()).orElseThrow(
-//                    ()-> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER)
-//                    );
-//            log.info("팔로우 하는 seller 찾기 성공");
-//            sellersEmails.add(new LikeSellerResponseDto(seller.getMember().getEmail(),likedSeller.getEventId()));
-//        }
-//        return sellersEmails;
     }
 }

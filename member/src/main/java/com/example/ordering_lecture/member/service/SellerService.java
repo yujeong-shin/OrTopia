@@ -118,7 +118,7 @@ public class SellerService {
         return SellerResponseDto.toDto(seller);
     }
 
-    @Transactional
+//    @Transactional
     public List<LikeSellerResponseDto> searchEmailsBySellerId(Long sellerId) {
         Seller seller = sellerRepository.findByMemberId(sellerId)
                 .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER));
@@ -126,6 +126,7 @@ public class SellerService {
         log.info("판매자를 좋아하는 members 조회 성공"+ members.size());
         for(LikedSeller likedSeller : members ){
             likedSeller.updateEventId(seller.getEventId());
+            likedSellerRepository.save(likedSeller);
         }
         // 판매자 이메일 + lastEvent id를 전달.
         return members.stream().map(LikeSellerResponseDto::toDto).collect(Collectors.toList());
