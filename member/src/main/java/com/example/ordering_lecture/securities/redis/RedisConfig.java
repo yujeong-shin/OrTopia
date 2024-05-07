@@ -20,26 +20,17 @@ public class RedisConfig {
     private String host;
 
     @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(host, port);
+    public RedisConnectionFactory redisConnectionFactory0() {
+        return createConnectionFactoryWith(0);
     }
-
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    public RedisTemplate<String, Object> redisTemplate0() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setConnectionFactory(redisConnectionFactory0());
         return redisTemplate;
     }
-    public LettuceConnectionFactory createConnectionFactoryWith(int index) {
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName(host);
-        redisStandaloneConfiguration.setPort(port);
-        redisStandaloneConfiguration.setDatabase(index);
-        return new LettuceConnectionFactory(redisStandaloneConfiguration);
-    }
-
     // 알람 pub/sub 채널
     @Bean
     public RedisConnectionFactory redisConnectionFactory6() {
@@ -53,7 +44,6 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory6());
         return redisTemplate;
     }
-
     // 알람 캐싱 채널
     @Bean
     public RedisConnectionFactory redisConnectionFactory7() {
@@ -66,6 +56,14 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory7());
         return redisTemplate;
+    }
+
+    public LettuceConnectionFactory createConnectionFactoryWith(int index) {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName(host);
+        redisStandaloneConfiguration.setPort(port);
+        redisStandaloneConfiguration.setDatabase(index);
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
 }

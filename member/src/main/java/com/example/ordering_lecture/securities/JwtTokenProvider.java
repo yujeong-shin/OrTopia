@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 @Log4j2
 public class JwtTokenProvider {
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate0;
 
     @Value("${jwt.secretKey}")
     private String secretKey;
@@ -53,7 +53,7 @@ public class JwtTokenProvider {
 
         // Redis에 리프레시 토큰 저장 (이메일을 키로 사용)
         String redisKey = "RT:" + email;
-        redisTemplate.opsForValue().set(redisKey, refreshToken, refreshExpirationTime, TimeUnit.MILLISECONDS);
+        redisTemplate0.opsForValue().set(redisKey, refreshToken, refreshExpirationTime, TimeUnit.MILLISECONDS);
 
         return refreshToken;
     }
