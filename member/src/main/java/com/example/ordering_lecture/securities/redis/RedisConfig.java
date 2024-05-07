@@ -21,12 +21,10 @@ public class RedisConfig {
     @Value("${spring.redis.host}")
     private String host;
 
-    @Bean
     @Primary
     public RedisConnectionFactory redisConnectionFactory0() {
         return createConnectionFactoryWith(0);
     }
-    @Bean
     @Primary
     public RedisTemplate<String, Object> redisTemplate0() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();

@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -14,10 +15,8 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 @Component
-@RequiredArgsConstructor
 @Log4j2
 public class JwtTokenProvider {
-
     private final RedisTemplate<String, String> redisTemplate0;
 
     @Value("${jwt.secretKey}")
@@ -28,6 +27,10 @@ public class JwtTokenProvider {
 
     @Value("${jwt.token.refresh-expiration-time}")
     private long refreshExpirationTime;
+
+    public JwtTokenProvider(RedisTemplate<String, String> redisTemplate0) {
+        this.redisTemplate0 = redisTemplate0;
+    }
 
     public String createAccessToken(String email, String role) {
         Claims claims = Jwts.claims().setSubject(email);
