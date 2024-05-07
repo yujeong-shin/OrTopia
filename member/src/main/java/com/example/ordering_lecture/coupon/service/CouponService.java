@@ -9,21 +9,37 @@ import com.example.ordering_lecture.coupon.repository.CouponRepository;
 import com.example.ordering_lecture.coupondetail.domain.CouponDetail;
 import com.example.ordering_lecture.coupondetail.dto.CouponDetailRequestDto;
 import com.example.ordering_lecture.coupondetail.repository.CouponDetailRepository;
+import com.example.ordering_lecture.member.domain.Member;
+import com.example.ordering_lecture.member.domain.Seller;
+import com.example.ordering_lecture.member.repository.MemberRepository;
+import com.example.ordering_lecture.member.repository.SellerRepository;
+import com.example.ordering_lecture.securities.redis.RedisPublisher;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class CouponService {
     private final CouponRepository couponRepository;
     private final CouponDetailRepository couponDetailRepository;
+    private final MemberRepository memberRepository;
+    private final SellerRepository sellerRepository;
+    private final RedisPublisher redisPublisher;
 
-    public CouponService(CouponRepository couponRepository, CouponDetailRepository couponDetailRepository) {
+    public CouponService(CouponRepository couponRepository, CouponDetailRepository couponDetailRepository, MemberRepository memberRepository, SellerRepository sellerRepository, RedisPublisher redisPublisher) {
         this.couponRepository = couponRepository;
         this.couponDetailRepository = couponDetailRepository;
+        this.memberRepository = memberRepository;
+        this.sellerRepository = sellerRepository;
+        this.redisPublisher = redisPublisher;
     }
 
     public List<CouponResponseDto> createCoupon(CouponRequestDto couponRequestDto) throws OrTopiaException {
@@ -48,5 +64,25 @@ public class CouponService {
         return coupons.stream()
                 .map(coupon -> CouponResponseDto.toDto(coupon, coupon.getCouponDetail()))
                 .collect(Collectors.toList());
+    }
+
+    public void createMessage(String email, List<CouponResponseDto> couponResponseDtos) {
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+        String nowDate = currentDate.format(formatter);
+        Member sellerMember = memberRepository.findByEmail(email).orElseThrow(
+                ()-> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
+                );
+        Seller seller = sellerRepository.findByMemberId(sellerMember.getId()).orElseThrow(
+                ()-> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER)
+        );
+        String companyName = seller.getCompanyName();
+        log.info(email+"채널에 메시지를 보냅니다.");
+        ChannelTopic channel = new ChannelTopic(email);
+        for(CouponResponseDto couponResponseDto : couponResponseDtos) {
+            String message = nowDate + "_" + email + "_" + companyName + "이 님이 새로운 아이템 " + couponResponseDto.getItemId() + "을 등록했어요!" + "_" + "itemId:" + couponResponseDto.getItemId();
+            redisPublisher.publish(channel, message);
+            log.info(email + "채널에 성공적으로 알람을 발송 했습니다.");
+        }
     }
 }

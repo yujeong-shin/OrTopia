@@ -7,6 +7,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -37,6 +38,20 @@ public class RedisConfig {
         redisStandaloneConfiguration.setPort(port);
         redisStandaloneConfiguration.setDatabase(index);
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
+    }
+
+    // 알람 pub/sub 채널
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory6() {
+        return createConnectionFactoryWith(6);
+    }
+    @Bean
+    public RedisTemplate<Long,Object> redisTemplate6() {
+        RedisTemplate<Long, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setConnectionFactory(redisConnectionFactory6());
+        return redisTemplate;
     }
 
 }
