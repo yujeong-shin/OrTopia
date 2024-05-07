@@ -54,7 +54,7 @@ public class RedisConfig {
     // 알람 캐싱 채널
     @Bean
     @Qualifier("7")
-    public RedisConnectionFactory redisConnectionFactory7() {
+    public RedisConnectionFactory redisConnectionFactory() {
         return createConnectionFactoryWith(7);
     }
     @Bean
