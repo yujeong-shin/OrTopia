@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class OrderResponseForSellerDto {
     private Long id;
-    private Long orderNumber;
+    private String orderNumber;
     private LocalDateTime createdTime;
     private String buyerEmail; // 구매자 이메일
     private String recipientName; // 수령인 이름
