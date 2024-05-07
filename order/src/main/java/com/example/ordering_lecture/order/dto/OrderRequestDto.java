@@ -45,6 +45,7 @@ public class OrderRequestDto {
                 .phoneNumber(this.phoneNumber)
                 .email(this.email)
                 .PaymentMethod(paymentMethod)
+                .orderNumber(this.pgToken)
                 .build();
     }
 }

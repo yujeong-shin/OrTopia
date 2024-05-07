@@ -20,7 +20,7 @@ public class Ordering {
     private Long id;
     @Column(nullable = false)
     @Builder.Default
-    private Long orderNumber = 0L;
+    private String orderNumber = "0";
     @Column(nullable = false)
     private int totalPrice;
     @Column(nullable = false)
