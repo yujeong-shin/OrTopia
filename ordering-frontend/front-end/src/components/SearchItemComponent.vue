@@ -77,17 +77,18 @@
         </v-menu>
       </div>
         </v-col>
-        <v-col
-          v-for="item in this.itemList"
-          :key="item.id"
-          cols="12"
-          sm="6"
-          md="4"
-          lg="3"
-        >
-          <v-card @click="goToDetailPage(item.id)">
-            <v-img :src="item.imagePath" height="200px"></v-img>
-            <v-card-title>{{ item.name }}</v-card-title>
+        <template v-if="itemList.length > 0">
+          <v-col
+            v-for="item in itemList"
+            :key="item.id"
+            cols="12"
+            sm="6"
+            md="4"
+            lg="3"
+          >
+            <v-card @click="goToDetailPage(item.id)">
+              <v-img :src="item.imagePath" height="200px"></v-img>
+              <v-card-title>{{ item.name }}</v-card-title>
             <v-card-subtitle>
               <v-rating
                 v-model="item.totalScore"
@@ -104,9 +105,15 @@
             <v-card-subtitle>{{ item.price }}원</v-card-subtitle>
           </v-card>
         </v-col>
-      </v-row>
-    </v-container>
-  </v-main>
+      </template>
+      <v-col v-else cols="12">
+        <div class="text-center">
+          <img :src="require('@/assets/oops.png')">
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
+</v-main>
 </template>
 
 <script>
