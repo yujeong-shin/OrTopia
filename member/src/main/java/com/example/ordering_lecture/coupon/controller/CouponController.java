@@ -4,8 +4,6 @@ import com.example.ordering_lecture.common.OrTopiaResponse;
 import com.example.ordering_lecture.coupon.dto.CouponRequestDto;
 import com.example.ordering_lecture.coupon.dto.CouponResponseDto;
 import com.example.ordering_lecture.coupon.service.CouponService;
-import com.example.ordering_lecture.coupondetail.dto.CouponDetailRequestDto;
-import com.example.ordering_lecture.coupondetail.dto.CouponDetailResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
