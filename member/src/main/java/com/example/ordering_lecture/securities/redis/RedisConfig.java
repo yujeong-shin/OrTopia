@@ -1,5 +1,6 @@
 package com.example.ordering_lecture.securities.redis;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+@Slf4j
 public class RedisConfig {
 
     @Value("${spring.redis.port}")
@@ -23,16 +25,16 @@ public class RedisConfig {
 
     @Bean
     @Primary
-    public RedisConnectionFactory redisConnectionFactory0() {
+    public RedisConnectionFactory redisConnectionFactory() {
         return createConnectionFactoryWith(0);
     }
     @Bean
     @Primary
-    public RedisTemplate<String, Object> redisTemplate0() {
+    public RedisTemplate<String, Object> redisTemplate0(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
-        redisTemplate.setConnectionFactory(redisConnectionFactory0());
+        redisTemplate.setConnectionFactory(connectionFactory);
         return redisTemplate;
     }
     // 알람 pub/sub 채널
@@ -43,11 +45,11 @@ public class RedisConfig {
     }
     @Bean
     @Qualifier("6")
-    public RedisTemplate<String,String> redisTemplate6() {
+    public RedisTemplate<String,String> redisTemplate6(@Qualifier("6") RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
-        redisTemplate.setConnectionFactory(redisConnectionFactory6());
+        redisTemplate.setConnectionFactory(connectionFactory);
         return redisTemplate;
     }
     // 알람 캐싱 채널
@@ -58,11 +60,11 @@ public class RedisConfig {
     }
     @Bean
     @Qualifier("7")
-    public RedisTemplate<String,String> redisTemplate7() {
+    public RedisTemplate<String,String> redisTemplate7(@Qualifier("7") RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
-        redisTemplate.setConnectionFactory(redisConnectionFactory7());
+        redisTemplate.setConnectionFactory(connectionFactory);
         return redisTemplate;
     }
 
@@ -71,6 +73,7 @@ public class RedisConfig {
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
         redisStandaloneConfiguration.setDatabase(index);
+        log.info("set"+index);
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 

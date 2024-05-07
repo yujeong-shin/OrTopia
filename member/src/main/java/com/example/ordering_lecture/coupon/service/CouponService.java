@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -89,6 +88,7 @@ public class CouponService {
             String itemName = itemServiceClient.findNameById(couponResponseDto.getItemId());
             String message = seller.getEventId()+"_"+nowDate + "_" + email + "_" + companyName + "이 님이 " + itemName + "에 쿠폰을 등록했어요!" + "_" + "itemId:" + couponResponseDto.getItemId();
             seller.updateEventId();
+            // 메시지 방송
             redisPublisher.publish(channel, message);
             // 알람메시지 캐싱
             redisService.setValues(email,message);
