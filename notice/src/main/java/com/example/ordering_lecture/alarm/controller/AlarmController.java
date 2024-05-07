@@ -62,7 +62,9 @@ public class AlarmController {
         }
         // 못받은 메시지 확인
         for(LikeSellerResponseDto likeSellerResponseDto : sellerEmails){
+            log.info(likeSellerResponseDto.getSellerEmail()+"에 대한 지난 메시지 확인!");
             List<String> lastEvents = redisService.getValues(likeSellerResponseDto.getSellerEmail());
+            log.info(lastEvents.size()+"개의 7일 간 알람이 있습니다.");
             for(String lastEvent : lastEvents){
                 String[] strings = lastEvent.split("_");
                 log.info(strings[0]+" 못받은 eventID");
