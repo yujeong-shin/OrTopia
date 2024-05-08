@@ -25,11 +25,13 @@ public class KafkaConfig {
     @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
     // 테스트 Topic 생성 1
+    @Bean
     public NewTopic myTopic1() {
         return new NewTopic("my_topic_1", 1, (short) 1);
     }
 
     // 테스트 Topic 생성 2
+    @Bean
     public NewTopic myTopic2() {
         return new NewTopic("my_topic_2", 1, (short) 1);
     }
@@ -46,7 +48,7 @@ public class KafkaConfig {
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "foo");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "group1");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         return new DefaultKafkaConsumerFactory<>(props);

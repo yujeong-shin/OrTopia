@@ -11,12 +11,12 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ConsumerService {
 
-    @KafkaListener(topics = "my_topic_1", groupId = "group1")
+    @KafkaListener(topics = "#{myTopic1.name}", groupId = "group1")
     public void consumeMyopic1(@Payload String message, @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition){
         log.info("[consume message]: {} from partition: {}", message, partition);
     }
 
-    @KafkaListener(topics = "my_topic_2", groupId = "group1")
+    @KafkaListener(topics = "#{myTopic2.name}", groupId = "group1")
     public void consumeMyopic2(@Payload String message, @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition){
         log.info("[consume message]: {} from partition: {}", message, partition);
     }
