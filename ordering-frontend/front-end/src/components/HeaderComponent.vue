@@ -3,7 +3,7 @@
     <v-img
       src="@/assets/logo.png"
       contain
-      height="30"
+      height="40"
       class="logo-margin top-margin"
       @click="redirectToHome"
     ></v-img>
