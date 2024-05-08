@@ -76,7 +76,15 @@
       <v-row>
       <!-- 첫 번째 열 -->
       <v-col cols="12">
-      <v-btn large color="pink" @click="showFirstComeModal = true" class="aggressive-button">선착순 쿠폰받으러 가기</v-btn>
+    <v-btn 
+        large 
+        color="pink" 
+        :disabled="!isCoupon" 
+        @click="showFirstComeModal = true" 
+        class="aggressive-button"
+    >
+        {{ isCoupon ? '선착순 쿠폰받으러 가기' : '앗! 받을 수 있는 쿠폰이 없어요' }}
+    </v-btn>
     </v-col>
       <v-col cols="12">
         <p class="grid-text">나와 취향이 비슷한 회원들이 구매한 상품</p>
@@ -188,6 +196,7 @@ export default {
       reviews:[],
       totalScore:0,
       recommendProducts: [],
+      isCoupon:false,
     };
   },
   created() {
@@ -196,9 +205,34 @@ export default {
     console.log("Item ID:", this.itemId);
     this.getRecommend();
     this.getReview();
+    this.fetchCoupon();
 },
   methods: {
     ...mapActions("addToCart"),
+    fetchCoupon() {
+        const token = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem("refreshToken");
+        console.log('Fetching coupon for itemId:', this.itemId);
+        axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/coupon/${this.itemId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "X-Refresh-Token": `${refreshToken}`,
+            }
+        })
+        .then(response => {
+            console.log('Coupon data received:', response.data);
+            if (response.data.result.length > 0 && response.data.result[0].couponDetailResponseDto) {
+                // this.coupon = response.data.result[0];
+                this.isCoupon = true;
+            } else {
+                this.isCoupon = false;
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching coupon:", error.response || error);
+            this.isCoupon = false;
+        });
+    },
     async checkFavoriteStatus(sellerId) {
       const token = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
@@ -381,7 +415,6 @@ export default {
     alert(error.response.data.error_message);
     console.error(error);
   }
-
       // 최근 본 상품 불러오기
       if (token != null) {
         try {

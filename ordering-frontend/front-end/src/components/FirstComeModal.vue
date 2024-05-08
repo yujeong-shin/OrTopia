@@ -3,7 +3,7 @@
         <v-card>
             <v-card-title class="headline">{{ coupon.couponDetailResponseDto.name || '선착순 쿠폰' }}</v-card-title>
             <v-card-text v-if="couponLoaded">
-                <p>이 쿠폰은 제한된 수량 {{ coupon.couponDetailResponseDto.firstCome }}명만큼만 발행됩니다. 서둘러서 쿠폰을 받으세요!</p>
+                <p>현재 쿠폰의 남은 수량은 {{ coupon.couponDetailResponseDto.firstCome }}개입니다!! 서둘러서 쿠폰을 받으세요!</p>
                 <p>할인율: {{ coupon.couponDetailResponseDto.rateDiscount }}%</p>
                 <p>할인 금액: {{ coupon.couponDetailResponseDto.fixDiscount }}원</p>
                 <p>유효 기간: {{ coupon.couponDetailResponseDto.startDate }} ~ {{ coupon.couponDetailResponseDto.endDate }}</p>
