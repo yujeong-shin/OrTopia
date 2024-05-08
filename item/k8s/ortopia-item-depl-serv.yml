@@ -54,6 +54,11 @@ spec:
               secretKeyRef:
                 name: ortopia-s3
                 key: S3_SECRET_KEY
+          - name: BOOT_SERVER
+            valueFrom:
+              secretKeyRef:
+                name: ortopia-kafka
+                key: BOOT_SERVER
           
 ---
 apiVersion: v1

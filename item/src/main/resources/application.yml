@@ -1,6 +1,8 @@
 #server:
 #  port: 8082
 spring:
+  kafka:
+    bootstrap-servers: ${BOOT_SERVER}
   redis:
     host: ${REDIS_HOST}
     port: 6379
