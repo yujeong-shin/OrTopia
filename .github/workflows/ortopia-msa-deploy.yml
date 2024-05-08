@@ -87,6 +87,17 @@ jobs:
           -f ./member/Dockerfile ./order
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
+      - name: build and push docker recommendation image
+        env:
+          REGISTRY: 168123310368.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: ortopia_recommendation
+          IMAGE_TAG: latest
+        run: |
+          docker build \
+          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          -f ./recommendation/Dockerfile ./recommendation
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
       - name: eks kubectl apply gateway
         run: |
           kubectl apply -f ./gateway/k8s/ortopia-gateway-depl-serv.yml
@@ -111,3 +122,8 @@ jobs:
         run: |
           kubectl apply -f ./order/k8s/ortopia-order-depl-serv.yml
           kubectl rollout restart deployment ortopia-order-depl
+
+      - name: eks kubectl apply recommendation
+        run: |
+          kubectl apply -f ./recommendation/k8s/ortopia-recommendation-depl-serv.yml
+          kubectl rollout restart deployment ortopia-recommendation-depl

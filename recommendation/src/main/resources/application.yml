@@ -1,6 +1,4 @@
 spring:
-  kafka:
-    bootstrap-servers: ${BOOT_SERVER}
   cloud:
     kubernetes:
       discovery:
@@ -8,15 +6,9 @@ spring:
   redis:
     host: ${REDIS_HOST}
     port: 6379
-  security:
-    user:
-      name: user
-      password: password #PasswordEncoder.encode(password)
-  application:
-    name: order-service
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://${DB_HOST}:3306/order_server
+    url: jdbc:mariadb://${DB_HOST}:3306/recommendation
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   jpa:
@@ -27,9 +19,6 @@ spring:
       ddl-auto: update
     show_sql: true
 jwt:
-  expiration: 30 # 30 min
   secretKey: mysecret
-pay:
-  admin-key: ${ADMIN_KEY}
-toss:
-  toss-key: ${TOSS_KEY}
+  token:
+    recommend-expiration-time: 900000

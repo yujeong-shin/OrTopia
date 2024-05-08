@@ -18,6 +18,12 @@ spec:
         image: 168123310368.dkr.ecr.ap-northeast-2.amazonaws.com/ortopia_gateway:latest
         ports:
         - containerPort: 8080
+          env:
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: ortopia-redis
+                  key: REDIS_HOST
 ---
 apiVersion: v1
 kind: Service
