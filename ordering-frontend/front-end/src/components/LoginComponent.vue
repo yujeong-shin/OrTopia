@@ -127,4 +127,9 @@ export default {
   .v-card-title {
     font-size: 28px; 
   }
+  input[type="password"] {
+    font-family: 'Arial', sans-serif;
+    color: black; 
+    opacity: 1; 
+  }
 </style>

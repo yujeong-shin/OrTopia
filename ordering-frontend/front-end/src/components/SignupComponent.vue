@@ -171,7 +171,12 @@ const getMask = ( phoneNumber ) => {
 </script>
 
 <style>
-  .v-card-title {
-    font-size: 28px; 
-  }
+.v-card-title {
+  font-size: 28px; 
+}
+input[type="password"] {
+  font-family: 'Arial', sans-serif;
+  color: black; 
+  opacity: 1; 
+}
 </style>
