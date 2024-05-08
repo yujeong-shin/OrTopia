@@ -1,6 +1,6 @@
 spring:
   kafka:
-    bootstrap-servers: b-2.democluster2.o89s59.c2.kafka.ap-northeast-2.amazonaws.com:9098,b-3.democluster2.o89s59.c2.kafka.ap-northeast-2.amazonaws.com:9098,b-1.democluster2.o89s59.c2.kafka.ap-northeast-2.amazonaws.com:9098
+    bootstrap-servers: ${BOOT_SERVER}
   cloud:
     kubernetes:
       discovery:
