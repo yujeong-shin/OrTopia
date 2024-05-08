@@ -26,7 +26,7 @@ public class tossPayController {
     private String secretKey;
 
     @GetMapping("/success")
-    public RedirectView paymentResult(
+    public String paymentResult(
             Model model,
             @RequestParam(value = "orderId") String orderId,
             @RequestParam(value = "amount") Integer amount,
@@ -82,7 +82,7 @@ public class tossPayController {
             model.addAttribute("message", (String) jsonObject.get("message"));
         }
         redisService.setValues(email,paymentKey);
-        return new RedirectView("http://localhost:8081/order/kakao/"+paymentKey);
+        return "success";
     }
 
     @GetMapping("/fail")
