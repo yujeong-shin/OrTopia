@@ -27,13 +27,12 @@ public class tossPayController {
     @Value("${toss.toss-key}")
     private String secretKey;
 
-    @GetMapping("/success/{email}")
+    @GetMapping("/success")
     public RedirectView paymentResult(
             Model model,
             @RequestParam(value = "orderId") String orderId,
             @RequestParam(value = "amount") Integer amount,
-            @RequestParam(value = "paymentKey") String paymentKey,
-            @PathVariable("email")String email) throws Exception {
+            @RequestParam(value = "paymentKey") String paymentKey) throws Exception {
 
         Base64.Encoder encoder = Base64.getEncoder();
         byte[] encodedBytes = encoder.encode(secretKey.getBytes("UTF-8"));
@@ -83,7 +82,7 @@ public class tossPayController {
             model.addAttribute("code", (String) jsonObject.get("code"));
             model.addAttribute("message", (String) jsonObject.get("message"));
         }
-        redisService.setValues(email,paymentKey);
+        redisService.setValues(orderId,paymentKey);
         return new RedirectView("http://localhost:8081/order/kakao/"+paymentKey);
     }
 
