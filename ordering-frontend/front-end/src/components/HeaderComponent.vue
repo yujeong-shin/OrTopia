@@ -192,6 +192,7 @@ import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { EventSourcePolyfill } from 'event-source-polyfill';
+import axios from "axios";
 
 const router = useRouter();
 const store = useStore();
@@ -252,6 +253,16 @@ const handleButtonClick = (category) => {
   window.location.href = url;
 };
 const logout = () => {
+  const token = localStorage.getItem('accessToken');
+  const refreshToken = localStorage.getItem('refreshToken');
+  axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-notice-service/delete/connect`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "X-Refresh-Token": `${refreshToken}`,
+      }
+    }
+  )
   localStorage.clear();
   isLoggedIn.value = false;
   isSeller.value = false; // 로그아웃 시 isSeller도 초기화

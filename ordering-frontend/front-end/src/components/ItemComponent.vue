@@ -220,13 +220,8 @@ export default {
             }
         })
         .then(response => {
-            console.log('Coupon data received:', response.data);
-            if (response.data.result.length > 0 && response.data.result[0].couponDetailResponseDto) {
-                // this.coupon = response.data.result[0];
-                this.isCoupon = true;
-            } else {
-                this.isCoupon = false;
-            }
+            console.log('Coupon data received:', response.data.result);
+            this.isCoupon = response.data.result.some(dto => dto.firstCome !== 0);
         })
         .catch(error => {
             console.error("Error fetching coupon:", error.response || error);

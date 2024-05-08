@@ -102,7 +102,11 @@ export default {
             })
             .catch(error => {
                 console.error('Error claiming coupon:', error);
-                alert('쿠폰을 받는데 실패했습니다.');
+                if(error.response.data.code=="C4"){
+                    alert('이미 쿠폰을 받았어요!');
+                }else{
+                    alert('쿠폰을 받는데 실패했습니다.');
+                }
             });
         }
     },
