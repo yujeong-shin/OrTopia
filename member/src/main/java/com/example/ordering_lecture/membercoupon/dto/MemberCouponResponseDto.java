@@ -18,7 +18,8 @@ public class MemberCouponResponseDto {
     private String couponName;
     private String startDate;
     private String endDate;
-    private int discount;
+    private int fixDiscount;
+    private int rateDiscount;
 
     public static MemberCouponResponseDto toDto(MemberCoupon memberCoupon) {
         return MemberCouponResponseDto.builder()
@@ -29,9 +30,8 @@ public class MemberCouponResponseDto {
                 .couponName(memberCoupon.getCoupon().getCouponDetail().getName())
                 .startDate(memberCoupon.getCoupon().getCouponDetail().getStartDate())
                 .endDate(memberCoupon.getCoupon().getCouponDetail().getEndDate())
-                .discount(memberCoupon.getCoupon().getCouponDetail().getRateDiscount() != 0 ?
-                        memberCoupon.getCoupon().getCouponDetail().getRateDiscount() :
-                        memberCoupon.getCoupon().getCouponDetail().getFixDiscount())
+                .fixDiscount(memberCoupon.getCoupon().getCouponDetail().getFixDiscount())
+                .rateDiscount(memberCoupon.getCoupon().getCouponDetail().getRateDiscount())
                 .build();
     }
 }
