@@ -401,4 +401,16 @@ public class ItemService {
         redisService.setValuesLasEvent(email,message);
         log.info(email+"채널에 성공적으로 알람을 발송 했습니다.");
     }
+
+    public void itemOptionQuantityUpdate(Long itemOptionQuantityId, Integer quantity) {
+        log.info(itemOptionQuantityId+"의 재고를 업데이트 합니다.");
+        ItemOptionQuantity itemOptionQuantity = itemOptionQuantityRepository.findById(itemOptionQuantityId).orElseThrow(
+                ()-> new OrTopiaException(ErrorCode.NOT_FOUND_ITEM)
+                );
+        itemOptionQuantity.updateQuantity(quantity);
+        itemOptionQuantityRepository.save(itemOptionQuantity);
+        if(itemOptionQuantity.getItem().getMinimumStock()>=quantity){
+            log.info("최소 재고에 도달했습니다.");
+        }
+    }
 }

@@ -14,4 +14,7 @@ public interface ItemServiceClient {
     Long searchIdByOptionDetail(@PathVariable(name = "itemId") Long itemId,@RequestBody List<String> values);
     @PostMapping("item/{itemId}/itemName")
     String findNameById(@PathVariable(name="itemId") Long itemId);
+    @PostMapping("item/update/stock/{itemOptionQuantityId}/{quantity}")
+    String itemOptionQuantityUpdate(@PathVariable(value = "itemOptionQuantityId") Long itemOptionQuantityId,
+                                    @PathVariable(value = "quantity") Integer quantity);
 }

@@ -60,6 +60,7 @@ public class PaymentService {
             }
             // redis내 재고를 업데이트
             redisService.setItemQuantity(id, nowStock - itemDto.getCount());
+            itemServiceClient.itemOptionQuantityUpdate(id,nowStock - itemDto.getCount());
         }
         /** 요청 헤더 */
         String auth = "KakaoAK " + adminKey;

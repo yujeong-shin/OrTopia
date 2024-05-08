@@ -32,6 +32,12 @@ public class MemberCouponService {
         Long memberId = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER))
                 .getId();
+        List<MemberCoupon> memberCoupons = memberCouponRepository.findAllByMemberId(memberId);
+        for(MemberCoupon memberCoupon : memberCoupons){
+            if(memberCoupon.getCoupon().getId().equals(request.getCouponId())){
+                throw new OrTopiaException(ErrorCode.COUPON_ALREADY_HAVE);
+            }
+        }
         Coupon coupon = couponRepository.findById(request.getCouponId())
                 .orElseThrow(() -> new OrTopiaException(ErrorCode.COUPON_NOT_FOUND));
         MemberCoupon memberCoupon = MemberCoupon.builder()

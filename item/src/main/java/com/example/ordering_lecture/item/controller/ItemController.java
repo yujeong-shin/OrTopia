@@ -146,4 +146,11 @@ public class ItemController {
         OrTopiaResponse orTopiaResponse = new OrTopiaResponse("read success", sellerGraphStockData);
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
+
+    @PostMapping("item/update/stock/{itemOptionQuantityId}/{quantity}")
+    String itemOptionQuantityUpdate(@PathVariable(value = "itemOptionQuantityId") Long itemOptionQuantityId,
+                                    @PathVariable(value = "quantity") Integer quantity){
+        itemService.itemOptionQuantityUpdate(itemOptionQuantityId,quantity);
+        return "update success";
+    }
 }
