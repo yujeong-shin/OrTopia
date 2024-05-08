@@ -117,19 +117,72 @@
   <div class="header-bottom-line"></div>
 
   <v-btn-toggle v-model="selectedCategory" mandatory class="category-buttons">
-    <div class="d-flex">
-      <v-btn @click="handleButtonClick('가구')" class="mx-2">가구</v-btn>
-      <v-btn @click="handleButtonClick('도서')" class="mx-2">도서</v-btn>
-      <v-btn @click="handleButtonClick('가전')" class="mx-2">가전</v-btn>
-      <v-btn @click="handleButtonClick('생활')" class="mx-2">생활</v-btn>
-      <v-btn @click="handleButtonClick('건강')" class="mx-2">건강</v-btn>
-      <v-btn @click="handleButtonClick('스포츠')" class="mx-2">스포츠</v-btn>
-      <v-btn @click="handleButtonClick('식품')" class="mx-2">식품</v-btn>
-      <v-btn @click="handleButtonClick('육아')" class="mx-2">육아</v-btn>
-      <v-btn @click="handleButtonClick('의류')" class="mx-2">의류</v-btn>
-      <v-btn @click="handleButtonClick('잡화')" class="mx-2">잡화</v-btn>
-      <v-btn @click="handleButtonClick('화장품')" class="mx-2">화장품</v-btn>
-    </div>
+    <v-btn @click="handleButtonClick('가구')" class="mx-2 image-button">
+      <div>
+        <img :src="require('@/assets/living.png')" alt="가구" class="category-image"/>
+        <span>가구</span>
+      </div>
+    </v-btn>
+    <v-btn @click="handleButtonClick('도서')" class="mx-2 image-button">
+      <div>
+        <img :src="require('@/assets/book.png')" alt="도서" class="category-image"/>
+        <span>도서</span>
+      </div>
+    </v-btn>
+    <v-btn @click="handleButtonClick('가전')" class="mx-2 image-button">
+      <div>
+        <img :src="require('@/assets/appliances.png')" alt="가전" class="category-image"/>
+        <span>가전</span>
+      </div>
+    </v-btn>
+    <v-btn @click="handleButtonClick('생활')" class="mx-2 image-button">
+      <div>
+        <img :src="require('@/assets/life.png')" alt="생활" class="category-image"/>
+        <span>생활</span>
+      </div>
+    </v-btn>
+    <v-btn @click="handleButtonClick('건강')" class="mx-2 image-button">
+      <div>
+        <img :src="require('@/assets/health.png')" alt="건강" class="category-image"/>
+        <span>건강</span>
+      </div>
+    </v-btn>
+    <v-btn @click="handleButtonClick('스포츠')" class="mx-2 image-button">
+      <div>
+        <img :src="require('@/assets/sports.png')" alt="스포츠" class="category-image"/>
+        <span>스포츠</span>
+      </div>
+    </v-btn>
+    <v-btn @click="handleButtonClick('식품')" class="mx-2 image-button">
+      <div>
+        <img :src="require('@/assets/food.png')" alt="식품" class="category-image"/>
+        <span>식품</span>
+      </div>
+    </v-btn>
+    <v-btn @click="handleButtonClick('육아')" class="mx-2 image-button">
+      <div>
+        <img :src="require('@/assets/baby.png')" alt="육아" class="category-image"/>
+        <span>육아</span>
+      </div>
+    </v-btn>
+    <v-btn @click="handleButtonClick('의류')" class="mx-2 image-button">
+      <div>
+        <img :src="require('@/assets/clothing.png')" alt="의류" class="category-image"/>
+        <span>의류</span>
+      </div>
+    </v-btn>
+    <v-btn @click="handleButtonClick('잡화')" class="mx-2 image-button">
+      <div>
+        <img :src="require('@/assets/item.png')" alt="잡화" class="category-image"/>
+        <span>잡화</span>
+      </div>
+    </v-btn>
+    <v-btn @click="handleButtonClick('화장품')" class="mx-2 image-button">
+      <div>
+        <img :src="require('@/assets/makeup.png')" alt="화장품" class="category-image"/>
+        <span>화장품</span>
+      </div>
+    </v-btn>
   </v-btn-toggle>
   <div class="header-bottom-line"></div>
 </template>
@@ -279,5 +332,39 @@ const goToItemSellComponent = () => {
   top: 0;
   left: 0;
   width: 100%;
+}
+.icon-margin {
+  margin-right: 8px;
+}
+.image-button img {
+  height: 40px; 
+  width: auto; 
+}
+.category-buttons .v-btn {
+  padding: 0;
+}
+.header-bottom-line {
+  border-bottom: 1px solid #e0e0e0;
+}
+.image-button {
+  display: flex;
+  flex-direction: column; /* 아이템을 세로로 정렬 */
+  align-items: center; /* 가운데 정렬 */
+  padding: 10px; /* 버튼 주변의 패딩 */
+  width: 100px; /* 버튼의 너비 */
+  height: 120px; /* 버튼의 높이 조정 */
+  justify-content: center; /* 내용을 수직 중앙으로 정렬 */
+}
+
+.category-image {
+  width: auto;
+  height: 60px; /* 이미지 높이 조정 */
+  margin-bottom: 5px; /* 이미지와 텍스트 사이의 공간 */
+}
+
+.category-buttons .v-btn span {
+  color: black; /* 텍스트 색상 */
+  font-size: 14px; /* 텍스트 크기 */
+  text-align: center; /* 텍스트 중앙 정렬 */
 }
 </style>

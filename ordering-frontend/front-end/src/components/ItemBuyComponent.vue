@@ -1,40 +1,42 @@
 <template>
   <v-main>
     <div class="colored-block">
-      <h2 style="text-align: center; color: black;">상품 정보</h2>
+      <v-card-title class="headline grey lighten-2 text-center">
+        상품정보
+      </v-card-title>
     </div>
     <br><br>
   <v-container class="scrollable-section">
     <table>
       <thead>
         <tr>
-          <th style="font-size: 30px; font-weight: bold;">이미지</th>
-          <th style="font-size: 30px; font-weight: bold;" class="text-center">상품명</th>
-          <th style="font-size: 30px; font-weight: bold;" class="text-center">수량</th>
-          <th style="font-size: 30px; font-weight: bold;" class="text-center">가격</th>
+          <th style="font-size: 20px;" class="text-center">이미지</th>
+          <th style="font-size: 20px;" class="text-center">상품명</th>
+          <th style="font-size: 20px;" class="text-center">수량</th>
+          <th style="font-size: 20px;" class="text-center">가격</th>
         </tr>
       </thead>
       <tbody>
       <tr v-for="item in myItems" :key="item.id">
-        <td style="padding: 30px;">
-          <img :src="item.imagePath" alt="대체_텍스트" height="200px" width="200px">
+        <td style="padding: 20px;">
+          <img :src="item.imagePath" alt="대체_텍스트" height="150px" width="150px" >
         </td>
         <td class="text-center" >
-          <div style="font-size: 25px; padding: 30px;">{{ item.name }}</div>
+          <div style="font-size: 25px; padding: 20px;">{{ item.name }}</div>
             <template v-for="(option, index) in item.options" :key="index">
               <div style="font-size: 15px;">{{ option.name }}: {{ option.value }}</div>
            </template>
         </td>
-        <td class="text-center" style="font-size: 25px; padding: 30px;">{{ item.count }}</td>
-        <td class="text-center" style="font-size: 25px; padding: 30px;">{{ item.price * item.count }} 원 </td>
+        <td class="text-center" style="font-size: 25px; padding: 20px;">{{ item.count }}</td>
+        <td class="text-center" style="font-size: 25px; padding: 20px;">{{ item.price * item.count }} 원 </td>
       </tr>
     </tbody>
   </table>
   </v-container>
     <br>
-    <div class="colored-block">
-      <h2 style="text-align: center; color: black;">정보 입력</h2>
-    </div>
+    <v-card-title class="headline grey lighten-2 text-center">
+        정보입력
+      </v-card-title>
   <v-container>
   <v-row>
     <!-- 첫 번째 그리드: 구매자 정보 -->
@@ -115,9 +117,9 @@
       </v-col>
     </v-row>
   </v-container>
-  <div class="colored-block">
-    <h2 style="text-align: center; color: black;">결제 정보</h2>
-  </div>
+  <v-card-title class="headline grey lighten-2 text-center">
+    결제정보
+  </v-card-title>
   <v-container>
     <v-row>
     <!-- 첫 번째 그리드 -->
@@ -144,11 +146,11 @@
         <v-card>
           <v-card-title>쿠폰 선택</v-card-title>
           <v-card-text>
-          적용된 쿠폰 : 도훈이 결혼 기념 500원 할인 쿠폰 
-            <sapn style="margin-left: 10px;">
-              <button  style="background-color: black; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">쿠폰 불러오기</button>
-            </sapn>
-            </v-card-text>
+            적용된 쿠폰: {{ selectedCouponName }}
+            <span style="margin-left: 10px;">
+              <button @click="showCouponDialog = true" style="background-color: black; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">쿠폰 불러오기</button>
+            </span>
+          </v-card-text>
             <v-card-title>결제 방법 선택</v-card-title>
             <v-card-text>
               <v-row>
@@ -178,6 +180,11 @@
       </v-col>
     </v-row>
   </v-container>
+  <CouponModal
+  v-model="showCouponDialog"
+  @select-coupon="applyCoupon"
+  :myItems="myItems"  
+/>
 </v-main>
 
 <AddressModal
@@ -192,57 +199,58 @@
   import axios from 'axios';
   import AddressModal from "@/components/AddressModalToBuy.vue";
   import { loadTossPayments } from '@tosspayments/payment-sdk'
+  import CouponModal from "@/components/CouponModal.vue";
   export default {
     components: {
     AddressModal,
+    CouponModal,
   },
-    data() {
-      return {
-        defaultName: "John Doe", // 디폴트 이름
-        defaultPhoneNumber: "123-456-7890", // 디폴트 전화번호
-        defaultEmail: localStorage.getItem('email'), // 디폴트 이메일
-        name: '',
-        phoneNumber: '',
-        addressId:'',
-        address:'',
-        addressDetail:'',
-        request:'잘 부탁 드립니다',
-        zipcode:' ',
-        myItems: JSON.parse(localStorage.getItem('buyItem')),// 로컬 스토리지에 저장되어 있는 선택한 아이템 불러오기
-        totalPrice:0, // 상품 금액
-        deliveryPrice:3000, // 배달 금액
-        dicountPrice:5000, // 할인 금액
-        price:0, // 결재할 금액
-        showAddressModal:false,
-      };
+  data() {
+    return {
+      selectedCouponName: '',
+      showCouponDialog: false,
+      defaultName: "John Doe",
+      defaultPhoneNumber: "123-456-7890",
+      defaultEmail: localStorage.getItem('email'),
+      name: '',
+      phoneNumber: '',
+      addressId: '',
+      address: '',
+      addressDetail: '',
+      request: '잘 부탁 드립니다',
+      zipcode: '',
+      myItems: JSON.parse(localStorage.getItem('buyItem')),
+      totalPrice: 0,
+      deliveryPrice: 3000,
+      dicountPrice: 0,
+      price: 0,
+      showAddressModal: false,
+      selectedCoupon: null, // 선택된 쿠폰을 저장할 변수
+    };
+  },
+  created() {
+    this.myInfo();
+    this.calculateTotalPrice();
+  },
+  methods: {
+    handleAddressSelected(address) {
+      this.address = address.roadAddress;
+      this.addressDetail = address.detail;
+      this.zipcode = address.zonecode;
+      this.addressId = address.id;
+      console.log("Selected Address:", address);
     },
-    created(){
-        // async showMyItems(){
-        // }
-        this.myInfo();
-        this.calculateTotalPrice();
+    updateDialog(key, value) {
+      this[key] = value;
     },
-    methods: {
-      handleAddressSelected(address) {
-      // 선택한 주소 정보를 처리하는 로직을 구현합니다.
-        this.address = address.roadAddress;
-        this.addressDetail = address.detail;
-        this.zipcode = address.zonecode;
-        this.addressId = address.id;
-        console.log("Selected Address:", address);
-      // 이제 여기서 선택한 주소 정보를 부모 컴포넌트의 데이터에 저장하거나 다른 작업을 수행할 수 있습니다.
-      },
-      updateDialog(key, value) {
-      this[key] = value; // key에 해당하는 데이터를 업데이트
-      },
-      closeAddressModal() {
-        this.showAddressModal = false; // 모달 창 닫기
-      },    
-      openModal() {
-        this.showAddressModal = true; // 모달을 열기 위한 데이터 프로퍼티를 토글합니다.
-      },
-      async myInfo(){
-      try{
+    closeAddressModal() {
+      this.showAddressModal = false;
+    },
+    openModal() {
+      this.showAddressModal = true;
+    },
+    async myInfo() {
+      try {
         const token = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
         const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
@@ -250,17 +258,16 @@
         console.log(response);
         this.defaultName = response.data.result.name;
         this.defaultPhoneNumber = response.data.result.phoneNumber;
-      }catch(e){
+      } catch (e) {
         alert(e.message);
       }
-      },
-      calculateTotalPrice(){
-      this.totalPrice = 0; 
-      for (let item of this.myItems) {
-        console.log(item.price);
-        this.totalPrice += item.price * item.count; // totalPrice에 각 아이템의 가격을 더함
-      }
-      if(this.totalPrice>=50000){ // 5만원 이상 결제 시 배달료 무료
+    },
+    calculateTotalPrice() {
+      this.totalPrice = 0;
+      this.myItems.forEach(item => {
+        this.totalPrice += item.price * item.count;
+      });
+      if (this.totalPrice >= 50000) {
         this.deliveryPrice = 0;
       }
       },
@@ -357,14 +364,77 @@
           alert(e.response.data.message);
         }
       },
+    updatePrice() {
+      this.price = this.totalPrice + this.deliveryPrice - this.dicountPrice;
     },
-    mounted() {
-    // 컴포넌트가 마운트되면 updatePrice 메서드 호출하여 price 값 업데이트
-    this.updatePrice();
+    async kakaoPay() {
+      const token = localStorage.getItem('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken');
+      const { name, phoneNumber, addressId, address, addressDetail, request, zipcode } = this;
+      if (!name || !phoneNumber || !addressId || !address || !addressDetail || !zipcode || !request) {
+        alert('받는 사람 정보를 모두 입력해주세요.');
+        return;
+      }
+      try {
+        const itemList = this.myItems.map(item => ({ id: item.id, count: item.count, name: item.name, options: item.options }));
+        const body = { price: this.price, itemDtoList: itemList };
+        const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
+        const data = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/payment/ready`, body, { headers });
+        console.log(data);
+        const reDirectURL = data.data.result.next_redirect_pc_url;
+        const order = {
+          name: this.name,
+          totalPrice: this.price,
+          phoneNumber: this.phoneNumber,
+          addressId: this.addressId,
+          request: this.request
+        }
+        localStorage.setItem("order", JSON.stringify(order));
+        window.location.href = reDirectURL;
+      } catch (e) {
+        console.log(e);
+        alert(e.response.data.message);
+      }
+    },
+    applyCoupon(coupon) {
+  let discount = 0;
+  if (!coupon) {
+    console.error('Invalid coupon data:', coupon);
+    return; // 쿠폰 데이터가 유효하지 않으면 처리 중단
   }
-    
-  };
-  </script>
+
+  this.selectedCoupon = coupon; // 사용자가 선택한 쿠폰 저장
+
+  // 쿠폰 적용 가능한 아이템인지 확인
+  this.myItems.forEach(item => {
+    if (!coupon.applicableItemIds || coupon.applicableItemIds.length === 0 || coupon.applicableItemIds.includes(item.id)) {
+      if (coupon.rateDiscount > 0) {
+        // 비율 할인
+        discount += (item.price * item.count) * (coupon.rateDiscount / 100);
+      } else if (coupon.fixDiscount > 0) {
+        // 고정 금액 할인
+        discount += coupon.fixDiscount;
+      }
+    }
+  });
+
+  this.dicountPrice = discount; // 할인 금액 업데이트
+  this.selectedCouponName = coupon.couponName;
+  this.updatePrice(); // 최종 결제 금액 업데이트
+},
+  },
+  mounted() {
+    this.updatePrice();
+  },
+  watch: {
+    'showCouponDialog': function(newValue) {
+      if (!newValue && this.selectedCoupon) {
+        this.applyCoupon(this.selectedCoupon);
+      }
+    }
+  }
+};
+</script>
   
   <style scoped>
     .scrollable-section {

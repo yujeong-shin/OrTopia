@@ -2,7 +2,7 @@
   <v-dialog :value="dialog" @input="updateDialog" max-width="1500px">
     <v-card>
       <v-card-title class="headline grey lighten-2 text-center">
-        구매내역
+        주문내역
       </v-card-title>
       <v-card-text>
         <v-container>
@@ -90,19 +90,17 @@
                                 }}</v-col>
                                 <v-col cols="12" sm="2" class="text-center">
                                   <v-btn
-                                    v-if="!detail.reviewed"
-                                    color="primary"
-                                    class="ma-2"
-                                    @click="openNestedModal(detail)"
-                                    >리뷰 작성</v-btn
-                                  >
-                                  <v-btn
-                                    v-if="detail.reviewed"
-                                    color="primary"
-                                    class="ma-2"
-                                    @click="openNestedModal()"
-                                    >리뷰 수정하기</v-btn
-                                  >
+                                  v-if="detail.statue === 'COMPLETE_DELIVERY' && !detail.reviewed"
+                                  color="primary"
+                                  class="ma-2"
+                                  @click="openNestedModal(detail)"
+                                >리뷰 작성</v-btn>
+                                <v-btn
+                                  v-if="detail.statue === 'COMPLETE_DELIVERY' && detail.reviewed"
+                                  color="primary"
+                                  class="ma-2"
+                                  @click="openNestedModal(detail)"
+                                >리뷰 수정하기</v-btn>
                                   <ReviewModal
                                     v-model="nestedModalOpen"
                                     :dialog="nestedModalOpen"
