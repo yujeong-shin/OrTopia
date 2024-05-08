@@ -44,7 +44,11 @@ spec:
               secretKeyRef:
                 name: ortopia-kakao
                 key: ADMIN_KEY
-
+          - name: TOSS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: ortopia-toss
+                key: TOSS_KEY
 ---
 apiVersion: v1
 kind: Service
