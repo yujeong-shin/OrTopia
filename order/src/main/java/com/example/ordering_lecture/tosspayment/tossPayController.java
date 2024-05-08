@@ -1,5 +1,7 @@
 package com.example.ordering_lecture.tosspayment;
 
+import com.example.ordering_lecture.order.dto.OrderRequestDto;
+import com.example.ordering_lecture.order.service.OrderingService;
 import com.example.ordering_lecture.redis.RedisService;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -14,24 +16,25 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/toss")
 public class tossPayController {
-    private final RedisService redisService;
-
-    public tossPayController(RedisService redisService) {
-        this.redisService = redisService;
+    private final OrderingService orderingService;
+    public tossPayController(OrderingService orderingService) {
+        this.orderingService = orderingService;
     }
     @Value("${toss.toss-key}")
     private String secretKey;
 
-    @GetMapping("/success")
+    @PostMapping("/success")
     public String paymentResult(
             Model model,
             @RequestParam(value = "orderId") String orderId,
             @RequestParam(value = "amount") Integer amount,
             @RequestParam(value = "paymentKey") String paymentKey,
-            @RequestHeader(name = "myEmail") String email) throws Exception {
+            @RequestHeader(name = "myEmail") String email,
+            @RequestBody OrderRequestDto orderRequestDto) throws Exception {
 
         Base64.Encoder encoder = Base64.getEncoder();
         byte[] encodedBytes = encoder.encode(secretKey.getBytes("UTF-8"));
@@ -81,18 +84,18 @@ public class tossPayController {
             model.addAttribute("code", (String) jsonObject.get("code"));
             model.addAttribute("message", (String) jsonObject.get("message"));
         }
-        redisService.setValues(email,paymentKey);
+        orderingService.createOrder(orderRequestDto,email);
         return "success";
     }
 
     @GetMapping("/fail")
-    public RedirectView paymentResult(
+    public String paymentResult(
             Model model,
             @RequestParam(value = "message") String message,
             @RequestParam(value = "code") Integer code
     ) throws Exception {
         model.addAttribute("code", code);
         model.addAttribute("message", message);
-        return new RedirectView("http://localhost:8081/order/kakao/");
+        return "fail";
     }
 }
