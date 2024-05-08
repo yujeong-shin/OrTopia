@@ -7,6 +7,7 @@ import com.example.ordering_lecture.common.OrTopiaResponse;
 import com.example.ordering_lecture.member.domain.Gender;
 import com.example.ordering_lecture.member.domain.Seller;
 import com.example.ordering_lecture.member.dto.Buyer.*;
+import com.example.ordering_lecture.member.dto.Seller.LikeSellerResponseDto;
 import com.example.ordering_lecture.member.dto.Seller.SellerResponseDto;
 import com.example.ordering_lecture.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -149,8 +150,17 @@ public class MemberController {
     // 구매자의 email로 자신이 팔로우하는 판매자의 이메일을 검색.
     // notice server 에서 사용
     @GetMapping("/member/search/seller/emails/{email}")
-    List<String> searchEmailsBySellerId(@PathVariable("email") String email){
+    List<LikeSellerResponseDto> searchEmailsBySellerId(@PathVariable("email") String email){
         log.info("feign 통신 성공");
-        return memberService.findSellerEmailsbyMemberEmail(email);
+        List<LikeSellerResponseDto> likeSellerResponseDtos =memberService.findSellerEmailsbyMemberEmail(email);
+        memberService.updateEventId(email);
+        return likeSellerResponseDtos;
+    }
+
+    // 알람을 보낼 시 eventId 값 업데이트.
+    // notice server 에서 사용
+    @PostMapping("/member/update/eventId/{buyerEmail}")
+    void updateEventId(@PathVariable("buyerEmail") String buyerEmail){
+        memberService.updateEventId(buyerEmail);
     }
 }

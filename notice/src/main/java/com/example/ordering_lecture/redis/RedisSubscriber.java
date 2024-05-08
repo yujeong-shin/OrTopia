@@ -4,6 +4,7 @@ import com.example.ordering_lecture.alarm.repository.AlarmRepository;
 import com.example.ordering_lecture.alarm.repository.LikeSellerRepository;
 import com.example.ordering_lecture.common.ErrorCode;
 import com.example.ordering_lecture.common.OrTopiaException;
+import com.example.ordering_lecture.feign.MemberServiceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -17,9 +18,11 @@ import java.util.Set;
 @Slf4j
 public class RedisSubscriber implements MessageListener {
     private final AlarmRepository alarmRepository;
+    private final MemberServiceClient memberServiceClient;
     private final LikeSellerRepository likeSellerRepository;
-    public RedisSubscriber(AlarmRepository alarmRepository, LikeSellerRepository likeSellerRepository) {
+    public RedisSubscriber(AlarmRepository alarmRepository, MemberServiceClient memberServiceClient, LikeSellerRepository likeSellerRepository) {
         this.alarmRepository = alarmRepository;
+        this.memberServiceClient = memberServiceClient;
         this.likeSellerRepository = likeSellerRepository;
     }
 
@@ -35,6 +38,7 @@ public class RedisSubscriber implements MessageListener {
                 SseEmitter emitter = alarmRepository.get(memberEmail);
                 log.info(memberEmail+"에게 알람을 보냅니다.");
                 emitter.send(SseEmitter.event().name("message").data(context));
+                memberServiceClient.updateEventId(memberEmail);
             }
         } catch (Exception e) {
             log.error(e.toString());

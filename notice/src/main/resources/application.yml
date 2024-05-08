@@ -11,6 +11,7 @@ spring:
   application:
     name: notice-service
   jpa:
+    open-in-view: false
     database: mysql
     database-platform: org.hibernate.dialect.MariaDBDialect
     generate-ddl: true
@@ -29,3 +30,7 @@ cloud:
     credentials:
       accessKey: ${S3_ACCESS_KEY}
       secretKey: ${S3_SECRET_KEY}
+logging:
+  level:
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    com.zaxxer.hikari: TRACE

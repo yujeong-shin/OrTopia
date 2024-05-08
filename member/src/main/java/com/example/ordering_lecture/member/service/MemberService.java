@@ -10,6 +10,7 @@ import com.example.ordering_lecture.member.domain.LikedSeller;
 import com.example.ordering_lecture.member.domain.Member;
 import com.example.ordering_lecture.member.domain.Seller;
 import com.example.ordering_lecture.member.dto.Buyer.*;
+import com.example.ordering_lecture.member.dto.Seller.LikeSellerResponseDto;
 import com.example.ordering_lecture.member.dto.Seller.SellerResponseDto;
 import com.example.ordering_lecture.member.repository.LikedSellerRepository;
 import com.example.ordering_lecture.member.repository.MemberRepository;
@@ -198,7 +199,7 @@ public class MemberService {
         return member.getName();
     }
 
-    public List<String> findSellerEmailsbyMemberEmail(String email) {
+    public List<LikeSellerResponseDto> findSellerEmailsbyMemberEmail(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(
                 ()-> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
         );
@@ -207,14 +208,22 @@ public class MemberService {
             log.info("현재 팔로우 하고 있는 판매자가 없습니다.");
             return new ArrayList<>();
         }
-        List<String> sellersEmails = new ArrayList<>();
-        for(LikedSeller likedSeller : likedSellers){
-            Seller seller = sellerRepository.findById(likedSeller.getSeller().getId()).orElseThrow(
-                    ()-> new OrTopiaException(ErrorCode.NOT_FOUND_SELLER)
-                    );
-            log.info("팔로우 하는 seller 찾기 성공");
-            sellersEmails.add(seller.getMember().getEmail());
+        return likedSellers.stream().map(LikeSellerResponseDto::toDto).collect(Collectors.toList());
+    }
+
+    // 지난 eventId 전달 후 최신 eventId로 업데이트.
+    public void updateEventId(String email) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(
+                ()-> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER)
+        );
+        List<LikedSeller> likedSellers = likedSellerRepository.findAllByBuyerId(member.getId());
+        if(likedSellers.isEmpty()){
+            log.info("현재 팔로우 하고 있는 판매자가 없습니다.");
+            return;
         }
-        return sellersEmails;
+        for(LikedSeller likedSeller : likedSellers){
+            likedSeller.updateEventId(likedSeller.getSeller().getEventId());
+            likedSellerRepository.save(likedSeller);
+        }
     }
 }
