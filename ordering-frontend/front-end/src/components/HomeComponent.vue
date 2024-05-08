@@ -21,11 +21,11 @@
         </v-col>
   
         <!-- 오른쪽 카루셀: NOTICE 공지사항 -->
-        <v-col cols="9" style="height: 500px; width: 800px;">
+        <v-col cols="9" style="height: auto;">
           <v-img
+            ref="rightImage"
             :src="randomRegularNotice.imagePath"
-            height="100%"
-            width="100%"
+            style="height: 100%; width: auto;"
             @click="goToNotice(randomRegularNotice)"
             v-if="randomRegularNotice"
           ></v-img>
@@ -188,6 +188,18 @@ export default {
     };
   },
   methods: {
+    adjustImageHeight() {
+    this.$nextTick(() => {
+      const leftImage = this.$refs.leftImage.$el;
+      const rightImage = this.$refs.rightImage.$el;
+      
+      if (leftImage && rightImage) {
+        const maxHeight = Math.max(leftImage.clientHeight, rightImage.clientHeight);
+        leftImage.style.height = `${maxHeight}px`;
+        rightImage.style.height = `${maxHeight}px`;
+      }
+    });
+  },
     updateButtonText(text) {
       this.buttonText = text;
     },
