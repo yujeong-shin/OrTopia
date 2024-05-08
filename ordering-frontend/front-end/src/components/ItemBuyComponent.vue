@@ -167,6 +167,7 @@
                 <v-col cols="6">
                 <v-img
                   :class="['my-3', { 'logo-hover': hover }]"
+                  @click="tossPay"
                   src="@/assets/tosspay.png"
                   contain
                   height="40"
@@ -194,13 +195,13 @@
 ></AddressModal>
 </template>
 
-<script>
-import axios from 'axios';
-import AddressModal from "@/components/AddressModalToBuy.vue";
-import CouponModal from "@/components/CouponModal.vue";
-
-export default {
-  components: {
+  <script>
+  import axios from 'axios';
+  import AddressModal from "@/components/AddressModalToBuy.vue";
+  import { loadTossPayments } from '@tosspayments/payment-sdk'
+  import CouponModal from "@/components/CouponModal.vue";
+  export default {
+    components: {
     AddressModal,
     CouponModal,
   },
@@ -269,40 +270,100 @@ export default {
       if (this.totalPrice >= 50000) {
         this.deliveryPrice = 0;
       }
-      this.updatePrice();
-    },
-    updatePrice() {
+      },
+      updatePrice() {
+      // 예시로 임의의 값인 500으로 설정
       this.price = this.totalPrice + this.deliveryPrice - this.dicountPrice;
-    },
-    async kakaoPay() {
-      const token = localStorage.getItem('accessToken');
-      const refreshToken = localStorage.getItem('refreshToken');
-      const { name, phoneNumber, addressId, address, addressDetail, request, zipcode } = this;
-      if (!name || !phoneNumber || !addressId || !address || !addressDetail || !zipcode || !request) {
-        alert('받는 사람 정보를 모두 입력해주세요.');
-        return;
-      }
-      try {
-        const itemList = this.myItems.map(item => ({ id: item.id, count: item.count, name: item.name, options: item.options }));
-        const body = { price: this.price, itemDtoList: itemList };
-        const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
-        const data = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/payment/ready`, body, { headers });
-        console.log(data);
-        const reDirectURL = data.data.result.next_redirect_pc_url;
-        const order = {
-          name: this.name,
-          totalPrice: this.price,
-          phoneNumber: this.phoneNumber,
-          addressId: this.addressId,
-          request: this.request
+      },
+      generateRandomString(length) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_';
+        let result = '';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
-        localStorage.setItem("order", JSON.stringify(order));
-        window.location.href = reDirectURL;
-      } catch (e) {
-        console.log(e);
-        alert(e.response.data.message);
+        return result;
+        }
+      ,
+      async tossPay(){
+        const { name, phoneNumber, addressId, address, addressDetail, request, zipcode } = this;
+        if (!name || !phoneNumber || !addressId || !address || !addressDetail || !zipcode || !request) {
+          alert('받는 사람 정보를 모두 입력해주세요.');
+          return;
+        }
+        // const email = localStorage.getItem("email");
+        const clientKey = 'test_ck_ma60RZblrqPpPpYdazEbVwzYWBn1';
+        const orderId = this.generateRandomString(20);
+        // const orderId = this.generateRandomString(10);
+        loadTossPayments(clientKey).then(tossPayments => {
+        // ------ 결제창 띄우기 ------
+        tossPayments
+          .requestPayment('카드', {
+            // 결제수단 파라미터
+            // 결제 정보 파라미터
+            // 더 많은 결제 정보 파라미터는 결제창 Javascript SDK에서 확인하세요.
+            // https://docs.tosspayments.com/reference/js-sdk
+            amount: this.price, // 결제 금액
+            orderId: orderId, // 주문번호
+            discount: this.dicountPrice,
+            orderName: '테스트 결제', // 구매상품
+            customerName: this.name, // 구매자 이름
+            successUrl:  `http://localhost:8081/order/toss`, // 결제 성공 시 이동할 페이지(이 주소는 예시입니다. 상점에서 직접 만들어주세요.)
+            failUrl: `${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/toss/fail`, // 결제 실패 시 이동할 페이지(이 주소는 예시입니다. 상점에서 직접 만들어주세요.)
+          })
+          // ------ 결제창을 띄울 수 없는 에러 처리 ------
+          // 메서드 실행에 실패해서 reject 된 에러를 처리하는 블록입니다.
+          // 결제창에서 발생할 수 있는 에러를 확인하세요.
+          // https://docs.tosspayments.com/reference/error-codes#결제창공통-sdk-에러
+          .catch(function (error) {
+            if (error.code === 'USER_CANCEL') {
+              // 결제 고객이 결제창을 닫았을 때 에러 처리
+            } else if (error.code === 'INVALID_CARD_COMPANY') {
+              // 유효하지 않은 카드 코드에 대한 에러 처리
+            }
+          })
+          const order = {
+            name: this.name,
+            totalPrice : this.price,
+            phoneNumber: this.phoneNumber,
+            addressId: this.addressId,
+            request: this.request
+          }
+          localStorage.setItem("order",JSON.stringify(order));
+      })
       }
-    },
+      ,
+      async kakaoPay() {
+        const token = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem('refreshToken');
+        const { name, phoneNumber, addressId, address, addressDetail, request, zipcode } = this; // 구조 분해 할당으로 필수값 가져오기
+          // 필수값 체크
+        if (!name || !phoneNumber || !addressId || !address || !addressDetail || !zipcode || !request) {
+          alert('받는 사람 정보를 모두 입력해주세요.');
+          return;
+        }
+        try {
+          const itemList = this.myItems.map(item => ({ id: item.id, count: item.count, name : item.name, options:item.options }));
+          const body = { price: this.price, itemDtoList: itemList }; // itemList을 itemDtoList로 변경
+          const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
+          const data = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/payment/ready`, body, { headers });
+          console.log(data);
+          const reDirectURL = data.data.result.next_redirect_pc_url;
+          // window.open(reDirectURL, '_blank');// 결제 창을 하나 띄우기
+          const order = {
+            name: this.name,
+            totalPrice : this.price,
+            phoneNumber: this.phoneNumber,
+            addressId: this.addressId,
+            request: this.request
+          }
+          localStorage.setItem("order",JSON.stringify(order));
+          window.location.href = reDirectURL; // 페이지 이동
+        } catch (e) {
+          console.log(e);
+          alert(e.response.data.message);
+        }
+      },
     applyCoupon(coupon) {
   let discount = 0;
   if (!coupon) {

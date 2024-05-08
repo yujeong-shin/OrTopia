@@ -8,6 +8,7 @@ import SignupComponent from "@/components/SignupComponent.vue"; // 회원가입 
 import ItemBuyComponent from "@/components/ItemBuyComponent";
 import MyCartComponent from "@/components/MyCartComponent.vue";
 import OrderByKakaoComponent from "@/components/OrderByKakaoComponent.vue";
+import OrderByTossComponent from "@/components/OrderByTossComponent.vue";
 import NoticeDetail from "@/components/NoticeDetail.vue";
 import SellerComponent from "@/components/SellerComponent.vue";
 import CouponComponent from "@/components/CouponComponent.vue";
@@ -65,6 +66,11 @@ const routes = [
     path: "/order/kakao/:pgToken", // 카카오 구매 결과 페이지
     name: "OrderByKakao",
     component: OrderByKakaoComponent,
+  },
+  {
+    path: "/order/toss", // 카카오 구매 결과 페이지
+    name: "OrderByTossComponent",
+    component: OrderByTossComponent,
   },
   {
     path: '/notice/:id',
