@@ -114,7 +114,7 @@ async function signup() {
 const limitPhoneNumberLength = () => {
   // 전화번호를 입력할 때마다 호출되며, 11자리로 제한합니다.
   if (signupForm.phoneNumber.length > 11) {
-    alert("010xxxxxxxx 형식의 번호를 입력해 주세요.");
+    alert("01x-xxxx-xxxx 형식의 번호를 입력해 주세요.");
     signupForm.phoneNumber = signupForm.phoneNumber.slice(0, 11);
   }
 };
