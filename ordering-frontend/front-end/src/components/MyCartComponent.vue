@@ -66,6 +66,12 @@ export default {
             this.$store.dispatch('clearCart')
         },
         async placeOrder(){
+          const token = localStorage.getItem("accessToken");
+          if(token == null){
+              alert("로그인 후 사용해 주세요.")
+              this.$router.push(`/login`);
+              return;
+            }
             console.log(this.selectedItems);
             this.itemList = [...this.getCartItems];
             console.log(this.itemList);
