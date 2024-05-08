@@ -370,23 +370,22 @@
     console.error('Invalid coupon data:', coupon);
     return; // 쿠폰 데이터가 유효하지 않으면 처리 중단
   }
-
   this.selectedCoupon = coupon; // 사용자가 선택한 쿠폰 저장
-
-  // 쿠폰 적용 가능한 아이템인지 확인
-  this.myItems.forEach(item => {
-    if (!coupon.applicableItemIds || coupon.applicableItemIds.length === 0 || coupon.applicableItemIds.includes(item.id)) {
-      if (coupon.rateDiscount > 0) {
-        // 비율 할인
-        discount += (item.price * item.count) * (coupon.rateDiscount / 100);
-      } else if (coupon.fixDiscount > 0) {
-        // 고정 금액 할인
-        discount += coupon.fixDiscount;
-      }
-    }
-  });
-
-  this.dicountPrice = discount; // 할인 금액 업데이트
+  
+  const selectItem = this.myItems.find(item => item.id === this.selectedCoupon.itemId);
+  if(selectItem==null){
+    //쿠폰 못씀
+    alert("사용 가능한 아이템이 없습니다.");
+    return;
+  }
+  console.log(selectItem);
+  console.log(this.selectedCoupon);
+  if(this.selectedCoupon.rateDiscount!=0){
+    discount = (selectItem.price *(100 - this.selectedCoupon.rateDiscount)) /100;
+  }else{
+    discount = this.selectedCoupon.fixDiscount;
+  }
+  this.dicountPrice = selectItem.price - discount; // 할인 금액 업데이트
   this.selectedCouponName = coupon.couponName;
   this.updatePrice(); // 최종 결제 금액 업데이트
 },
