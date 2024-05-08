@@ -280,6 +280,12 @@ export default {
   },
     buyNow() {
       // 바로 구매 동작 구현
+      const token = localStorage.getItem("accessToken");
+      if(token == null){
+        alert("로그인 후 사용해 주세요.")
+        this.$router.push(`/login`);
+        return;
+      }
       if (this.quantity == 0) {
         alert("0개는 주문 할 수 없습니다.");
       } else {
