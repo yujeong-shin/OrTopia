@@ -5,10 +5,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.*;
@@ -33,7 +30,8 @@ public class tossPayController {
             Model model,
             @RequestParam(value = "orderId") String orderId,
             @RequestParam(value = "amount") Integer amount,
-            @RequestParam(value = "paymentKey") String paymentKey) throws Exception {
+            @RequestParam(value = "paymentKey") String paymentKey,
+            @RequestHeader(name = "myEmail") String email) throws Exception {
 
         Base64.Encoder encoder = Base64.getEncoder();
         byte[] encodedBytes = encoder.encode(secretKey.getBytes("UTF-8"));
@@ -83,7 +81,7 @@ public class tossPayController {
             model.addAttribute("code", (String) jsonObject.get("code"));
             model.addAttribute("message", (String) jsonObject.get("message"));
         }
-        redisService.setValues(orderId,paymentKey);
+        redisService.setValues(email,paymentKey);
         return new RedirectView("http://localhost:8081/order/kakao/"+paymentKey);
     }
 
