@@ -1,7 +1,9 @@
 package com.example.ordering_lecture.kafka;
 
+import com.fasterxml.jackson.databind.JsonSerializer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -14,32 +16,46 @@ import java.util.Map;
 
 @Configuration
 public class KafkaProducerConfig {
-    private final Environment env;
+    @Value("${kafka.bootstrapAddress}")
+    private String bootstrapServers;
 
-    KafkaProducerConfig(Environment environment) {
-        this.env = environment;
-    }
+    /**
+     * ack: all
+     * In-Sync-Replica에 모두 event가 저장되었음이 확인 되어야 ack 신호를 보냄 가장 성능은 떨어지지만
+     * event produce를 보장할 수 있음.
+     */
+    @Value("${kafka.producer.acksConfig}")
+    private String acksConfig;
 
+    @Value("${kafka.producer.retry}")
+    private Integer retry;
 
-    public Map<String, Object> producerConfig() {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                env.getProperty("spring.kafka.producer.bootstrap-servers"));
+    @Value("${kafka.producer.enable-idempotence}")
+    private Boolean enableIdempotence;
+    @Value("${kafka.producer.max-in-flight-requests-per-connection}")
+    private Integer maxInFlightRequestsPerConnection;
 
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG
-                , StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG
-                , StringSerializer.class);
-        return props;
-    }
+    /**
+     * enable.idempotence true를 위해서는 retry가 0이상,
+     * max.in.flight.requests.per.connection 은 5이하여야한다.
+     * @return
+     */
+    @Bean
+    public ProducerFactory<String, Object> producerFactory() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ProducerConfig.ACKS_CONFIG, acksConfig);
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        configProps.put(ProducerConfig.RETRIES_CONFIG, retry);
+        configProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, enableIdempotence);
+        configProps.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, maxInFlightRequestsPerConnection);
 
-
-    public ProducerFactory<String, String> producerFactory() {
-        return new DefaultKafkaProducerFactory<>(this.producerConfig());
+        return new DefaultKafkaProducerFactory<>(configProps);
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate() {
-        return new KafkaTemplate<>(this.producerFactory());
+    public KafkaTemplate<String, Object> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
     }
 }

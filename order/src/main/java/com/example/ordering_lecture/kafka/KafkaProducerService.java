@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaProducerService {
 
-    @Value("${topic.name}")
+    @Value("${kafka.topic.alarm.name}")
     private String topicName;
 
     /* Kafka Template 을 이용해 Kafka Broker 전송 */

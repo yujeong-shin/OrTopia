@@ -1,9 +1,30 @@
+kafka:
+  bootstrapAddress: localhost:9092, localhost:9093
+  admin:
+    properties:
+  topic:
+    alarm:
+      name: alarm
+      replicationFactor: 2
+      numPartitions: 2
+  consumer:
+    alarm:
+      rdb-group-id: createAlarmInRDB
+      redis-group-id: publishInRedis
+
+    autoOffsetResetConfig: latest
+  producer:
+    acksConfig: all
+    retry: 3
+    enable-idempotence: true
+    max-in-flight-requests-per-connection:
 spring:
   kafka:
     producer:
-      bootstrap-servers: ${BOOT_SERVER}:9098 # Kafka 클러스터에 대한 초기 연결에 사용할 호스트 : 포트 목록
-  topic:
-    name: update-db
+      properties:
+        min:
+          insync:
+            replicas: 2 # Kafka 클러스터에 대한 초기 연결에 사용할 호스트 : 포트 목록
   cloud:
     kubernetes:
       discovery:
