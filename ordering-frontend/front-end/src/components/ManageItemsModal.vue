@@ -219,7 +219,7 @@ export default {
         );
 
         console.log("Item registered successfully", response.data);
-        alert("Item registered successfully");
+        alert("아이템 등록에 성공하였습니다.");
         window.location.href = "/";
       } catch (error) {
         console.error("Error registering the item", error);
