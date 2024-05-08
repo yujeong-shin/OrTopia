@@ -11,6 +11,7 @@ import com.example.ordering_lecture.membercoupon.dto.MemberCouponResponseDto;
 import com.example.ordering_lecture.membercoupon.repository.MemberCouponRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,7 @@ public class MemberCouponService {
         this.memberRepository = memberRepository;
     }
 
+    @Transactional
     public MemberCouponResponseDto addCoupon(String email, MemberCouponRequestDto request) throws OrTopiaException {
         Long memberId = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new OrTopiaException(ErrorCode.NOT_FOUND_MEMBER))
@@ -36,6 +38,8 @@ public class MemberCouponService {
                 .memberId(memberId)
                 .coupon(coupon)
                 .build();
+        int nowCouponStock = coupon.getCouponDetail().getFirstCome();
+        coupon.getCouponDetail().updateFirstCome(nowCouponStock-1);
         memberCouponRepository.save(memberCoupon);
         return MemberCouponResponseDto.toDto(memberCoupon);
     }

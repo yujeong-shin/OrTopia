@@ -82,6 +82,11 @@ public class AlarmController {
         }
         return ResponseEntity.ok(emitter);
     }
+    @GetMapping("/delete/connect")
+    public String deleteConnect(@RequestHeader("myEmail") String email){
+        alarmService.removeConnect(email);
+        return "delete connect!";
+    }
     @PostMapping("alarm/subscribe/{sellerEmail}/{buyerEmail}")
     public String subscribeSellerEmail(@PathVariable("sellerEmail")String sellerEmail,@PathVariable("buyerEmail")String buyerEmail){
         ChannelTopic channelTopic = new ChannelTopic(sellerEmail);

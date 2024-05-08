@@ -3,12 +3,14 @@ package com.example.ordering_lecture.alarm.service;
 import com.example.ordering_lecture.alarm.dto.LikeSellerResponseDto;
 import com.example.ordering_lecture.alarm.repository.AlarmRepository;
 import com.example.ordering_lecture.alarm.repository.LikeSellerRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
 @Component
+@Slf4j
 public class AlarmService {
     private final AlarmRepository alarmRepository;
     private final LikeSellerRepository likeSellerRepository;
@@ -49,5 +51,11 @@ public class AlarmService {
 
     public void removeSeller(String sellerEmail, String buyerEmail) {
         likeSellerRepository.deleteByEmail(buyerEmail,sellerEmail);
+    }
+
+    public void removeConnect(String email) {
+        log.info("현재 연결 상태"+email+" "+alarmRepository.containKey(email));
+        alarmRepository.deleteByEmail(email);
+        log.info("현재 연결 상태"+email+" "+alarmRepository.containKey(email));
     }
 }
