@@ -364,38 +364,6 @@
           alert(e.response.data.message);
         }
       },
-    updatePrice() {
-      this.price = this.totalPrice + this.deliveryPrice - this.dicountPrice;
-    },
-    async kakaoPay() {
-      const token = localStorage.getItem('accessToken');
-      const refreshToken = localStorage.getItem('refreshToken');
-      const { name, phoneNumber, addressId, address, addressDetail, request, zipcode } = this;
-      if (!name || !phoneNumber || !addressId || !address || !addressDetail || !zipcode || !request) {
-        alert('받는 사람 정보를 모두 입력해주세요.');
-        return;
-      }
-      try {
-        const itemList = this.myItems.map(item => ({ id: item.id, count: item.count, name: item.name, options: item.options }));
-        const body = { price: this.price, itemDtoList: itemList };
-        const headers = token ? { Authorization: `Bearer ${token}`, 'X-Refresh-Token': `${refreshToken}` } : {};
-        const data = await axios.post(`${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/payment/ready`, body, { headers });
-        console.log(data);
-        const reDirectURL = data.data.result.next_redirect_pc_url;
-        const order = {
-          name: this.name,
-          totalPrice: this.price,
-          phoneNumber: this.phoneNumber,
-          addressId: this.addressId,
-          request: this.request
-        }
-        localStorage.setItem("order", JSON.stringify(order));
-        window.location.href = reDirectURL;
-      } catch (e) {
-        console.log(e);
-        alert(e.response.data.message);
-      }
-    },
     applyCoupon(coupon) {
   let discount = 0;
   if (!coupon) {
