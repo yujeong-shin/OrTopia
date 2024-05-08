@@ -49,6 +49,11 @@ spec:
               secretKeyRef:
                 name: ortopia-toss
                 key: TOSS_KEY
+          - name: BOOT_SERVER
+            valueFrom:
+              secretKeyRef:
+                name: ortopia-kafka
+                key: BOOT_SERVER
 ---
 apiVersion: v1
 kind: Service

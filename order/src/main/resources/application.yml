@@ -1,9 +1,9 @@
 spring:
-#  kafka:
-#    producer:
-#      bootstrap-servers: localhost:9092 # Kafka 클러스터에 대한 초기 연결에 사용할 호스트 : 포트 목록
-#  topic:
-#    name: update-db
+  kafka:
+    producer:
+      bootstrap-servers: ${BOOT_SERVER}:9098 # Kafka 클러스터에 대한 초기 연결에 사용할 호스트 : 포트 목록
+  topic:
+    name: update-db
   cloud:
     kubernetes:
       discovery:
