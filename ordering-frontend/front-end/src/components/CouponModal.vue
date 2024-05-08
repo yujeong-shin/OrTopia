@@ -5,10 +5,9 @@
       <v-card-text>
         <v-list dense>
           <v-list-item-group>
-            <v-list-item v-for="item in coupons" :key="item.id">
+            <v-list-item v-for="item in coupons" :key="item.id" :class="{'disabled-coupon': !canApplyCoupon(item)}">
               <v-list-item-content>
                 <v-list-item-title>{{ item.couponName }}</v-list-item-title>
-                <v-list-item-subtitle>{{ item.itemId }}</v-list-item-subtitle>
                 <v-list-item-subtitle>유효 기간: {{ item.startDate }} - {{ item.endDate }}</v-list-item-subtitle>
                 <v-list-item-subtitle v-if="item.fixDiscount > 0">
                   할인: {{ item.fixDiscount }}원
@@ -16,8 +15,11 @@
                 <v-list-item-subtitle v-else-if="item.rateDiscount > 0">
                   할인: {{ item.rateDiscount }}%
                 </v-list-item-subtitle>
-                <v-btn @click="selectCoupon(item)" :disabled="!canApplyCoupon(item)">적용</v-btn>
               </v-list-item-content>
+              <v-spacer></v-spacer>
+              <v-list-item-action>
+                <v-btn @click="selectCoupon(item)" :disabled="!canApplyCoupon(item)">적용</v-btn>
+              </v-list-item-action>
             </v-list-item>
           </v-list-item-group>
         </v-list>
@@ -29,6 +31,7 @@
     </v-card>
   </v-dialog>
 </template>
+
 <script>
 import axios from 'axios';
 
@@ -37,7 +40,7 @@ export default {
     modelValue: Boolean,
     myItems: Array
   },
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'select-coupon'],
   data() {
     return {
       dialog: this.modelValue,
@@ -61,26 +64,31 @@ export default {
       this.dialog = false;
     },
     async fetchCoupons() {
-  const token = localStorage.getItem("accessToken");
-  const refreshToken = localStorage.getItem("refreshToken");
-  try {
-    const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member/coupons`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "X-Refresh-Token": `${refreshToken}`,
-      },
-    });
-    this.coupons = response.data.result;
-    console.log("Loaded coupons:", this.coupons);  // 쿠폰 데이터 확인을 위한 로그 출력
-  } catch (e) {
-    console.error("Failed to fetch coupons:", e);
-    alert("사용가능한 쿠폰이 없습니다.");
-  }
-},
-canApplyCoupon(coupon) {
-      // 쿠폰의 itemId가 myItems 배열의 어떤 아이템의 id와 일치하는지 확인
+      const token = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+      try {
+        const response = await axios.get(`${process.env.VUE_APP_API_BASE_URL}/ortopia-member-service/member/coupons`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "X-Refresh-Token": `${refreshToken}`,
+          },
+        });
+        this.coupons = response.data.result;
+        console.log("Loaded coupons:", this.coupons);
+      } catch (e) {
+        console.error("Failed to fetch coupons:", e);
+        alert("사용가능한 쿠폰이 없습니다.");
+      }
+    },
+    canApplyCoupon(coupon) {
       return this.myItems.some(item => item.id === coupon.itemId);
     }
   }
 };
 </script>
+
+<style scoped>
+.disabled-coupon {
+  opacity: 0.6; /* 흐릿하게 표시 */
+}
+</style>
