@@ -38,69 +38,35 @@
                             </v-card-title>
                             <v-card-text>
                               <v-row no-gutters>
-                                <v-col cols="12" sm="2" class="text-center"
-                                  >사진</v-col
-                                >
-                                <v-col cols="12" sm="2" class="text-center"
-                                  >수량</v-col
-                                >
-                                <v-col cols="12" sm="2" class="text-center"
-                                  >옵션</v-col
-                                >
-                                <v-col cols="12" sm="2" class="text-center"
-                                  >상품명</v-col
-                                >
-                                <v-col cols="12" sm="2" class="text-center"
-                                  >가격</v-col
-                                >
-                                <v-col cols="12" sm="2" class="text-center"
-                                  >주문 상태</v-col
-                                >
-                                <v-col
-                                  cols="12"
-                                  sm="2"
-                                  class="text-center"
-                                ></v-col>
-                                <!-- 리뷰 쓰기 버튼 추가 -->
+                                <v-col cols="12" sm="2" class="text-center">사진</v-col>
+                                <v-col cols="12" sm="2" class="text-center">수량</v-col>
+                                <v-col cols="12" sm="2" class="text-center">옵션</v-col>
+                                <v-col cols="12" sm="2" class="text-center">상품명</v-col>
+                                <v-col cols="12" sm="2" class="text-center">가격</v-col>
+                                <v-col cols="12" sm="2" class="text-center">주문 상태</v-col>
                               </v-row>
-                              <v-row
-                                v-for="detail in orderDetailList"
-                                :key="detail.id"
-                              >
+                              <v-row v-for="detail in order.orderDetailResponseDtoList" :key="detail.id">
                                 <v-col cols="12" sm="2" class="text-center">
-                                  <v-img
-                                    :src="detail.itemInfo?.imagePath"
-                                    height="100px"
-                                  ></v-img>
+                                  <v-img :src="detail.itemInfo?.imagePath" height="100px"></v-img>
                                 </v-col>
-                                <v-col cols="12" sm="2" class="text-center">{{
-                                  detail.quantity
-                                }}</v-col>
-                                <v-col cols="12" sm="2" class="text-center">{{
-                                  detail.options
-                                }}</v-col>
-                                <v-col cols="12" sm="2" class="text-center">{{
-                                  detail.itemInfo?.name
-                                }}</v-col>
-                                <v-col cols="12" sm="2" class="text-center">{{
-                                  detail.itemInfo?.price
-                                }}</v-col>
-                                <v-col cols="12" sm="2" class="text-center">{{
-                                  detail.statue
-                                }}</v-col>
+                                <v-col cols="12" sm="2" class="text-center">{{ detail.quantity }}</v-col>
+                                <v-col cols="12" sm="2" class="text-center">{{ detail.options }}</v-col>
+                                <v-col cols="12" sm="2" class="text-center">{{ detail.itemInfo?.name }}</v-col>
+                                <v-col cols="12" sm="2" class="text-center">{{ detail.itemInfo?.price }}</v-col>
+                                <v-col cols="12" sm="2" class="text-center">{{ detail.statue }}</v-col>
                                 <v-col cols="12" sm="2" class="text-center">
                                   <v-btn
-                                  v-if="detail.statue === 'COMPLETE_DELIVERY' && !detail.reviewed"
-                                  color="primary"
-                                  class="ma-2"
-                                  @click="openNestedModal(detail)"
-                                >리뷰 작성</v-btn>
-                                <v-btn
-                                  v-if="detail.statue === 'COMPLETE_DELIVERY' && detail.reviewed"
-                                  color="primary"
-                                  class="ma-2"
-                                  @click="openNestedModal(detail)"
-                                >리뷰 수정하기</v-btn>
+                                    v-if="detail.statue === 'COMPLETE_DELIVERY' && !detail.reviewed"
+                                    color="primary"
+                                    class="ma-2"
+                                    @click="openNestedModal(detail)"
+                                  >리뷰 작성</v-btn>
+                                  <v-btn
+                                    v-if="detail.statue === 'COMPLETE_DELIVERY' && detail.reviewed"
+                                    color="primary"
+                                    class="ma-2"
+                                    @click="openNestedModal(detail)"
+                                  >리뷰 수정하기</v-btn>
                                   <ReviewModal
                                     v-model="nestedModalOpen"
                                     :dialog="nestedModalOpen"
@@ -147,14 +113,15 @@ export default {
     return {
       orderList: [],
       orderDetailList: [],
-      nestedModalOpen: false, // 하위 모달 창 상태
+      nestedModalOpen: false,
+      currentlyOpenDetailIndex: null, // 현재 열린 상세 정보 인덱스
     };
   },
   methods: {
     openNestedModal(detail) {
       this.selectedDetail = detail;
       console.log(this.selectedDetail);
-      this.nestedModalOpen = true; // 하위 모달 창 열기
+      this.nestedModalOpen = true;
     },
     updateDialog(value) {
       this.$emit("update:dialog", value);
@@ -187,31 +154,40 @@ export default {
       return dateTime.replace("T", " ");
     },
     async toggleDetail(index) {
+      if (this.currentlyOpenDetailIndex !== index) {
+        if (this.currentlyOpenDetailIndex !== null) {
+          this.orderList[this.currentlyOpenDetailIndex].showDetails = false;
+        }
+        this.currentlyOpenDetailIndex = index;
+      }
       this.orderList[index].showDetails = !this.orderList[index].showDetails;
-      this.orderDetailList = this.orderList[index].orderDetailResponseDtoList;
+      
+      if (this.orderList[index].showDetails) {
+        this.orderDetailList = this.orderList[index].orderDetailResponseDtoList;
 
-      const token = localStorage.getItem("accessToken");
-      const refreshToken = localStorage.getItem("refreshToken");
-      const email = localStorage.getItem("email");
+        const token = localStorage.getItem("accessToken");
+        const refreshToken = localStorage.getItem("refreshToken");
+        const email = localStorage.getItem("email");
 
-      for (var i = 0; i < this.orderDetailList.length; i++) {
-        try {
-          const response = await axios.get(
-            `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/read/${this.orderDetailList[i].itemId}/my_page`,
-            {
-              headers: {
-                myEmail: `${email}`,
-                Authorization: `Bearer ${token}`,
-                "X-Refresh-Token": `${refreshToken}`,
-              },
-            }
-          );
-          this.orderDetailList[i].itemInfo = response.data.result;
-          console.log(this.orderDetailList);
-          console.log("this.orderDetailList[i].itemInfo : ");
-          console.log(this.orderDetailList[i].itemInfo);
-        } catch (error) {
-          console.error("주문 상세조회에 실패했습니다: ", error);
+        for (var i = 0; i < this.orderDetailList.length; i++) {
+          try {
+            const response = await axios.get(
+              `${process.env.VUE_APP_API_BASE_URL}/ortopia-item-service/item/read/${this.orderDetailList[i].itemId}/my_page`,
+              {
+                headers: {
+                  myEmail: `${email}`,
+                  Authorization: `Bearer ${token}`,
+                  "X-Refresh-Token": `${refreshToken}`,
+                },
+              }
+            );
+            this.orderDetailList[i].itemInfo = response.data.result;
+            console.log(this.orderDetailList);
+            console.log("this.orderDetailList[i].itemInfo : ");
+            console.log(this.orderDetailList[i].itemInfo);
+          } catch (error) {
+            console.error("주문 상세조회에 실패했습니다: ", error);
+          }
         }
       }
     },
