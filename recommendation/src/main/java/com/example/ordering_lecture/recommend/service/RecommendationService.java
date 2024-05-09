@@ -18,6 +18,7 @@ import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.UserBasedRecommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.mariadb.jdbc.MariaDbDataSource;
 
@@ -34,6 +35,14 @@ public class RecommendationService {
     private final RedisService redisService;
     private final FeignClient feignClient;
     private final JwtTokenProvider jwtTokenProvider;
+
+    @Value("${spring.datasource.url}")
+    private String dbURL;
+    @Value("${spring.datasource.username}")
+    private String userName;
+    @Value("${spring.datasource.password}")
+    private String userPassword;
+
     public RecommendationService(RedisService redisService, FeignClient feignClient, JwtTokenProvider jwtTokenProvider) {
         this.redisService = redisService;
         this.feignClient = feignClient;
@@ -50,17 +59,17 @@ public class RecommendationService {
         MariaDbDataSource dataSource = new MariaDbDataSource();
         try {
             // TODO : RDS 주소로 변경
-            dataSource.setUrl("jdbc:mariadb://localhost:3306/item_server");
+            dataSource.setUrl(dbURL);
         } catch (SQLException e) {
             throw new OrTopiaException(ErrorCode.NOT_SET_URL);
         }
         try {
-            dataSource.setUser("root");
+            dataSource.setUser(userName);
         } catch (SQLException e) {
             throw new OrTopiaException(ErrorCode.NOT_SET_USER);
         }
         try {
-            dataSource.setPassword("1234");
+            dataSource.setPassword(userPassword);
         } catch (SQLException e) {
             throw new OrTopiaException(ErrorCode.NOT_SET_PASSWORD);
         }
