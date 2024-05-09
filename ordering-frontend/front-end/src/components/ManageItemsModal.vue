@@ -2,7 +2,7 @@
   <v-dialog :value="dialog" @input="updateDialog" max-width="1000px">
     <v-card>
       <v-card-title class="headline grey lighten-2 text-center">
-        판매물품관리
+        판매물품등록
       </v-card-title>
       <v-container>
         <v-form

@@ -224,7 +224,7 @@ export default {
   },
   setup() {
     const orderInfo = ref([
-      { name: "입금전", quantity: 0 },
+      { name: "결제완료", quantity: 0 },
       { name: "배송준비중", quantity: 0 },
       { name: "배송중", quantity: 0 },
       { name: "배송완료", quantity: 0 },
@@ -252,13 +252,59 @@ export default {
       datesForPurchaseCount: [],
       purchaseAmount: [],
       purchaseCount: [],
+      orderList:[],
     };
   },
   created() {
     this.getMemberInfo();
     this.checkUserRole();
+    this.getOrderList();
   },
   methods: {
+    async getOrderList() {
+  const token = localStorage.getItem("accessToken");
+  const refreshToken = localStorage.getItem("refreshToken");
+  try {
+    const response = await axios.get(
+      `${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/all_my_order_detail`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "X-Refresh-Token": `${refreshToken}`,
+        },
+      }
+    );
+    this.orderList = response.data.result;
+    console.log(this.orderList);
+    const statusCount = {
+      PAIED: 0,
+      PREPARE_DELIVERY: 0,
+      PROCEEDING_DELIVERY: 0,
+      COMPLETE_DELIVERY: 0,
+    };
+    this.orderList.forEach(order => {
+      order.orderDetailResponseDtoList.forEach(detail => {
+        if (detail.statue === "PAIED") {
+          statusCount.PAIED += 1;
+        } else if (detail.statue === "PREPARE_DELIVERY") {
+          statusCount.PREPARE_DELIVERY += 1;
+        } else if (detail.statue === "PROCEEDING_DELIVERY") {
+          statusCount.PROCEEDING_DELIVERY += 1;
+        } else if (detail.statue === "COMPLETE_DELIVERY") {
+          statusCount.COMPLETE_DELIVERY += 1;
+        }
+      });
+    });
+    this.orderInfo = [
+      { name: "결제완료", quantity: statusCount.PAIED },
+      { name: "배송준비중", quantity: statusCount.PREPARE_DELIVERY },
+      { name: "배송중", quantity: statusCount.PROCEEDING_DELIVERY },
+      { name: "배송완료", quantity: statusCount.COMPLETE_DELIVERY },
+    ];
+  } catch (error) {
+    console.error("주문 상세조회에 실패했습니다: ", error);
+  }
+},
     async getMemberInfo() {
       const token = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
