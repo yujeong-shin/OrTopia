@@ -29,7 +29,7 @@ export default {
       // urlParams.forEach(function(value, key) {
       //   console.log(key, value);
       // });
-      var orderId = urlParams.get('http://localhost:8081/order/toss?orderId');
+      var orderId = urlParams.get('https://www.yujeong.shop/order/toss?orderId');
       console.log(orderId);
       var paymentKey = urlParams.get('paymentKey');
       var amount = urlParams.get('amount');
