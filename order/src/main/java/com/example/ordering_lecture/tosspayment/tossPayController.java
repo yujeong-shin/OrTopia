@@ -3,6 +3,7 @@ package com.example.ordering_lecture.tosspayment;
 import com.example.ordering_lecture.order.dto.OrderRequestDto;
 import com.example.ordering_lecture.order.service.OrderingService;
 import com.example.ordering_lecture.redis.RedisService;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,10 +20,13 @@ import java.util.Base64;
 @CrossOrigin
 @RestController
 @RequestMapping("/toss")
+@Slf4j
 public class tossPayController {
     private final OrderingService orderingService;
-    public tossPayController(OrderingService orderingService) {
+    private final RedisService redisService;
+    public tossPayController(OrderingService orderingService, RedisService redisService) {
         this.orderingService = orderingService;
+        this.redisService = redisService;
     }
     @Value("${toss.toss-key}")
     private String secretKey;
@@ -84,6 +88,8 @@ public class tossPayController {
             model.addAttribute("code", (String) jsonObject.get("code"));
             model.addAttribute("message", (String) jsonObject.get("message"));
         }
+        log.info("주문을 생성합니다.");
+        redisService.setValues(email,paymentKey);
         orderingService.createOrder(orderRequestDto,email);
         return "success";
     }

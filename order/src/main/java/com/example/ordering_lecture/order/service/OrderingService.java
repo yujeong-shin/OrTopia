@@ -12,6 +12,7 @@ import com.example.ordering_lecture.orderdetail.repository.OrderDetailRepository
 import com.example.ordering_lecture.payment.controller.ItemServiceClient;
 import com.example.ordering_lecture.payment.dto.ItemOptionDto;
 import com.example.ordering_lecture.redis.RedisService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class OrderingService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
@@ -39,6 +41,7 @@ public class OrderingService {
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto,String email) {
         // 정상 주문 진행
         if(redisService.getValues(email).equals(orderRequestDto.getPgToken())){
+            log.info("주문 진행 시작");
             Ordering ordering = orderRequestDto.toEntity();
             orderRepository.save(ordering);
             for(OrderDetailRequestDto orderDetailRequestDto:orderRequestDto.getOrderDetailRequestDtoList()){
