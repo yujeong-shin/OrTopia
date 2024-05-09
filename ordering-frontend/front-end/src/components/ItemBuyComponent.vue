@@ -308,8 +308,8 @@
             discount: this.dicountPrice,
             orderName: '테스트 결제', // 구매상품
             customerName: this.name, // 구매자 이름
-            successUrl:  `https://wwww.yujeong.shop/order/toss`, // 결제 성공 시 이동할 페이지(이 주소는 예시입니다. 상점에서 직접 만들어주세요.)
-            failUrl: `https://wwww.yujeong.shop/order/toss`, // 결제 실패 시 이동할 페이지(이 주소는 예시입니다. 상점에서 직접 만들어주세요.)
+            successUrl:  `https://www.yujeong.shop/order/toss`, // 결제 성공 시 이동할 페이지(이 주소는 예시입니다. 상점에서 직접 만들어주세요.)
+            failUrl: `https://www.yujeong.shop/order/toss`, // 결제 실패 시 이동할 페이지(이 주소는 예시입니다. 상점에서 직접 만들어주세요.)
           })
           // ------ 결제창을 띄울 수 없는 에러 처리 ------
           // 메서드 실행에 실패해서 reject 된 에러를 처리하는 블록입니다.
