@@ -84,6 +84,19 @@ export default {
         alert("아이템 주문에 성공했습니다.");
         this.$router.push("/");
       } catch (e) {
+        let buyItemMap = {};
+        this.buyItems.forEach((item) => {
+          buyItemMap[item.id] = true;
+        });
+        let cartItem = [...this.getCartItems];
+        this.$store.dispatch("clearCart");
+        localStorage.removeItem("buyItem");
+        localStorage.removeItem("order");
+        let filteredCartItem = cartItem
+          .filter((item) => !buyItemMap[item.id])
+          .map((item) => this.$store.dispatch("addToCart", item));
+        // localStorage.setItem('totalQuantity',filteredCartItem.size());
+        console.log(filteredCartItem);
         console.log(e);
         alert("아이템 주문에 성공했습니다.");
         this.$router.push("/");
