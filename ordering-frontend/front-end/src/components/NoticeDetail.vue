@@ -6,16 +6,18 @@
       class="mx-auto"
       max-width="800"
     >
-      <v-card-title class="justify-center">{{ notice.name }}</v-card-title>
+    <v-card-title class="headline grey lighten-2 text-center">
+      {{ notice.name }}
+    </v-card-title>
       <v-card-text>
         <v-row justify="center">
           <v-col cols="12" sm="6" class="text-center">
-            <v-subheader>시작일:</v-subheader>
-            <div>{{ notice.startDate }}</div>
+          <br>
+            <v-subheader>시작일:  </v-subheader>{{ notice.startDate }}
           </v-col>
           <v-col cols="12" sm="6" class="text-center">
-            <v-subheader>종료일:</v-subheader>
-            <div>{{ notice.endDate }}</div>
+            <br>
+            <v-subheader>종료일:  </v-subheader>{{ notice.endDate }}
           </v-col>
         </v-row>
         <v-divider class="my-4"></v-divider>
@@ -27,7 +29,10 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="red" @click="deleteNotice" v-if="!noticeDeleted"
+        <v-btn 
+          color="red" 
+          @click="deleteNotice" 
+          v-if="isAdmin && !noticeDeleted"
           >삭제하기</v-btn
         >
         <v-btn color="primary" @click="goToNotifications">닫기</v-btn>
@@ -66,10 +71,12 @@ export default {
       notice: {},
       noticeDeleted: false,
       dialog: false,
+      isAdmin: false,
     };
   },
   created() {
     this.fetchNotice();
+    this.checkAdminRole();
   },
   methods: {
     deleteNotice() {
@@ -118,6 +125,11 @@ export default {
         .catch((error) => {
           console.error("공지사항 상세 정보를 불러오는 중 에러 발생:", error);
         });
+    },
+    checkAdminRole() {
+      // 로컬 스토리지에서 'role'을 가져와서 'ADMIN'인지 확인
+      const role = localStorage.getItem("role");
+      this.isAdmin = role === "ADMIN";
     },
   },
 };
