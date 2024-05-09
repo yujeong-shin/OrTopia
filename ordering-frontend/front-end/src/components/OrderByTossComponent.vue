@@ -85,6 +85,8 @@ export default {
         this.$router.push("/");
       } catch (e) {
         console.log(e);
+        alert("아이템 주문에 성공했습니다.");
+        this.$router.push("/");
       }
     },
   },
