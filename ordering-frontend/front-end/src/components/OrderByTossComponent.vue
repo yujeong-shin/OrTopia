@@ -51,10 +51,8 @@ export default {
           orderId: orderId,
           paymentKey: paymentKey,
           amount: parseInt(amount, 10),
-          myEmail: localStorage.getItem("email"),
         });
         const url = `${process.env.VUE_APP_API_BASE_URL}/ortopia-order-service/toss/success?${queryParams}`;
-        // const url = `http://localhost:8080/toss/success?${queryParams}`;
         const data = await axios.post(url,{
           pgToken: paymentKey,
           totalPrice: this.order.totalPrice,
