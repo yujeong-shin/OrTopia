@@ -58,6 +58,8 @@ export default {
       } else {
         this.alarmMessages = [];
       }
+      localStorage.setItem('alarmMessage',[]);
+      localStorage.setItem('alarm', 0);
     },
     formatDate(dateString) {
       // 날짜를 적절한 형식으로 변환하여 반환하는 함수
