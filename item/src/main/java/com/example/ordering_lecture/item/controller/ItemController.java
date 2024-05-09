@@ -147,7 +147,7 @@ public class ItemController {
         return new ResponseEntity<>(orTopiaResponse, HttpStatus.OK);
     }
 
-    @PostMapping("item/update/stock/{itemOptionQuantityId}/{quantity}")
+    @PostMapping("/update/stock/{itemOptionQuantityId}/{quantity}")
     String itemOptionQuantityUpdate(@PathVariable(value = "itemOptionQuantityId") Long itemOptionQuantityId,
                                     @PathVariable(value = "quantity") Integer quantity){
         itemService.itemOptionQuantityUpdate(itemOptionQuantityId,quantity);
